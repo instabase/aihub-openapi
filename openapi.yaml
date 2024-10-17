@@ -1451,7 +1451,7 @@ paths:
                     Your chatbot query.
 
                     <Info> Queries made by API are also visible in your query history when accessing the source app from the AI Hub user interface.</Info>
-                model:
+                model_name:
                   type: string
                   enum: [multistep, multistep-lite]
                   description: The model to use to answer the query. Supports the multistep model (`multistep-lite`) and research mode (`multistep`), a more powerful but slower variant of the multistep model that's suited to complex reasoning queries. See [Choosing a model](/overview/models/) for details.

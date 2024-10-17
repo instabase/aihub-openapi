@@ -1,0 +1,2161 @@
+openapi: 3.0.0
+info:
+  title: AI Hub API
+  version: "0.1"
+  description: The AI Hub REST API. See https://docs.instabase.com/api-sdk/ for more details.
+  termsOfService: https://www.instabase.com/terms-of-service/
+  contact:
+    name: Instabase Support
+    url: https://help.instabase.com/
+  license:
+    name: MIT
+    url: https://github.com/instabase/aihub-python/blob/master/LICENSE
+servers:
+  - url: https://aihub.instabase.com/api
+security:
+  - bearerAuth: []
+paths:
+  /v2/batches:
+    post:
+      operationId: createBatch
+      tags:
+        - batches
+      summary: Create batch
+      description: |
+        Create a new batch.
+
+        <Note>[Upload files to the batch](/api-sdk/api-reference/batches/add-file-to-batch) in a separate request.</Note>
+      parameters:
+        - $ref: '#/components/parameters/ib_context'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the batch. Maximum length is 255 characters.
+                workspace:
+                  type: string
+                  description: |
+                    The name of the workspace in which to add the batch; the batch is created in the default drive of the workspace. If not specified, the default location for organization members is the default drive of your personal workspace. For community users, the default location is your personal workspace's Instabase Drive.
+
+                    <Info>For organization members, if the default drive changes but is still connected, you can still use the batch as input for running an app. However, you can't upload any additional files to the batch. If the default drive is disconnected, you can't use batches stored on that drive as input for any app run.</Info>
+              required:
+                - name
+      responses:
+        '200':
+          description: Batch created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/batch'
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: Error response.
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl "${API_ROOT}/v2/batches" \
+                    -H "Authorization: Bearer ${API_TOKEN}" \
+                    -H "IB-Context: ${IB_CONTEXT}"\
+                    -H "Content-Type: application/json" \
+                    -d '{"name": "test"}'
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+                  client = AIHub(api_root="<API-ROOT>",
+                           api_key="<API-TOKEN>",
+                           ib_context="<IB-CONTEXT>")
+
+                  batch = client.batches.create(name='test')
+    get:
+      operationId: listBatches
+      tags:
+        - batches
+      summary: List batches
+      description: Return a list of batches. Use query parameters to filter results.
+      parameters:
+        - in: query
+          name: workspace
+          schema:
+            type: string
+          description: Filter to batches in the specified workspace.
+        - in: query
+          name: username
+          schema:
+            type: string
+          description: Filter to batches created by the specified username (user ID).
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: If paginating results, specify how many batches to return.
+        - in: query
+          name: offset
+          schema:
+            type: integer
+          description: If paginating results, specify the offset of the returned list.
+        - $ref: '#/components/parameters/ib_context'
+      responses:
+        '200':
+          description: Request successful.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  batches:
+                    type: array
+                    description: List of batches. See response schema for each batch object.
+                    items:
+                      $ref: '#/components/schemas/batchInfo'
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl "${API_ROOT}/v2/batches" \
+                    -H "Authorization: Bearer ${API_TOKEN}" \
+                    -H "IB-Context: ${IB_CONTEXT}"\
+                    -G \
+                    --data-urlencode "workspace=my-workspace" \
+                    --data-urlencode "limit=100"
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+                  batches = client.batches.list(workspace="my-workspace",
+                                                limit=100)
+
+  /v2/batches/{batch_id}:
+    get:
+      operationId: getBatch
+      tags:
+        - batches
+      summary: Get batch information
+      description: Retrieve information about a batch.
+      parameters:
+        - $ref: '#/components/parameters/batch_id'
+        - $ref: '#/components/parameters/ib_context'
+      responses:
+        '200':
+          description: Batch successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/batchInfo'
+        '404':
+          description: Batch does not exist, or denied access.
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl "${API_ROOT}/v2/batches/<BATCH-ID>" \
+                    -H "Authorization: Bearer ${API_TOKEN}"\
+                    -H "IB-Context: ${IB_CONTEXT}"
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+                  batch = client.batches.get("<BATCH-ID>")
+    delete:
+      operationId: deleteBatch
+      tags:
+        - batches
+      summary: Delete batch
+      description: Delete a batch and all its files. This is an asynchronous operation that must be [checked for completion.](/api-sdk/api-reference/batches/poll-batches-job)
+      parameters:
+        - $ref: '#/components/parameters/batch_id'
+        - $ref: '#/components/parameters/ib_context'
+      responses:
+        '202':
+          description: Batch deletion request accepted. [Poll the job ID](/api-sdk/api-reference/batches/poll-batches-job) to check completion status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/batchDeletionJobResponse'
+        '404':
+          description: Batch does not exist.
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl -X DELETE "${API_ROOT}/v2/batches/<BATCH-ID>" \
+                    -H "Authorization: Bearer ${API_TOKEN}"\
+                    -H "IB-Context: ${IB_CONTEXT}"
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+                  resp = client.batches.delete("<BATCH-ID>")
+                  job_id = resp.job_id
+
+                  # Poll for job completion
+                  while True:
+                      job_status = client.batches.poll_job(job_id)
+                      if job_status.state == 'COMPLETE':
+                          break
+                      time.sleep(5)
+
+  /v2/batches/{batch_id}/files/{filename}:
+    put:
+      operationId: addFileToBatch
+      tags:
+        - batches
+      summary: Upload file to batch
+      description: |
+        Upload a file to a batch or update the contents of a previously uploaded file in a batch.
+
+        <Info>Files can be uploaded one at a time and the suggested max size for each file is 10 MB. For larger files, see [Multipart file upload.](/api-sdk/multipart-upload/)</Info>
+      parameters:
+        - $ref: '#/components/parameters/batch_id'
+        - name: filename
+          in: path
+          required: true
+          description: A user-defined name for the file. Include the file extension.
+          schema:
+            type: string
+        - $ref: '#/components/parameters/ib_context'
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              description: The raw contents of the file to upload. See the example request, being sure to define the `<LOCAL_FILEPATH>` with the full path to the file in the machine running the script.
+              type: string
+              format: binary
+      responses:
+        '204':
+          description: File uploaded successfully.
+        '404':
+          description: Batch with ID <BATCH-ID> does not exist.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: Error response.
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl -X PUT "${API_ROOT}/v2/batches/<BATCH-ID>/files/<FILENAME>" \
+                    -H "Authorization: Bearer ${API_TOKEN}" \
+                    -H "IB-Context: ${IB_CONTEXT}" \
+                    -H "Content-Type: application/octet-stream" \
+                    --upload-file '<LOCAL_FILEPATH>' # Full path to the file in the machine that's making the request
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+                  client.batches.add_file(id="<BATCH-ID>",
+                                          file_name="test.pdf",
+                                          file=open("test.pdf", "rb"))
+
+    delete:
+      operationId: deleteFileFromBatch
+      tags:
+        - batches
+      summary: Delete file from batch
+      description: Delete a file from a batch.
+      parameters:
+        - $ref: '#/components/parameters/batch_id'
+        - name: filename
+          in: path
+          required: true
+          description: The name of the file.
+          schema:
+            type: string
+        - $ref: '#/components/parameters/ib_context'
+      responses:
+        '202':
+          description: File deletion request accepted. Poll the deletion job for completion status.
+        '404':
+          description: Batch does not exist.
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl -X DELETE "${API_ROOT}/v2/batches/<BATCH-ID>/files/<FILENAME>" \
+                    -H "Authorization: Bearer ${API_TOKEN}"\
+                    -H "IB-Context: ${IB_CONTEXT}"
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+                  resp = client.batches.delete_file("<BATCH-ID>",
+                                                    "<FILENAME>")
+
+  /v2/batches/jobs/{job_id}:
+    get:
+      operationId: pollBatchesJob
+      tags:
+        - batches
+      summary: Poll batches job
+      description: Poll the asynchronous job created when deleting a batch or deleting a file from a batch.
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The job ID returned by a [Delete batch](/api-sdk/api-reference/batches/delete-batch) request or the `Location` header value returned by a [Delete file from a batch](/api-sdk/api-reference/batches/delete-file-from-batch) request.
+        - $ref: '#/components/parameters/ib_context'
+      responses:
+        '200':
+          description: Request successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/jobStatusResponse'
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl "${API_ROOT}/v2/batches/jobs/<JOB-ID>" \
+                    -H "Authorization: Bearer ${API_TOKEN}"\
+                    -H "IB-Context: ${IB_CONTEXT}"
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+                  resp = client.batches.poll_job("<JOB-ID>")
+
+  /v2/apps/runs:
+    post:
+      operationId: runApp
+      tags:
+        - runs
+      summary: Run app
+      description: |
+        Run an app by its name or app ID. The input for the run can be a batch ID or an input file path.
+
+        To run deployments by API, use the [Run deployment endpoint.](/api-sdk/api-reference/runs/run-deployment/)
+
+        <Note>Any specified input or output is validated against the context set by the `IB-Context` header. For example, if the context is set to your community account, but the batch ID used as input for the run is stored in your organization, the call fails.</Note>
+      parameters:
+        - $ref: '#/components/parameters/ib_context'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                app_name:
+                  type: string
+                  description: Required unless using `app_id`. The name of the AI Hub app to run.
+                app_id:
+                  type: string
+                  description: |
+                    Required unless using `app_name`. The app ID of the AI Hub app to run.
+
+                    <Tip>You can find an app ID in the app URL, such as http<span>s://</span>aihub.instabase.com/hub/apps/**528c36e8-ac5b-490d-a41b-7eec9c404b87**.</Tip>
+                owner:
+                  type: string
+                  description: |
+                    The account that generated the app. If not specified, defaults to your AI Hub username.
+
+                    For custom AI Hub apps belonging to you, accept the default. For public AI Hub apps published by Instabase, specify `instabase`.
+                batch_id:
+                  type: integer
+                  description: Required unless using `input_dir`. The batch ID of a batch created with the [Batches endpoint.](/api-sdk/api-reference/batches/create-batch/) All files uploaded to the batch are used as input for the run.
+                input_dir:
+                  type: integer
+                  description: Required unless using `batch_id`. The path of the input folder in a connected drive or Instabase Drive. See [Specifying file paths.](/api-sdk/run-reference/#specifying-file-paths)
+                version:
+                  type: string
+                  description: Version of the app to use. If not specified, defaults to the latest production version.
+                output_workspace:
+                  type: string
+                  description: |
+                    The workspace in which to run the app. The output is saved to the default drive of the specified workspace. If not defined, the default is:
+
+                    - **Community accounts**: Runs in and saves to the personal workspace's Instabase Drive (`<USER-ID>/my-repo/Instabase Drive`).
+
+                    - **Organization accounts**: Runs in and saves to the organization's default drive (`<ORGANIZATION-ID>/<USER-ID>/<default-drive>`).
+                output_dir:
+                  type: string
+                  description: Defines a specific location for the output to be saved in a connected drive or Instabase Drive. If defined, overrides the `output_workspace` value. See [Specifying file paths.](/api-sdk/run-reference/#specifying-file-paths)
+                settings:
+                  type: object
+                  description: JSON object containing settings for the app run.
+                  properties:
+                    runtime_config:
+                      type: object
+                      description: A dictionary containing the runtime configuration for the app run, for use in validation functions. See [runtime config](/api-sdk/run-reference/#runtime-configs) for details.
+                      additionalProperties: true
+                    webhook_config:
+                      type: object
+                      description: Configuration for the webhook URL called on app run completion. See [webhook parameters](/api-sdk/run-reference/#webhook-parameters) for details.
+                      properties:
+                        url:
+                          type: string
+                          description: The webhook URL to which an HTTP request is sent when the run is completed.
+                        headers:
+                          type: object
+                          description: Configure the headers that are sent alongside the HTTP request. The format is a dictionary of key-value pairs.
+                          additionalProperties:
+                            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/run'
+          description: Run started successfully.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: Error response.
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                curl "${API_ROOT}/v2/apps/runs" \
+                  -H "Authorization: Bearer ${API_TOKEN}" \
+                  -H "IB-Context: ${IB_CONTEXT}"\
+                  -H "Content-Type: application/json" \
+                  -d '{
+                        "batch_id": "<BATCH-ID>",
+                        "app_name": "<APP-NAME>"
+                      }'
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+
+                  result = client.apps.runs.create(app_name='<APP-NAME>',
+                                                   batch_id='<BATCH-ID>')
+    get:
+      operationId: listRuns
+      tags:
+        - runs
+      summary: List runs
+      description: Return a list of runs. Use query parameters to filter results.
+      parameters:
+        - $ref: '#/components/parameters/ib_context'      
+        - in: query
+          name: app_id
+          schema:
+            type: string
+          description: Filter runs by app ID.
+        - in: query
+          name: app_name
+          schema:
+            type: string
+          description: Filter runs by app name.
+        - in: query
+          name: deployment_id
+          schema:
+            type: string
+          description: Filter runs by app deployment ID.
+        - in: query
+          name: username
+          schema:
+            type: string
+          description: Filter runs initiated by the specified user (username).
+        - in: query
+          name: run_id
+          schema:
+            type: string
+          description: Filter specific run by run ID.
+        - in: query
+          name: status
+          schema:
+            type: array
+            items:
+              type: string
+          description: Filter jobs by status, such as COMPLETE, RUNNING, or FAILED.
+        - in: query
+          name: output_repo
+          schema:
+            type: array
+            items:
+              type: string
+          description: Filter runs by the output repo.
+        - in: query
+          name: from_timestamp
+          schema:
+            type: integer
+          description: Filter runs starting from this timestamp. Defaults to one week before the current time.
+        - in: query
+          name: to_timestamp
+          schema:
+            type: integer
+          description: Filter runs up to this timestamp. Defaults to the current time.
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: Number of results to return.
+        - in: query
+          name: offset
+          schema:
+            type: integer
+          description: Offset of the first result to return.
+        - in: query
+          name: sort_by
+          schema:
+            type: string
+            enum:
+              - start_timestamp
+              - status
+          description: Field to sort results by.
+        - in: query
+          name: order
+          schema:
+            type: string
+            enum:
+              - ASCENDING
+              - DESCENDING
+          description: Order of sorting, such as ASCENDING or DESCENDING.
+      responses:
+        '200':
+          description: A list of all runs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  runs:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/run'
+        default:
+          description: Error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl "${API_ROOT}/v2/apps/runs" \
+                    -H "Authorization: Bearer ${API_TOKEN}"`
+                    -H "IB-Context: ${IB_CONTEXT}"
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+                  runs = client.apps.runs.list()
+
+
+  /v2/apps/deployments/{deployment-id}/runs:
+    post:
+      operationId: runDeployment
+      tags:
+        - runs
+      summary: Run deployment
+      description: |
+        Run an AI Hub deployment by its deployment ID. The input for the run is specified using a batch ID or file path.
+
+        <Note>Any specified input or output is validated against the context set by the `IB-Context` header. For example, if the context is set to your community account, but the batch ID used as input for the run is stored in your organization, the call fails.</Note>
+      parameters:
+        - $ref: '#/components/parameters/ib_context'
+        - in: path
+          name: deployment-id
+          schema:
+            type: string
+            default: false
+          required: true
+          description: |
+            The deployment ID.
+
+            <Tip>You can find the deployment ID by opening the deployment in AI Hub and looking at the site URL, such as https<span>://</span>aihub.instabase.com/deployments/**01902d6f-bb35-74cb-bd27-c09b38bbf20a**/runs.</Tip>
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                batch_id:
+                  type: integer
+                  description: Required unless using `input_dir`. The batch ID of a batch created with the [Batches endpoint.](/api-sdk/api-reference/batches/create-batch/) All files uploaded to the batch are used as input for the run.
+                input_dir:
+                  type: integer
+                  description: Required unless using `batch_id`. The path of the input folder in a connected drive or Instabase Drive. See [Specifying file paths.](/api-sdk/run-reference/#specifying-file-paths)
+                version:
+                  type: string
+                  description: Version of the app to use. If not specified, defaults to the latest production version.
+                output_workspace:
+                  type: string
+                  description: |
+                    The workspace in which to run the app. The output is saved to the default drive of the specified workspace. If not defined, the default is:
+
+                    - **Community accounts**: Runs in and saves to the personal workspace's Instabase Drive (`<USER-ID>/my-repo/Instabase Drive`).
+
+                    - **Organization accounts**: Runs in and saves to the organization's default drive (`<ORGANIZATION-ID>/<USER-ID>/<default-drive>`).
+                output_dir:
+                  type: string
+                  description: Defines a specific location for the output to be saved in a connected drive or Instabase Drive. If defined, overrides the `output_workspace` value. See [Specifying file paths.](/api-sdk/run-reference/#specifying-file-paths)
+                settings:
+                  type: object
+                  description: JSON object containing settings for the app run.
+                  properties:
+                    runtime_config:
+                      type: object
+                      description: A dictionary containing the runtime configuration for the app run, for use in validation functions. See [runtime config](/api-sdk/run-reference/#runtime-configs) for details.
+                      additionalProperties: true
+                    webhook_config:
+                      type: object
+                      description: Configuration for the webhook URL called on app run completion. See [Webhook parameters.](/api-sdk/run-reference/#webhook-parameters)
+                      properties:
+                        url:
+                          type: string
+                          description: The webhook URL to which an HTTP request is sent when the run is completed.
+                        headers:
+                          type: object
+                          description: Configure the headers that are sent alongside the HTTP request. The format is a dictionary of key-value pairs.
+                          additionalProperties:
+                            type: string
+      responses:
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/run'
+          description: Successfully initiated an asynchronous operation to run the deployment.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: Error response.
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                curl "${API_ROOT}/v2/apps/deployments/<DEPLOYMENT-ID>/runs" \
+                  -H "Authorization: Bearer ${API_TOKEN}" \
+                  -H "IB-Context: ${IB_CONTEXT}"\
+                  -H "Content-Type: application/json" \
+                  -d '{
+                        "batch_id": "<BATCH-ID>",
+                      }'
+
+  /v2/apps/runs/{run_id}:
+    get:
+      operationId: getRunStatus
+      tags:
+        - runs
+      summary: Get run status
+      description: Get the status of a run.
+      parameters:
+        - $ref: '#/components/parameters/run_id'
+        - $ref: '#/components/parameters/ib_context'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/run'
+          description: Successful response.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: Error response.
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                curl "${API_ROOT}/v2/apps/runs/<RUN-ID>" \
+                  -H "Authorization: Bearer ${API_TOKEN}"\
+                  -H "IB-Context: ${IB_CONTEXT}"
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+
+                  status = client.apps.runs.status('<RUN-ID>')
+
+  /v2/apps/runs/{run_id}/results:
+    get:
+      operationId: getRunResults
+      tags:
+        - runs
+      summary: Get run results
+      description: Get the results of a completed run.
+      parameters:
+        - $ref: '#/components/parameters/run_id'
+        - in: query
+          name: include_review_results
+          schema:
+            type: boolean
+            default: false
+          description: |
+            Whether to include human review details in the results. When set to `true`, details such as review status and edits at the run or document level and at the extracted field level are included.
+
+            The following values are returned at the run or document level:
+
+            - `review_completed`
+            - `files/documents/review_completed`
+            - `files/documents/class_edit_history`
+            - `files/documents/class_edit_history/timestamp`
+            - `files/documents/class_edit_history/user_id`
+            - `files/documents/class_edit_history/modifications`
+            - `files/documents/class_edit_history/modifications/message`
+
+            The following values are returned at the extracted field level:
+
+            - `edit_history`
+            - `files/edit_history/timestamp`
+            - `files/edit_history/user_id`
+            - `files/edit_history/modifications`
+            - `files/edit_history/modifications/message`
+
+            See the response schema for details and descriptions.
+
+            <Note>The review process can include manually correcting values. This endpoint doesn't support returning the original and corrected values.</Note>
+
+        - in: query
+          name: include_confidence_scores
+          schema:
+            type: boolean
+            default: false
+          description: |
+            Whether to include confidence scores in the results. When set to `true`, classification confidence scores at the run or document level and extraction confidence scores at the extracted field level are included.
+
+            The following values are returned at the run or document level:
+
+            - `files/documents/classification_confidence/ocr`
+
+            The following values are returned at the extracted field level:
+
+            - `confidence/model`
+
+            See the response schema for details and descriptions.
+        - in: query
+          name: include_validation_results
+          schema:
+            type: boolean
+            default: false
+          description: |
+            Whether to include validation status in the results. When set to `true`, validation results at the run or document level and extracted field level are included.
+
+            The following values are returned at the run or document level:
+
+            - `files/validations/final_result_pass`
+
+            The following values are returned at the extracted field level:
+
+            - `validations/valid`
+            - `validations/alerts`
+
+            See the response schema for details and descriptions.
+        - in: query
+          name: include_source_info
+          schema:
+            type: boolean
+            default: false
+          description: |
+            Whether to include source information in the results. When set to `true`, source details such as the image path of the generated image are included in the results.
+
+            The following values are returned at the run or document level:
+
+            - `files/documents/post_processed_paths`
+
+            The following values are returned at the extracted field level:
+
+            - `source_coordinates/top_x`
+            - `source_coordinates/top_y`
+            - `source_coordinates/bottom_x`
+            - `source_coordinates/bottom_y`
+            - `source_coordinates/page_number`
+
+            See the response schema for details and descriptions.
+        - in: query
+          name: file_offset
+          schema:
+            type: integer
+            default: 0
+          description: The initial file index to start returning results from. Defaults to `0`.
+        - $ref: '#/components/parameters/ib_context'
+      responses:
+        '200':
+          description: Run results retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/resultsResponse'
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: Error response.
+      x-fern-examples:
+        - path-parameters:
+            run_id: 1234-1235
+          response:
+            body:
+              batch_id: '1235'
+              has_more: false
+              files:
+                - original_file_name: "test.png"
+                  documents:
+                    - class_name: "Wage And Tax Statement"
+                      fields:
+                        - value: "123 STREET RD ANYWHERE, USA,12345"
+                          type: "TEXT"
+                          field_name: "employers_address_and_ZIP_code"
+                      doc_id: null
+                - original_file_name: "test2.png"
+                  documents:
+                    - class_name: "Driver License"
+                      fields:
+                        - value: "Male"
+                          type: "TEXT"
+                          field_name: "sex"
+                      doc_id: 1002
+          code-samples:
+            - sdk: python
+              name: Simple request
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+                  results = client.apps.runs.results('<RUN-ID>')
+            - sdk: curl
+              name: Simple request
+              code: |
+                  curl "${API_ROOT}/v2/apps/runs/<RUN-ID>/results" \
+                  -H "Authorization: Bearer ${API_TOKEN}"`
+                  -H "IB-Context: ${IB_CONTEXT}"
+        - path-parameters:
+            run_id: 1234-1235
+          response:
+            body:
+              has_more: false
+              batch_id: "9706"
+              files:
+                - original_file_name: "test.png"
+                  documents:
+                    - class_name: "Wage And Tax Statement"
+                      fields:
+                        - value: "123 STREET RD ANYWHERE, USA,12345"
+                          type: "TEXT"
+                          confidence:
+                            model: 0.5900550516
+                          source_coordinates:
+                            - top_x: 36.0
+                              top_y: 181.0
+                              bottom_x: 84.0
+                              bottom_y: 212.0
+                              page_number: 0
+                            - top_x: 90.0
+                              top_y: 182.0
+                              bottom_x: 198.0
+                              bottom_y: 211.0
+                              page_number: 0
+                          field_name: "employers_address_and_ZIP_code"
+                      post_processed_paths:
+                        - "instabase-org/orguser/fs/S3 Drive/app-runs/dd97-42cb-8b8e-28a63066887e/4180-8508-b103afb67185/s1_process_files/images/test.png.PNG"
+                      doc_id: null
+                - original_file_name: "test2.png"
+                  documents:
+                    - class_name: "Driver License"
+                      fields:
+                        - value: "Male"
+                          type: "TEXT"
+                          confidence:
+                            model: 0.6915
+                          source_coordinates: []
+                          field_name: "sex"
+                      post_processed_paths:
+                        - "instabase-org/orguser/fs/S3 Drive/app-runs/dd97-42cb-8b8e-28a63066887e/4180-8508-b103afb67185/s1_process_files/images/test2.png.PNG"
+                      doc_id: null
+          code-samples:
+            - sdk: python
+              name: Request with query parameters
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+                  results = client.apps.runs.results('<RUN-ID>',
+                                                     include_confidence_score=True,
+                                                     include_source_info=True)
+            - sdk: curl
+              name: Request with query parameters
+              code: |
+                  curl "${API_ROOT}/v2/apps/runs/<RUN-ID>/results?include_confidence_scores=true&include_source_info=true" \
+                    -H "Authorization: Bearer ${API_TOKEN}"`
+  /v2/conversations:
+    post:
+      operationId: createConversation
+      tags:
+        - conversations
+      summary: Create conversation and upload files
+      description: Create a new conversation and upload files to it.
+      parameters:
+        - $ref: '#/components/parameters/ib_context'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the conversation.
+                description:
+                  type: string
+                  description: Description of the conversation.
+                files:
+                  type: array
+                  description: A list of files to process, defined with local file paths.
+                  items:
+                    type: string
+                    format: binary
+                org:
+                  type: string
+                  description: |
+                    Your organization name. For organization members, your organization is `<ORGANIZATION-ID>`.  If not defined, the organization is inferred from the `IB-Context` header value.
+
+                    <Note>If you define an `org` value and include the `IB-Context` header, the organization values must match or the request can't complete.</Note>
+                workspace:
+                  type: string
+                  description: |
+                    The name of your personal workspace, where the conversation is created. For organization members, your personal workspace name is your user ID. If not defined, the workspace is inferred from the `IB-Context` header value.
+                enable_object_detection:
+                  type: boolean
+                  description: Defines whether to enable [object detection](/chat/converse/#digitization-and-object-detection) for the processed file. Object detection includes support for extracting tables and checkboxes.
+              required:
+                - files
+      responses:
+        '201':
+          description: Conversation created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/conversationResponse'
+        default:
+          description: Error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl "${API_ROOT}/v2/conversations" \
+                    -H "Authorization: Bearer ${API_TOKEN}" \
+                    -H "IB-Context: ${IB_CONTEXT}"\
+                    -F name="Sample Conversation Name" \
+                    -F description="Sample Conversation Description" \
+                    -F org="<ORGANIZATION-ID>" \ # Optional for community accounts
+                    -F workspace="<WORKSPACE-NAME>" \ # Optional for community accounts
+                    -F files="@/path/to/test.pdf" \
+                    -F files="@/path/to/test2.pdf"
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+
+                  result = client.conversations.create(
+                    name="Sample Conversation Name",
+                    description="Sample Conversation Description",
+                    org="<ORGANIZATION-ID>", # Optional for community accounts
+                    workspace="<WORKSPACE-NAME>", # Optional for community accounts
+                    files=['test.pdf', 'test2.pdf'])
+
+    get:
+      operationId: listConversations
+      tags:
+        - conversations
+      summary: List conversations
+      description: |
+        List all conversations you have created.
+
+        <Note>Organization admins can access a list of all conversations in the organization, not just conversations they created.</Note>
+      parameters:
+        - $ref: '#/components/parameters/ib_context'
+      responses:
+        '200':
+          description: A list of all conversations.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  conversations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/conversationSummary'
+        default:
+          description: Error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl "${API_ROOT}/v2/conversations" \
+                    -H "Authorization: Bearer ${API_TOKEN}"`
+                    -H "IB-Context: ${IB_CONTEXT}"
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+                  conversations = client.conversations.list()
+  /v2/conversations/{conversation_id}:
+    get:
+      operationId: getConversation
+      description: Retrieve information about a conversation, such as its state and a list of documents in the conversation.
+      tags:
+        - conversations
+      summary: Get conversation information
+      parameters:
+        - $ref: '#/components/parameters/conversation_id'
+        - $ref: '#/components/parameters/ib_context'
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/conversation'
+        default:
+          description: Error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl "${API_ROOT}/v2/conversations/<CONVERSATION-ID>" \
+                    -H "Authorization: Bearer ${API_TOKEN}"`
+                    -H "IB-Context: ${IB_CONTEXT}"
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+                  result = client.conversations.status(<CONVERSATION-ID>)
+
+    put:
+      operationId: updateConversation
+      tags:
+        - conversations
+      summary: Update conversation information
+      description: Update an existing conversation's name and description.
+      parameters:
+        - $ref: '#/components/parameters/conversation_id'
+        - in: query
+          name: name
+          schema:
+            type: string
+          description: New name for the conversation.
+        - in: query
+          name: description
+          schema:
+            type: string
+          description: New description for the conversation.
+        - $ref: '#/components/parameters/ib_context'
+      responses:
+        '204':
+          description: Conversation updated successfully, no content is returned.
+        default:
+          description: Error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl -X "PUT" "${API_ROOT}/v2/conversations/<CONVERSATION-ID>?name=<CONVERSATION-NAME>&description=<CONVERSATION-DESCRIPTION>" \
+                    -H "Authorization: Bearer ${API_TOKEN}" \
+                    -H "IB-Context: ${IB_CONTEXT}"\
+                    -H "Content-Type: application/json"
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+                  status = client.conversations.update('<CONVERSATION-ID>',
+                                                      name='<CONVERSATION-NAME>',
+                                                      description='<CONVERSATION-DESCRIPTION>')
+    delete:
+      operationId: deleteConversation
+      tags:
+        - conversations
+      summary: Delete conversation
+      description: Delete a conversation.
+      parameters:
+        - $ref: '#/components/parameters/conversation_id'
+        - $ref: '#/components/parameters/ib_context'
+      responses:
+        '204':
+          description: Conversation deleted successfully.
+        default:
+          description: Error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                    curl -X "DELETE" "${API_ROOT}/v2/conversations/<CONVERSATION-ID>" \
+                      -H "Authorization: Bearer ${API_TOKEN}" \
+                      -H "IB-Context: ${IB_CONTEXT}"\
+                      -H "Content-Type: application/json"
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+                  status = client.conversations.delete('<CONVERSATION-ID>')
+  /v2/conversations/{conversation_id}/prompts:
+    post:
+      operationId: converse
+      tags:
+        - conversations
+      summary: Converse with a document
+      description: Converse with the documents in a conversation.
+      parameters:
+        - $ref: '#/components/parameters/conversation_id'
+        - $ref: '#/components/parameters/ib_context'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                question:
+                  type: string
+                  description: The question to ask the document.
+                document_ids:
+                  type: array
+                  items:
+                    type: integer
+                  description: The IDs of the documents to query.
+                mode:
+                  type: string
+                  enum: [default, advanced]
+                  description: |
+                    The model to use to answer the question. Supports the standard (`default`) and advanced (`advanced`) models. See [Choosing a model](/overview/models/) for details about each model.
+                    <Note>The multistep model and research mode are not supported.</Note>
+              required:
+                - question
+                - document_ids
+      responses:
+        '200':
+          description: Successful response, the answer is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/promptResponse'
+        default:
+          description: Error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl "${API_ROOT}/v2/conversations/<CONVERSATION-ID>/prompts" \
+                    -H "Authorization: Bearer ${API_TOKEN}" \
+                    -H "IB-Context: ${IB_CONTEXT}"
+                    -H "Content-Type: application/json" \
+                    -d '{
+                          "question": "What is the main topic of the document?",
+                          "document_ids": [<DOCUMENT-ID>],
+                          "mode": "default"
+                        }'
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+                  answer = client.conversations.converse(conversation_id='<CONVERSATION-ID>',
+                                                         question="What is the main topic of the document?",
+                                                         document_ids=[<DOCUMENT-ID>],
+                                                         mode="default")
+
+  /v2/conversations/{conversation_id}/documents:
+    post:
+      operationId: addDocumentsToConversation
+      tags:
+        - conversations
+      summary: Add documents to a conversation
+      description: |
+        Upload documents to a specified conversation.
+
+        <Note>
+        There are some limitations when uploading files to a conversation:
+          - Files can be up to 50 MB or 800 pages.
+          - You can upload up to 100 MB per request.
+          - You can have up to 100 documents per conversation.
+          - There are specific [supported file types](/overview/limitations/#supported-file-types)
+        </Note>
+      parameters:
+        - $ref: '#/components/parameters/conversation_id'
+        - $ref: '#/components/parameters/ib_context'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: The documents to be uploaded.
+                process_files:
+                  type: boolean
+                  description: Flag to indicate whether the files should be processed after upload.
+                  default: true
+              required:
+                - files
+      responses:
+        '201':
+          description: Documents uploaded and processed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/documentUploadResponse'
+        default:
+          description: Error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl "${API_ROOT}/v2/conversations/<CONVERSATION-ID>/documents" \
+                    -H "Authorization: Bearer ${API_TOKEN}" \
+                    -H "IB-Context: ${IB_CONTEXT}"\
+                    -F files="@/path/to/test.pdf" \
+                    -F files="@/path/to/test2.pdf"
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+                  status = client.conversations.add_documents('<CONVERSATION-ID>',
+                                                              files=['test.pdf', 'test2.pdf'])
+    delete:
+      operationId: deleteDocumentsFromConversation
+      tags:
+        - conversations
+      summary: Delete documents
+      description: |
+        Deletes documents from the conversation. Also suitable for database and filesystem cleanup.
+
+        <Tip>You can get a list of document IDs in your conversation with a [Conversation information](/api-sdk/api-reference/conversations/get-conversation/) request.</Tip>
+      parameters:
+        - $ref: '#/components/parameters/conversation_id'
+        - $ref: '#/components/parameters/ib_context'
+        - name: ids
+          in: query
+          required: true
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: integer
+          description: List of document IDs to be deleted.
+      responses:
+        '204':
+          description: Documents deleted successfully.
+        default:
+          description: Error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl -X "DELETE" "${API_ROOT}/v2/conversations/<CONVERSATION-ID>/documents" \
+                    -H "Authorization: Bearer ${API_TOKEN}" \
+                    -H "IB-Context: ${IB_CONTEXT}"\
+                    -H "Content-Type: application/json" \
+                    -d '{"ids": [<DOCUMENT-ID>]}'
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+                  status = client.conversations.delete_documents('<CONVERSATION-ID>',
+                                                                 ids=[<DOCUMENT-ID>])
+
+  /v2/conversations/{conversation_id}/documents/{document_id}:
+    get:
+      operationId: getConversationDocumentMetadata
+      tags:
+        - conversations
+      summary: Get document metadata
+      description: Retrieve metadata for a specified document within a conversation.
+      parameters:
+        - $ref: '#/components/parameters/conversation_id'
+        - name: document_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: |
+            The ID of the document for which metadata is being retrieved.
+
+            <Tip>You can get a list of document IDs in your conversation with a [Cconversation information](/api-sdk/api-reference/conversations/get-conversation/) request.</Tip>
+        - $ref: '#/components/parameters/ib_context'
+      responses:
+        '200':
+          description: Successfully retrieved document metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/documentMetadataResponse'
+        default:
+          description: Error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl "${API_ROOT}/v2/conversations/<CONVERSATION-ID>/documents/<DOCUMENT-ID>" \
+                    -H "Authorization: Bearer ${API_TOKEN}"
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+                  status = client.conversations.get_document_metadata('<CONVERSATION-ID>',
+                                                                      document_id=<DOCUMENT-ID>)
+  /v2/queries:
+    post:
+      operationId: runQuery
+      tags:
+        - Queries
+      summary: Run query
+      description: Send an asynchronous chatbot query. Each request returns a `query_id` that can be used to [check the query status and get the response.](/api-sdk/api-reference/queries/get-query-status/)
+      parameters:
+        - $ref: '#/components/parameters/ib_context'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                  description: |
+                    Your chatbot query.
+
+                    <Info> Queries made by API are also visible in your query history when accessing the source app from the AI Hub user interface.</Info>
+                model:
+                  type: string
+                  enum: [multistep, multistep-lite]
+                  description: The model to use to answer the query. Supports the multistep model (`multistep-lite`) and research mode (`multistep`), a more powerful but slower variant of the multistep model that's suited to complex reasoning queries. See [Choosing a model](/overview/models/) for details.
+                  default: multistep-lite
+                include_source_info:
+                  type: boolean
+                  description: |
+                    Set to `true` to return information about the source documents referenced when generating the query response.
+
+                    <Note> The multistep model (`model` set to `multistep-lite`) supports document-level source information. Research mode (`model` set to `multistep`) supports page-level source information.</Note>
+                  default: false
+                source_app:
+                  type: object
+                  description: Information about the source app (chatbot).
+                  properties:
+                    type:
+                      type: string
+                      enum: [CHATBOT]
+                      description: The source app type. For chatbot queries, the app type is always `CHATBOT`.
+                      default: CHATBOT
+                    id:
+                      type: string
+                      description: |
+                        The ID of the chatbot to query. You can query any AI Hub chatbot to which you have access.
+
+                        <Tip>You can find the chatbot ID in its AI Hub URL, such as <span>http</span>s://aihub.instabase.com/hub/apps/**788eba40-5a1f-45f4-ad56-57fb1abe62c7**.</Tip>
+
+                        <Note>Chatbot IDs change with [every version update.](/chat/chatbots/#updating-chatbots) For convenience, when making a request to a given version of a chatbot, the query is automatically directed to the latest version of the chatbot.</Note>
+                  required:
+                    - type
+                    - id
+              required:
+                - query
+                - source_app
+      responses:
+        '202':
+          description: Query request accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/runQueryResponse'
+        default:
+          description: Error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl "${API_ROOT}/v2/queries" \
+                    -H "Authorization: Bearer ${API_TOKEN}" \
+                    -H "IB-Context: ${IB_CONTEXT}"\
+                    -H "Content-Type: application/json" \
+                    -d '{
+                          "query": "When was the mail sent out?",
+                          "model": "multistep",
+                          "include_source_info": true,
+                          "source_app":
+                            {
+                                "type": "CHATBOT",
+                                "id": "<CHATBOT-ID>"
+                            }
+                        }'
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+                  source_app = {
+                    "type": "CHATBOT",
+                    "id": "<CHATBOT-ID>"
+                  }
+                  status = client.queries.run(query="When was the mail sent out?",
+                                            model= "multistep",
+                                            include_source_info= True,
+                                            source_app= source_app)
+  /v2/queries/{query_id}:
+    get:
+      operationId: getQueryStatus
+      tags:
+        - Queries
+      summary: Get query status
+      description: Get the status of an asynchronous chatbot query. If the query status is `COMPLETE`, this request also returns the query response.
+      parameters:
+        - $ref: '#/components/parameters/query_id'
+        - $ref: '#/components/parameters/ib_context'
+      responses:
+        '200':
+          description: Query result successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/queryStatusResponse'
+        default:
+          description: Error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-fern-examples:
+        - path-parameters:
+            query_id: "01917eb8-4c73-7981-b664-c0559e09a499"
+          response:
+            body:
+              query_id: "01917eb8-4c73-7981-b664-c0559e09a499"
+              status: "COMPLETE"
+              results: [
+                {
+                  "response": "The email was sent out on Monday, March 11, 2024, at 08:16:16 +0000.",
+                  "source_documents":[
+                    {
+                      "name": "test.eml",
+                      "pages": [
+                        {
+                          "page_number": 1,
+                          "bboxes": [
+
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+          code-samples:
+            - sdk: curl
+              code: |
+                  curl "${API_ROOT}/v2/queries/<QUERY-ID>" \
+                    -H "Authorization: Bearer ${API_TOKEN}" \
+                    -H "IB-Context: ${IB_CONTEXT}"'
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+                  status = client.queries.status(query_id=<QUERY-ID>")
+
+components:
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: auth-scheme
+      description: Bearer HTTP authentication.
+      scheme: bearer
+      type: http
+  parameters:
+    ib_context:
+      in: header
+      name: IB-Context
+      schema:
+        type: string
+      required: false
+      description: Specify whether to use your community account or organization account to complete the request. To use your community account, define as your user ID. To use your organization account, define as your organization ID.
+                   If unspecified, defaults to community account context. See [Authorization and context identification](/api-sdk/authorization/#ib-context-header) for details.
+    batch_id:
+      in: path
+      name: batch_id
+      required: true
+      schema:
+        type: integer
+      description: The batch ID.
+    run_id:
+      in: path
+      name: run_id
+      required: true
+      schema:
+        type: string
+      description: The run ID.
+    conversation_id:
+      in: path
+      name: conversation_id
+      required: true
+      schema:
+        type: string
+      description: |
+        The conversation ID.
+
+        <Tip>You can list conversations and get their IDs with the [List conversations](/api-sdk/api-reference/conversations/list-conversations/) endpoint.</Tip>
+    query_id:
+      in: path
+      name: query_id
+      required: true
+      schema:
+        type: string
+      description: The unique identifier of the query.  This value is returned by a [Run query request.](/api-sdk/api-reference/queries/run-query/)
+  schemas:
+    batch:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the batch.
+      required:
+        - id
+    batchInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The batch ID.
+        name:
+          type: string
+          description: The batch name.
+        workspace:
+          type: string
+          description: The name of the workspace in which the batch exists.
+        mount_point:
+          type: string
+          description: The name of the connected drive in which the batch is stored.
+        repo_owner:
+          type: string
+          description: The owner of the workspace (also known as the repo) in which the batch exists.
+        batch_owner:
+          type: string
+          description: Username of the user that created the batch.
+        created_at_ms:
+          type: integer
+          format: int64
+          description: When the batch was created, in Unix time.
+        updated_at_ms:
+          type: integer
+          format: int64
+          description: When the batch was last updated, in Unix time.
+        path_suffix:
+          type: string
+          description: Batch path suffix from the mount point.
+      required:
+        - id
+        - name
+    batchDeletionJobResponse:
+      type: object
+      properties:
+        job_id:
+          type: string
+          description: The job ID of the operation. Use the job ID with the [Poll batches job endpoint](/api-sdk/api-reference/batches/poll-batches-job) to check batch deletion status.
+      required:
+        - job_id
+    jobStatusResponse:
+      type: object
+      properties:
+        state:
+          type: string
+          description: The status of the job.
+          enum:
+            - COMPLETE
+            - FAILED
+            - CANCELLED
+            - RUNNING
+            - PENDING
+        message:
+          type: string
+          description: Job status message.
+    run:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Run ID of the run.
+        status:
+          type: string
+          description: Status of the run.
+          enum:
+            - RUNNING
+            - COMPLETE
+            - PAUSED
+            - FAILED
+            - CANCELLED
+            - STOPPED_AT_CHECKPOINT
+        start_timestamp:
+          type: integer
+          format: int64
+          description: When the run started, in Unix time.
+        finish_timestamp:
+          type: integer
+          format: int64
+          description: When the run finished, in Unix time. `null` if run is still in progress.
+          nullable: true
+        msg:
+          type: string
+          description: Message about the run.
+          nullable: true
+    conversationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the conversation.
+        name:
+          type: string
+          description: Name of the conversation.
+        upload_status:
+          type: object
+          description: |
+            Status of file uploads. This field is omitted if no files are provided.
+          properties:
+            success:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Name of the successfully uploaded file.
+            failure:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Name of the file that failed to upload.
+      required:
+        - id
+        - name
+    promptResponse:
+      type: object
+      properties:
+        prompt_id:
+          type: string
+          description: The ID of the prompt.
+        answer:
+          type: string
+          description: The answer to the question asked.
+    conversation:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the conversation.
+        name:
+          type: string
+          description: Name of the conversation.
+        description:
+          type: string
+          description: Description of the conversation.
+        state:
+          type: string
+          description: |
+            The current state of the conversation.
+
+              - `COMPLETE`: Ready to start a conversation.
+              - `FAILED`: Not able process any of the uploaded files.
+              - `RUNNING`: Still processing the uploaded files.
+        documents:
+          type: array
+          description: A list of all uploaded and processed documents in the conversation.
+          items:
+            $ref: '#/components/schemas/documentDetails'
+      required:
+        - id
+        - name
+        - state
+    documentDetails:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the document.
+        name:
+          type: string
+          description: Name of the document.
+        state:
+          type: string
+          description: |
+            The processing state of the document.
+
+            - `PROCESSED`: Document is processed.
+            - `PROCESSING`: Document processing in progress.
+            - `FAILED`: Document processing failed.
+        uploadTimestamp:
+          type: string
+          format: date-time
+          description: The timestamp when the document was uploaded.
+    conversationSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the conversation.
+        name:
+          type: string
+          description: Name of the conversation.
+        description:
+          type: string
+          description: A brief description of the conversation.
+      required:
+        - id
+        - name
+    error:
+      type: object
+      properties:
+        message:
+          type: string
+    resultsResponse:
+      type: object
+      properties:
+        batch_id:
+          type: string
+          description: The batch ID used as input for this run, if run using a batch.
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/fileWithDocuments'
+        has_more:
+          type: boolean
+          description: Indicates whether additional results are available beyond those included in the current response.
+        review_completed:
+          type: boolean
+          description: Indicates whether the run or document has completed review.
+    fileWithDocuments:
+      type: object
+      properties:
+        original_file_name:
+          type: string
+          description: The original name of the file processed.
+        documents:
+          type: array
+          description: An array containing each document within the file.
+          items:
+            $ref: '#/components/schemas/document'
+    document:
+      type: object
+      properties:
+        fields:
+          type: array
+          description: A list containing the extracted fields from the document, each with its field name, extracted value, and type. See `<DOCUMENT-FIELD>` structure for details.
+          items:
+            $ref: '#/components/schemas/documentField'
+        review_completed:
+          type: boolean
+          description: Indicates whether the document has been marked as reviewed.
+        class_name:
+          type: string
+          nullable: true
+          description: The classification label of the document. `null` if classification is not applicable.
+        post_processed_paths:
+          type: array
+          description: An array of strings, each representing a path to post-processed documents.
+          items:
+            type: string
+        class_edit_history:
+          type: array
+          description: An array containing the history of edits to the document class.
+          items:
+            $ref: '#/components/schemas/modificationObject'
+        validations:
+          type: object
+          properties:
+            final_result_pass:
+              type: boolean
+              description: Indicates whether the document has passed all validation rules.
+        doc_id:
+          type: integer
+          description: ID of document.
+    documentField:
+      type: object
+      properties:
+        field_name:
+          type: string
+          description: The name of the field.
+        value:
+          type: string
+          description: The extracted value of the field.
+        type:
+          type: string
+          description: The type of the field.
+        source_coordinates:
+          type: array
+          items:
+            $ref: '#/components/schemas/fieldSourceCoordinates'
+        edit_history:
+          type: array
+          description: An array containing the history of edits to the field.
+          items:
+            $ref: '#/components/schemas/modificationObject'
+        confidence:
+          type: object
+          properties:
+            model:
+              type: number
+              format: float
+              nullable: true
+              description: The model's confidence in the extracted value.
+        validations:
+          type: object
+          properties:
+            valid:
+              type: boolean
+              description: Indicates whether the document has passed validation rules pertaining to this field.
+            alerts:
+              type: array
+              description: Alerts for field-level validation rules. Populated only if the `validations/valid` value is `false`.
+              items:
+                type: object
+                properties:
+                  alert_level:
+                    type: string
+                    description: Alert level of the validation failure.
+                  msg:
+                    type: string
+                    description: Description of alert.
+                  blocked:
+                    type: boolean
+                    description: If this validation failure is blocking.
+                  type:
+                    type: string
+                    description: Type of validation alert.
+                  locations:
+                    type: object
+    fieldSourceCoordinates:
+      type: object
+      properties:
+        top_x:
+          type: number
+          format: float
+          nullable: false
+          description: Top-left X coordinate of the bounding box.
+        top_y:
+          type: number
+          format: float
+          nullable: false
+          description: Top-left Y coordinate of the bounding box.
+        bottom_x:
+          type: number
+          format: float
+          nullable: false
+          description: Bottom-right X coordinate of the bounding box.
+        bottom_y:
+          type: number
+          format: float
+          nullable: false
+          description: Bottom-right Y coordinate of the bounding box.
+        page_number:
+          type: integer
+          nullable: false
+          description: Zero-indexed page number of the bounding box.
+    modificationObject:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          description: Datetime string of the class edit history event.
+        user_id:
+          type: string
+          description: User ID of the user who edited the class.
+        modifications:
+          type: array
+          description: List of class modifications made in this single edit history event.
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Message associated with the class edit history modification.
+    documentUploadResponse:
+      type: object
+      properties:
+        upload_status:
+          type: object
+          properties:
+            success:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Name of the successfully uploaded document.
+            failure:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Name of the document that failed to upload.
+                  reason:
+                    type: string
+                    description: Error message for upload failure.
+          description: Summary of the upload status for uploaded files, divided into `success` and `failure`.
+    documentMetadataResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The document ID.
+        ibdoc_path:
+          type: string
+          description: Path to the document's internal representation.
+        name:
+          type: string
+          description: The name of the document.
+        metadata:
+          type: array
+          items:
+            type: object
+            description: A collection of additional, possibly dynamic, metadata properties associated with the document. The structure of this object can vary depending on the document content and type.
+            additionalProperties: true
+    runQueryResponse:
+      type: object
+      properties:
+        query_id:
+          type: string
+          description: The unique identifier of the query.
+      required:
+        - query_id
+    queryStatusResponse:
+      type: object
+      properties:
+        query_id:
+          type: string
+          description: The unique identifier of the query.
+        status:
+          type: string
+          description: Status of the query.
+          enum:
+            - RUNNING
+            - COMPLETE
+            - FAILED
+        results:
+          type: array
+          description: The query response. Returned only if the query status is `COMPLETE`.
+          items:
+            $ref: '#/components/schemas/queryResult'
+        error:
+          type: string
+          description: Present only if the status is `FAILED`. Contains a message with information about the source of the execution error, such as `"message":"Invalid query uuid passed"`.
+      required:
+        - query_id
+        - status
+    queryResult:
+      type: object
+      properties:
+        response:
+          type: string
+          description: The query response generated by the chatbot.
+        source_documents:
+          type: array
+          description: Returned if `include_source_info` was set to `true`. Information about the source documents referenced when generating the query response.
+          items:
+            $ref: '#/components/schemas/sourceDocument'
+      required:
+        - response
+    sourceDocument:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the source document referenced.
+        pages:
+          type: array
+          description: |
+            An array of page objects with information about the specific pages referenced in the source document.
+
+            <Tip>Page-level source information is supported only when using research mode.</Tip>
+          items:
+            $ref: '#/components/schemas/sourcePage'
+      required:
+        - name
+    sourcePage:
+      type: object
+      properties:
+        page_number:
+          type: integer
+          description: The number of the page referenced in the source document.
+        bboxes:
+          type: array
+          description: Bounding boxes for the text referenced on the page, if applicable.
+          items:
+            $ref: '#/components/schemas/boundingBox'
+      required:
+        - page_number
+    boundingBox:
+      type: object
+      properties:
+        top_x:
+          type: number
+          format: float
+          nullable: false
+          description: Top-left X coordinate of the bounding box.
+        top_y:
+          type: number
+          format: float
+          nullable: false
+          description: Top-left Y coordinate of the bounding box.
+        bottom_x:
+          type: number
+          format: float
+          nullable: false
+          description: Bottom-right X coordinate of the bounding box.
+        bottom_y:
+          type: number
+          format: float
+          nullable: false
+          description: Bottom-left Y coordinate of the bounding box.
+      required:
+        - top_x
+        - top_y
+        - bottom_x
+        - bottom_y

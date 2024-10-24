@@ -178,13 +178,13 @@ paths:
       tags:
         - batches
       summary: Delete batch
-      description: Delete a batch and all its files. This is an asynchronous operation that must be [checked for completion.](/api-sdk/api-reference/batches/poll-batches-job)
+      description: Delete a batch and all its files. This is an asynchronous operation that must be [checked for completion.](/api-sdk/api-reference/jobs/status)
       parameters:
         - $ref: '#/components/parameters/batch_id'
         - $ref: '#/components/parameters/ib_context'
       responses:
         '202':
-          description: Batch deletion request accepted. [Poll the job ID](/api-sdk/api-reference/batches/poll-batches-job) to check completion status.
+          description: Batch deletion request accepted. [Poll the job ID](/api-sdk/api-reference/jobs/status) to check completion status.
           content:
             application/json:
               schema:
@@ -211,7 +211,7 @@ paths:
 
                   # Poll for job completion
                   while True:
-                      job_status = client.batches.poll_job(job_id)
+                      job_status = client.jobs.status(job_id)
                       if job_status.state == 'COMPLETE':
                           break
                       time.sleep(5)
@@ -717,6 +717,94 @@ paths:
                                  ib_context="<IB-CONTEXT>")
 
                   status = client.apps.runs.status('<RUN-ID>')
+    delete:
+      operationId: deleteRun
+      tags:
+        - runs
+      summary: Delete run
+      description: Deletes a specified run and optionally its associated database data, input files, output files, and logs. This is an asynchronous operation that must be [checked for completion.](/api-sdk/api-reference/jobs/status)
+      parameters:
+        - $ref: '#/components/parameters/run_id'
+        - $ref: '#/components/parameters/ib_context'
+        - in: query
+          name: delete_db_data
+          schema:
+            type: boolean
+            default: true
+          description: Delete the run's database data.
+        - in: query
+          name: delete_input
+          schema:
+            type: boolean
+            default: true
+          description: Delete the run's input files.
+        - in: query
+          name: delete_output
+          schema:
+            type: boolean
+            default: true
+          description: Delete the run's output files.
+        - in: query
+          name: delete_logs
+          schema:
+            type: boolean
+            default: true
+          description: Delete the run's logs.
+      responses:
+        '202':
+          description: Run deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  delete_input_dir_job_id:
+                    type: string
+                    description: Job ID for deleting the input directory.
+                    nullable: true
+                  delete_output_dir_job_id:
+                    type: string
+                    description: Job ID for deleting the output directory.
+                    nullable: true
+                  delete_log_dir_job_id:
+                    type: string
+                    description: Job ID for deleting the log directory.
+                    nullable: true
+        default:
+          description: Error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                curl -X DELETE "${API_ROOT}/v2/apps/runs/<RUN-ID>" \
+                  -H "Authorization: Bearer ${API_TOKEN}"\
+                  -H "IB-Context: ${IB-CONTEXT}"
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+                  resp = client.apps.runs.delete("<RUN-ID>")
+                  job_ids = [
+                      resp.delete_input_dir_job_id,
+                      resp.delete_output_dir_job_id,
+                      resp.delete_log_dir_job_id
+                  ]
+
+                  # Poll for job completion
+                  while job_ids:
+                      for job_id in job_ids[:]:
+                          job_status = client.jobs.status(job_id)
+                          if job_status.state == 'COMPLETE':
+                              job_ids.remove(job_id)
+                      time.sleep(5)           
 
   /v2/apps/runs/{run_id}/results:
     get:
@@ -1596,6 +1684,45 @@ paths:
                                  api_key="<API-TOKEN>",
                                  ib_context="<IB-CONTEXT>")
                   status = client.queries.status(query_id=<QUERY-ID>")
+  /v2/jobs/{job_id}:
+    get:
+      operationId: jobStatus
+      tags:
+        - jobs
+      summary: Poll file operation job status
+      description: Poll the asynchronous job created during a file operation request such as deleting a batch or file.
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The job ID returned by a request.
+        - $ref: '#/components/parameters/ib_context'
+      responses:
+        '200':
+          description: Request successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/jobStatusResponse'
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl "${API_ROOT}/v2/jobs/<JOB-ID>" \
+                    -H "Authorization: Bearer ${API_TOKEN}"\
+                    -H "IB-Context: ${IB_CONTEXT}"
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+                  resp = client.jobs.status("<JOB-ID>")
+
 
 components:
   securitySchemes:
@@ -1693,7 +1820,7 @@ components:
       properties:
         job_id:
           type: string
-          description: The job ID of the operation. Use the job ID with the [Poll batches job endpoint](/api-sdk/api-reference/batches/poll-batches-job) to check batch deletion status.
+          description: The job ID of the operation. Use the job ID with the [Poll batches job endpoint](/api-sdk/api-reference/jobs/status) to check batch deletion status.
       required:
         - job_id
     jobStatusResponse:

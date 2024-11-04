@@ -1551,6 +1551,21 @@ paths:
 
                     <Note> The multistep model (`model` set to `multistep-lite`) supports document-level source information. Research mode (`model` set to `multistep`) supports page-level source information.</Note>
                   default: false
+                filters:
+                  type: object
+                  description: |
+                    Filters to apply to the query. Filters are used to narrow the scope of the query to a specific set of documents.
+
+                    <Note>Filters are only supported for the converse project. For Chatbot, queries will always run on all the documents.</Note>
+                  properties:
+                    document_ids:
+                      type: array
+                      items:
+                        type: integer
+                      description: |
+                        The IDs of the documents to query. If not specified, the query is run on all documents in the source app.
+
+                        <Tip>You can get a list of document IDs in your conversation with a [Conversation information](/api-sdk/api-reference/conversations/get-conversation/) request.</Tip>
                 source_app:
                   type: object
                   description: Information about the source app (chatbot or converse).

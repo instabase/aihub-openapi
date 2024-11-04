@@ -1523,7 +1523,7 @@ paths:
       tags:
         - Queries
       summary: Run query
-      description: Send an asynchronous chatbot query. Each request returns a `query_id` that can be used to [check the query status and get the response.](/api-sdk/api-reference/queries/get-query-status/)
+      description: Send an asynchronous query to the source app. Each request returns a `query_id` that can be used to [check the query status and get the response.](/api-sdk/api-reference/queries/get-query-status/)
       parameters:
         - $ref: '#/components/parameters/ib_context'
       requestBody:
@@ -1536,7 +1536,7 @@ paths:
                 query:
                   type: string
                   description: |
-                    Your chatbot query.
+                    Your query to source app.
 
                     <Info> Queries made by API are also visible in your query history when accessing the source app from the AI Hub user interface.</Info>
                 model_name:
@@ -1553,20 +1553,20 @@ paths:
                   default: false
                 source_app:
                   type: object
-                  description: Information about the source app (chatbot).
+                  description: Information about the source app (chatbot or converse).
                   properties:
                     type:
                       type: string
-                      enum: [CHATBOT]
-                      description: The source app type. For chatbot queries, the app type is always `CHATBOT`.
+                      enum: [CHATBOT, CONVERSE]
+                      description: The source app type. For chatbot queries, the app type is `CHATBOT`. For converse queries, the app type is `CONVERSE`.
                       default: CHATBOT
                     id:
                       type: string
                       description: |
-                        The ID of the chatbot to query. You can query any AI Hub chatbot to which you have access.
+                        The ID of the source app to query. You can query any AI Hub source app to which you have access.
 
-                        <Tip>You can find the chatbot ID in its AI Hub URL, such as <span>http</span>s://aihub.instabase.com/hub/apps/**788eba40-5a1f-45f4-ad56-57fb1abe62c7**.</Tip>
-
+                        <Tip>You can find the source app ID in its AI Hub URL, such as <span>http</span>s://aihub.instabase.com/hub/apps/**788eba40-5a1f-45f4-ad56-57fb1abe62c7**.</Tip>
+                        
                         <Note>Chatbot IDs change with [every version update.](/chat/chatbots/#updating-chatbots) For convenience, when making a request to a given version of a chatbot, the query is automatically directed to the latest version of the chatbot.</Note>
                   required:
                     - type
@@ -1627,7 +1627,7 @@ paths:
       tags:
         - Queries
       summary: Get query status
-      description: Get the status of an asynchronous chatbot query. If the query status is `COMPLETE`, this request also returns the query response.
+      description: Get the status of an asynchronous query. If the query status is `COMPLETE`, this request also returns the query response.
       parameters:
         - $ref: '#/components/parameters/query_id'
         - $ref: '#/components/parameters/ib_context'

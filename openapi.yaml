@@ -722,7 +722,7 @@ paths:
       tags:
         - runs
       summary: Delete run
-      description: Deletes a specified run and optionally its associated database data, input files, output files, and logs. This is an asynchronous operation that must be [checked for completion.](/api-sdk/api-reference/jobs/status)
+      description: Deletes a specified run and optionally its associated database data, input files, output files, and logs. This is an asynchronous operation that must be [checked for completion.](/api-sdk/api-reference/jobs/job-status)
       parameters:
         - $ref: '#/components/parameters/run_id'
         - $ref: '#/components/parameters/ib_context'

@@ -2301,3 +2301,7 @@ components:
         - top_y
         - bottom_x
         - bottom_y
+
+# Chris will delete this test comment.
+# Making sure our attempt to add this repo as a submodule to `instabase-fern` repo works
+# and we can edit it from that repo.

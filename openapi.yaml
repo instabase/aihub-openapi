@@ -1747,20 +1747,20 @@ paths:
       description: |
         Read contents from a file.
 
-        <Note>This endpoint reads files from the specified path. Ensure the path is accessible within the context defined by the `IB-Context` header.</Note>
+        <Note>Ensure the path is accessible within the context defined by the `IB-Context` header.</Note>
       parameters:
         - in: path
           name: path
           required: true
           schema:
             type: string
-          description: The full path to the file.
+          description: Full path to the file.
         - in: query
           name: expect-node-type
           schema:
             type: string
             enum: [file, folder]
-          description: Specifies the type of the node at the target path. To read from a file, must be set to `file`.
+          description: Type of node at the target path.
         - $ref: '#/components/parameters/ib_context'
         - in: header
           name: Range
@@ -1768,16 +1768,14 @@ paths:
             type: string
           required: false
           description: |
-            Allows specifying a portion of the file to be read.
-            If specified, must be an HTTP byte range (HTTP byte ranges have inclusive bounds). Must contain only a single range. Cannot contain a range with a negative start value. If this header is not provided, the entire file is returned. Example: `bytes=0-4`
+            The portion of the file to read. A single HTTP byte range, with inclusive bounds and a non-negative start value. If not provided, return the entire file. Example: `bytes=0-4`
         - in: header
           name: IB-Retry-Config
           schema:
             type: string
           required: false
           description: |
-            If no file is found at the target path at first, the server waits and tries again based on the information in this header before sending a response.
-            Value takes the form `{retries:RETRIES,backoff-seconds:BACKOFF_SECONDS}`. Replace `RETRIES` with an integer greater than 0, and `BACKOFF_SECONDS` with an integer greater than 0. If this header is not provided, the operation is not retried. Uses a constant backoff algorithm using the specified backoff-seconds quantity. Example: `{retries:3,backoff-seconds:5}`
+            Configures retry logic if no file is found at the target path. Uses a constant backoff algorithm. Don't retry if this header isn't provided. Example: `{retries:3,backoff-seconds:5}`
       responses:
         '200':
           description: Indicates that the response contains the entire file contents.

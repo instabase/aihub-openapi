@@ -1738,6 +1738,94 @@ paths:
                                  ib_context="<IB-CONTEXT>")
                   resp = client.jobs.status("<JOB-ID>")
 
+  /v2/files/{path}:
+    get:
+      operationId: readFile
+      tags:
+        - files
+      summary: Read file
+      description: |
+        Read contents from a file.
+
+        <Note>Ensure the path is accessible within the context defined by the `IB-Context` header.</Note>
+      parameters:
+        - in: path
+          name: path
+          required: true
+          schema:
+            type: string
+          description: Full path to the file.
+        - in: query
+          name: expect-node-type
+          schema:
+            type: string
+            enum: [file, folder]
+          description: Type of node at the target path.
+        - $ref: '#/components/parameters/ib_context'
+        - in: header
+          name: Range
+          schema:
+            type: string
+          required: false
+          description: |
+            The portion of the file to read. A single HTTP byte range, with inclusive bounds and a non-negative start value. If not provided, return the entire file. Example: `bytes=0-4`
+        - in: header
+          name: IB-Retry-Config
+          schema:
+            type: string
+          required: false
+          description: |
+            Configures retry logic if no file is found at the target path. Uses a constant backoff algorithm. Don't retry if this header isn't provided. Example: `{retries:3,backoff-seconds:5}`
+      responses:
+        '200':
+          description: Indicates that the response contains the entire file contents.
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                default: application/octet-stream
+            Content-Length:
+              schema:
+                type: integer
+                format: int64
+        '206':
+          description: Indicates that only a portion of the file has been returned, as requested with the Range header.
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                default: application/octet-stream
+            Content-Length:
+              schema:
+                type: integer
+                format: int64
+            Content-Range:
+              schema:
+                type: string
+                description: An HTTP content range header. Contains a range representing the returned portion of the file.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: Error response.
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                curl "${API_ROOT}/v2/files/<ORGANIZATION-ID>/<USER-ID>/fs/Instabase%20Drive/hello_world.txt?expect-node-type=file" \
+                  -H "Authorization: Bearer ${API_TOKEN}" \
+                  -H "IB-Context: ${IB_CONTEXT}"
 
 components:
   securitySchemes:

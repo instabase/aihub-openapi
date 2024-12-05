@@ -18,6 +18,8 @@ paths:
   /v2/batches:
     post:
       operationId: createBatch
+      x-fern-audiences:
+        - public
       tags:
         - batches
       summary: Create batch
@@ -78,6 +80,8 @@ paths:
                   batch = client.batches.create(name='test')
     get:
       operationId: listBatches
+      x-fern-audiences:
+        - public
       tags:
         - batches
       summary: List batches
@@ -141,6 +145,8 @@ paths:
   /v2/batches/{batch_id}:
     get:
       operationId: getBatch
+      x-fern-audiences:
+        - public
       tags:
         - batches
       summary: Get batch information
@@ -175,6 +181,8 @@ paths:
                   batch = client.batches.get("<BATCH-ID>")
     delete:
       operationId: deleteBatch
+      x-fern-audiences:
+        - public
       tags:
         - batches
       summary: Delete batch
@@ -219,6 +227,8 @@ paths:
   /v2/batches/{batch_id}/files/{filename}:
     put:
       operationId: addFileToBatch
+      x-fern-audiences:
+        - public
       tags:
         - batches
       summary: Upload file to batch
@@ -277,6 +287,8 @@ paths:
 
     delete:
       operationId: deleteFileFromBatch
+      x-fern-audiences:
+        - public
       tags:
         - batches
       summary: Delete file from batch
@@ -316,6 +328,8 @@ paths:
   /v2/batches/jobs/{job_id}:
     get:
       operationId: pollBatchesJob
+      x-fern-audiences:
+        - public
       tags:
         - batches
       summary: Poll batches job
@@ -355,6 +369,8 @@ paths:
   /v2/apps/runs:
     post:
       operationId: runApp
+      x-fern-audiences:
+        - public
       tags:
         - runs
       summary: Run app
@@ -466,6 +482,8 @@ paths:
                                                    batch_id='<BATCH-ID>')
     get:
       operationId: listRuns
+      x-fern-audiences:
+        - public
       tags:
         - runs
       summary: List runs
@@ -586,6 +604,8 @@ paths:
   /v2/apps/deployments/{deployment-id}/runs:
     post:
       operationId: runDeployment
+      x-fern-audiences:
+        - public
       tags:
         - runs
       summary: Run deployment
@@ -680,6 +700,8 @@ paths:
   /v2/apps/runs/{run_id}:
     get:
       operationId: getRunStatus
+      x-fern-audiences:
+        - public
       tags:
         - runs
       summary: Get run status
@@ -719,6 +741,8 @@ paths:
                   status = client.apps.runs.status('<RUN-ID>')
     delete:
       operationId: deleteRun
+      x-fern-audiences:
+        - public
       tags:
         - runs
       summary: Delete run
@@ -809,6 +833,8 @@ paths:
   /v2/apps/runs/{run_id}/results:
     get:
       operationId: getRunResults
+      x-fern-audiences:
+        - public
       tags:
         - runs
       summary: Get run results
@@ -1048,6 +1074,8 @@ paths:
   /v2/conversations:
     post:
       operationId: createConversation
+      x-fern-audiences:
+        - public
       tags:
         - conversations
       summary: Create conversation and upload files
@@ -1132,6 +1160,8 @@ paths:
 
     get:
       operationId: listConversations
+      x-fern-audiences:
+        - public
       tags:
         - conversations
       summary: List conversations
@@ -1178,6 +1208,8 @@ paths:
   /v2/conversations/{conversation_id}:
     get:
       operationId: getConversation
+      x-fern-audiences:
+        - public
       description: Retrieve information about a conversation, such as its state and a list of documents in the conversation.
       tags:
         - conversations
@@ -1217,6 +1249,8 @@ paths:
 
     put:
       operationId: updateConversation
+      x-fern-audiences:
+        - public
       tags:
         - conversations
       summary: Update conversation information
@@ -1264,6 +1298,8 @@ paths:
                                                       description='<CONVERSATION-DESCRIPTION>')
     delete:
       operationId: deleteConversation
+      x-fern-audiences:
+        - public
       tags:
         - conversations
       summary: Delete conversation
@@ -1300,6 +1336,8 @@ paths:
   /v2/conversations/{conversation_id}/prompts:
     post:
       operationId: converse
+      x-fern-audiences:
+        - public
       tags:
         - conversations
       summary: Converse with a document
@@ -1373,6 +1411,8 @@ paths:
   /v2/conversations/{conversation_id}/documents:
     post:
       operationId: addDocumentsToConversation
+      x-fern-audiences:
+        - public
       tags:
         - conversations
       summary: Add documents to a conversation
@@ -1442,6 +1482,8 @@ paths:
                                                               files=['test.pdf', 'test2.pdf'])
     delete:
       operationId: deleteDocumentsFromConversation
+      x-fern-audiences:
+        - public
       tags:
         - conversations
       summary: Delete documents
@@ -1494,6 +1536,8 @@ paths:
   /v2/conversations/{conversation_id}/documents/{document_id}:
     get:
       operationId: getConversationDocumentMetadata
+      x-fern-audiences:
+        - public
       tags:
         - conversations
       summary: Get document metadata
@@ -1542,8 +1586,10 @@ paths:
   /v2/queries:
     post:
       operationId: runQuery
+      x-fern-audiences:
+        - public
       tags:
-        - Queries
+        - queries
       summary: Run query
       description: Send an asynchronous query to the source app. Each request returns a `query_id` that can be used to [check the query status and get the response.](/api-sdk/api-reference/queries/get-query-status/)
       parameters:
@@ -1661,6 +1707,8 @@ paths:
   /v2/queries/{query_id}:
     get:
       operationId: getQueryStatus
+      x-fern-audiences:
+        - public
       tags:
         - Queries
       summary: Get query status
@@ -1724,6 +1772,8 @@ paths:
   /v2/jobs/{job_id}:
     get:
       operationId: jobStatus
+      x-fern-audiences:
+        - public
       tags:
         - jobs
       summary: Poll file operation job status
@@ -1763,6 +1813,8 @@ paths:
   /v2/files/{path}:
     get:
       operationId: readFile
+      x-fern-audiences:
+        - hidden
       tags:
         - files
       summary: Read file

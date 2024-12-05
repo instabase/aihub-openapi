@@ -812,7 +812,29 @@ paths:
       tags:
         - runs
       summary: Get run results
-      description: Get the results of a completed run.
+      description: |
+        Get the results of a completed run.
+        
+        <Info>
+        
+        This API operation might return field names that differ from those in the Build project. 
+        The operation converts field names to valid Python variable names by:
+  
+        * Allowing only letters, numbers, and underscores
+        * Requiring names to start with a letter or underscore
+        * Replacing invalid characters with underscores
+        * Converting single underscores to double underscores
+        
+        Examples:
+        * `due date` → `due_date`
+        * `driver's license` → `driver_s_license`
+        * `3rd category` → `_3rd_category`
+        * `secret_id` → `secret__id`
+        
+        These changes apply only to field names in the API response. The field names in the Build project are not changed.
+        
+        </Info>
+
       parameters:
         - $ref: '#/components/parameters/run_id'
         - in: query

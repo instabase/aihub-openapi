@@ -651,18 +651,18 @@ paths:
                     - **Organization accounts**: Runs in and saves to the organization's default drive (`<ORGANIZATION-ID>/<USER-ID>/<default-drive>`).
                 output_dir:
                   type: string
-                  description: Defines a specific location for the output to be saved in a connected drive or Instabase Drive. If defined, overrides the `output_workspace` value. See [Specifying file paths.](/api-sdk/run-reference/#specifying-file-paths)
+                  description: Defines a specific location for the output to be saved in a connected drive or Instabase Drive. If defined, overrides the `output_workspace` value. See [Specifying file paths](/api-sdk/api-reference/run-reference#specifying-file-paths).
                 settings:
                   type: object
                   description: JSON object containing settings for the app run.
                   properties:
                     runtime_config:
                       type: object
-                      description: A dictionary containing the runtime configuration for the app run, for use in validation functions. See [runtime config](/api-sdk/run-reference/#runtime-configs) for details.
+                      description: A dictionary containing the runtime configuration for the app run, for use in validation functions. See [runtime config](/api-sdk/api-reference/run-reference#runtime-configs) for details.
                       additionalProperties: true
                     webhook_config:
                       type: object
-                      description: Configuration for the webhook URL called on app run completion. See [Webhook parameters.](/api-sdk/run-reference/#webhook-parameters)
+                      description: Configuration for the webhook URL called on app run completion. See [Webhook parameters](/api-sdk/api-reference/run-reference#webhook-parameters).
                       properties:
                         url:
                           type: string

@@ -634,19 +634,19 @@ paths:
               properties:
                 batch_id:
                   type: integer
-                  description: Required unless using `input_dir` or `manual_upstream_integration`. The batch ID of a batch created with the [Batches endpoint.](/api-sdk/api-reference/batches/create-batch/) All files uploaded to the batch are used as input for the run.
+                  description: Required unless using `input_dir` or `manual_upstream_integration`. The batch ID of a batch created with the [Batches endpoint](/api-sdk/api-reference/batches/create-batch/). All files uploaded to the batch are used as input for the run.
                 input_dir:
                   type: integer
-                  description: Required unless using `batch_id` or `manual_upstream_integration`. The path of the input folder in a connected drive or Instabase Drive. See [Specifying file paths.](/api-sdk/run-reference/#specifying-file-paths)
+                  description: Required unless using `batch_id` or `manual_upstream_integration`. The path of the input folder in a connected drive or Instabase Drive. See [Specifying file paths](/api-sdk/api-reference/run-reference#specifying-file-paths).
                 manual_upstream_integration:
                   type: boolean
                   description: Use the deployment's upstream integration as a source rather than a `batch_id` or `input_dir`. Requires an upstream integration to be configured for the deployment.
                 from_timestamp:
                   type: number
-                  description: Required if `manual_upstream_integration` is true and the upstream integration is a mailbox integration. Specifies the earliest date in milliseconds from which to pull emails.
+                  description: Required if `manual_upstream_integration` is true and the upstream integration is a mailbox integration. Specifies the earliest date in Unix time milliseconds from which to pull emails.
                 to_timestamp:
                   type: number
-                  description: Required if `manual_upstream_integration` is true and the upstream integration is a mailbox integration. Specifies the latest date in milliseconds from which to pull emails.
+                  description: Required if `manual_upstream_integration` is true and the upstream integration is a mailbox integration. Specifies the latest date in Unix time milliseconds from which to pull emails.
                 version:
                   type: string
                   description: Version of the app to use. If not specified, defaults to the latest production version.

@@ -1906,10 +1906,18 @@ paths:
         - code-samples:
             - sdk: curl
               code: |
-                curl "${API_ROOT}/v2/files/<ORGANIZATION-ID>/<USER-ID>/fs/Instabase%20Drive/hello_world.txt?expect-node-type=file" \
+                curl "${API_ROOT}/v2/files/<FILE-PATH>?expect-node-type=file" \
                   -H "Authorization: Bearer ${API_TOKEN}" \
                   -H "IB-Context: ${IB_CONTEXT}"
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+                  client = AIHub(api_root="<API-ROOT>",
+                           api_key="<API-TOKEN>",
+                           ib_context="<IB-CONTEXT>")
 
+                  content = client.files.read('<FILE-PATH>')
 components:
   securitySchemes:
     bearerAuth:

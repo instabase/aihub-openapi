@@ -1917,7 +1917,7 @@ paths:
                            api_key="<API-TOKEN>",
                            ib_context="<IB-CONTEXT>")
 
-                  content = client.files.read('<FILE-PATH>')
+                  content = client.files.read('<FILE-PATH>', expect_node_type='file')
 components:
   securitySchemes:
     bearerAuth:

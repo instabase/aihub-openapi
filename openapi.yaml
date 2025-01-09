@@ -405,7 +405,7 @@ paths:
 
                     For custom AI Hub apps belonging to you, accept the default. For public AI Hub apps published by Instabase, specify `instabase`.
                 batch_id:
-                  type: integer
+                  type: string
                   description: Required unless using `input_dir`. The batch ID of a batch created with the [Batches endpoint.](/api-sdk/api-reference/batches/create-batch/) All files uploaded to the batch are used as input for the run.
                 input_dir:
                   type: integer

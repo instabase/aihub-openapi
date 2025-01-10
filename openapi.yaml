@@ -1719,7 +1719,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - Queries
+        - queries
       summary: Get query status
       description: Get the status of an asynchronous query. If the status is `COMPLETE`, this request also returns the query response.
       parameters:

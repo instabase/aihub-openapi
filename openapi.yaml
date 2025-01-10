@@ -186,13 +186,13 @@ paths:
       tags:
         - batches
       summary: Delete batch
-      description: Delete a batch and all its files. This is an asynchronous operation that must be [checked for completion.](/api-sdk/api-reference/jobs/status)
+      description: Delete a batch and all its files. This is an asynchronous operation that must be [checked for completion.](/api-sdk/api-reference/batches/poll-batches-job)
       parameters:
         - $ref: '#/components/parameters/batch_id'
         - $ref: '#/components/parameters/ib_context'
       responses:
         '202':
-          description: Batch deletion request accepted. [Poll the job ID](/api-sdk/api-reference/jobs/status) to check completion status.
+          description: Batch deletion request accepted. [Poll the job ID](/api-sdk/api-reference/batches/poll-batches-job) to check completion status.
           content:
             application/json:
               schema:
@@ -423,18 +423,18 @@ paths:
                     - **Organization accounts**: Runs in and saves to the organization's default drive (`<ORGANIZATION-ID>/<USER-ID>/<default-drive>`).
                 output_dir:
                   type: string
-                  description: Defines a specific location for the output to be saved in a connected drive or Instabase Drive. If defined, overrides the `output_workspace` value. See [Specifying file paths.](/api-sdk/run-reference/#specifying-file-paths)
+                  description: Defines a specific location for the output to be saved in a connected drive or Instabase Drive. If defined, overrides the `output_workspace` value. See [Specifying file paths.](/api-sdk/api-reference/run-reference#specifying-file-paths)
                 settings:
                   type: object
                   description: JSON object containing settings for the app run.
                   properties:
                     runtime_config:
                       type: object
-                      description: A dictionary containing the runtime configuration for the app run, for use in validation functions. See [runtime config](/api-sdk/run-reference/#runtime-configs) for details.
+                      description: A dictionary containing the runtime configuration for the app run, for use in validation functions. See [runtime config](/api-sdk/api-reference/run-reference#runtime-configs) for details.
                       additionalProperties: true
                     webhook_config:
                       type: object
-                      description: Configuration for the webhook URL called on app run completion. See [webhook parameters](/api-sdk/run-reference/#webhook-parameters) for details.
+                      description: Configuration for the webhook URL called on app run completion. See [webhook parameters](/api-sdk/api-reference/run-reference#webhook-parameters) for details.
                       properties:
                         url:
                           type: string
@@ -1122,7 +1122,7 @@ paths:
                     The name of your personal workspace, where the conversation is created. For organization members, your personal workspace name is your user ID. If not defined, the workspace is inferred from the `IB-Context` header value.
                 enable_object_detection:
                   type: boolean
-                  description: Defines whether to enable [object detection](/chat/converse/#digitization-and-object-detection) for the processed file. Object detection includes support for extracting tables and checkboxes.
+                  description: Defines whether to enable [object detection](/chat/converse#digitization-and-object-detection) for the processed file. Object detection includes support for extracting tables and checkboxes.
               required:
                 - files
       responses:
@@ -1433,7 +1433,7 @@ paths:
           - Files can be up to 50 MB or 800 pages.
           - You can upload up to 100 MB per request.
           - You can have up to 100 documents per conversation.
-          - There are specific [supported file types](/overview/limitations/#supported-file-types)
+          - There are specific [supported file types](/overview/limitations#supported-file-types)
         </Note>
       parameters:
         - $ref: '#/components/parameters/conversation_id'
@@ -1659,7 +1659,7 @@ paths:
 
                         <Tip>You can find the source app ID in its AI Hub URL. For Chatbot, URL will be <span>http</span>s://aihub.instabase.com/hub/apps/**788eba40-5a1f-45f4-ad56-57fb1abe62c7**. For Converse, URL will be <span>http</span>s://aihub.instabase.com/converse/**01930a30-f278-7dc1-be96-9abc5c0530b5**.</Tip>
                         
-                        <Note>Chatbot IDs change with [every version update.](/chat/chatbots/#updating-chatbots) For convenience, when making a request to a given version of a chatbot, the query is automatically directed to the latest version of the chatbot.</Note>
+                        <Note>Chatbot IDs change with [every version update.](/chat/chatbots#updating-chatbots) For convenience, when making a request to a given version of a chatbot, the query is automatically directed to the latest version of the chatbot.</Note>
                   required:
                     - type
                     - id
@@ -1933,7 +1933,7 @@ components:
         type: string
       required: false
       description: Specify whether to use your community account or organization account to complete the request. To use your community account, define as your user ID. To use your organization account, define as your organization ID.
-                   If unspecified, defaults to community account context. See [Authorization and context identification](/api-sdk/authorization/#ib-context-header) for details.
+                   If unspecified, defaults to community account context. See [Authorization and context identification](/api-sdk/authorization#ib-context-header) for details.
     batch_id:
       in: path
       name: batch_id
@@ -2014,7 +2014,7 @@ components:
       properties:
         job_id:
           type: string
-          description: The job ID of the operation. Use the job ID with the [Poll batches job endpoint](/api-sdk/api-reference/jobs/status) to check batch deletion status.
+          description: The job ID of the operation. Use the job ID with the [Poll batches job endpoint](/api-sdk/api-reference/batches/poll-batches-job) to check batch deletion status.
       required:
         - job_id
     jobStatusResponse:

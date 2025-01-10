@@ -409,7 +409,7 @@ paths:
                   description: Required unless using `input_dir`. The batch ID of a batch created with the [Batches endpoint.](/api-sdk/api-reference/batches/create-batch/) All files uploaded to the batch are used as input for the run.
                 input_dir:
                   type: string
-                  description: Required unless using `batch_id`. The path of the input folder in a connected drive or Instabase Drive. See [Specifying file paths.](/api-sdk/run-reference/#specifying-file-paths)
+                  description: Required unless using `batch_id`. The path of the input folder in a connected drive or Instabase Drive. See [Specifying file paths.](/api-sdk/api-reference/run-reference#specifying-file-paths)
                 version:
                   type: string
                   description: Version of the app to use. If not specified, defaults to the latest production version.

@@ -1561,7 +1561,7 @@ paths:
           description: |
             The ID of the document for which metadata is being retrieved.
 
-            <Tip>You can get a list of document IDs in your conversation with a [Cconversation information](/api-sdk/api-reference/conversations/get-conversation/) request.</Tip>
+            <Tip>You can get a list of document IDs in your conversation with a [conversation information](/api-sdk/api-reference/conversations/get-conversation/) request.</Tip>
         - $ref: '#/components/parameters/ib_context'
       responses:
         '200':

@@ -430,7 +430,7 @@ paths:
                   properties:
                     runtime_config:
                       type: object
-                      description: A dictionary containing the runtime configuration for the app run, for use in validation functions. See [runtime config](/api-sdk/api-reference/run-reference#runtime-configs) for details.
+                      description: A dictionary containing the runtime configuration for the app run, for use in validation functions and to generate retrievable PDFs of processed documents. See [runtime config](/api-sdk/api-reference/run-reference#runtime-configs) for details.
                       additionalProperties: true
                     webhook_config:
                       type: object
@@ -944,10 +944,13 @@ paths:
             default: false
           description: |
             Whether to include source information in the results. When set to `true`, source details such as the image path of the generated image are included in the results.
+            
+            When the app runs with `generate_post_process_pdf=true` in its [runtime config](/api-sdk/api-reference/run-reference#runtime-configs), the source information includes paths to PDFs generated from each document, with separate PDF paths for documents split during classification.
 
             The following values are returned at the run or document level:
 
             - `files/documents/post_processed_paths`
+            - `files/documents/post_processed_pdf_path`
 
             The following values are returned at the extracted field level:
 

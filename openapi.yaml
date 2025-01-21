@@ -1353,7 +1353,10 @@ paths:
       tags:
         - conversations
       summary: Converse with a document
-      description: Converse with the documents in a conversation.
+      description:  |
+        Converse with a document in a conversation.
+        
+        <Tip>This endpoint supports querying a single document at a time and supports the standard and advanced models. To converse with multiple documents, or to use the multistep model or research mode, use the [Run query](/api-sdk/api-reference/queries/run-query) endpoint.</Tip>
       parameters:
         - $ref: '#/components/parameters/conversation_id'
         - $ref: '#/components/parameters/ib_context'
@@ -1377,7 +1380,7 @@ paths:
                   enum: [default, advanced]
                   description: |
                     The model to use to answer the question. Supports the standard (`default`) and advanced (`advanced`) models. See [Choosing a model](/overview/models/) for details about each model.
-                    <Note>The multistep model and research mode are not supported.</Note>
+                    <Note>The multistep model and research mode are not supported. To use the multistep model or research mode in a query, use the [Run query](/api-sdk/api-reference/queries/run-query) endpoint.</Note>
               required:
                 - question
                 - document_ids
@@ -1603,7 +1606,9 @@ paths:
       tags:
         - queries
       summary: Run query
-      description: Send an asynchronous query to the source app. Each request returns a `query_id` that can be used to [check the query status and get the response.](/api-sdk/api-reference/queries/get-query-status/)
+      description: |
+        Send an asynchronous query to the source app. Use this operation to query chatbots or query multiple documents in a conversation. Each request returns a `query_id` used to [check the query status and get the response](/api-sdk/api-reference/queries/get-query-status/).
+        <Tip>To query a single document in a conversation or to use the standard or advanced model in your query, use the [Converse with a document](/api-sdk/api-reference/conversations/converse) operation.</Tip>
       parameters:
         - $ref: '#/components/parameters/ib_context'
       requestBody:

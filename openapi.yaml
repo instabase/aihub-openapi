@@ -2542,3 +2542,187 @@ components:
         - top_y
         - bottom_x
         - bottom_y
+    secret:
+      type: object
+      properties:
+        alias:
+          type: string
+          description: Name of the secret.
+        description:
+          type: string
+          description: Description of the secret.
+        allowed_workspaces_type:
+          type: string
+          description: Which workspaces in this organization are allowed to use this secret in custom functions.
+          enum:
+            - ALL
+            - SOME
+            - NONE
+        allowed_workspaces:
+          type: array
+          description: If only SOME workspaces are allowed, which workspaces they are.
+          items:
+            type: string
+        org:
+          type: string
+          description: The organization name in which this secret was created (`<ORGANIZATION-ID>`).
+        createdAt:
+          type: number
+          description: When the secret was originally created in Unix time milliseconds.
+        createdBy:
+          type: string
+          description: The user ID of the user who originally created the secret.
+        updatedAt:
+          type: number
+          description: When the secret was last updated in Unix time milliseconds.
+        lastUpdatedBy:
+          type: string
+          description: The user ID of the user who last edited the secret.
+
+/v2/secrets:
+  post:
+    operationId: createSecret
+    x-fern-audiences:
+      - public
+    tags:
+      - secrets
+    summary: Create an organization secret
+    description: |
+      Create a new secret in this organization.
+
+      <Note>Only organization admins can create secrets.</Note>
+    parameters:
+      - $ref: '#/components/parameters/ib_context'
+    requestBody:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              alias:
+                type: string
+                description: Name of the secret.
+              description:
+                type: string
+                description: Description of the secret.
+              value:
+                type: string
+                description: The content of the secret.
+              allowed_workspaces_type:
+                type: string
+                description: Which workspaces in this organization are allowed to use this secret in custom functions.
+                enum:
+                  - ALL
+                  - SOME
+                  - NONE
+              allowed_workspaces:
+                type: array
+                description: If only SOME workspaces are allowed, which workspaces they are.
+                items:
+                  type: string
+            required:
+              - alias
+              - value
+              - allowed_workspaces_type
+    responses:
+      '200':
+        description: Secret created successfully.
+      default:
+        description: Error response.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/error'
+    x-fern-examples:
+      - code-samples:
+          - sdk: curl
+            code: |
+                curl "${API_ROOT}/v2/secrets" \
+                  -H "Authorization: Bearer ${API_TOKEN}" \
+                  -H "IB-Context: ${IB_CONTEXT}"\
+                  -F alias="my_secret" \
+                  -F description="Sample secret" \
+                  -F content="my password" \
+                  -F allowed_workspaces_type="SOME" \
+                  -F allowed_workspaces="workspace1" \ # Only required when allowed_workspaces_type="SOME"
+                  -F allowed_workspaces="workspace2"
+          - sdk: python
+            code: |
+                # AI Hub Python SDK example
+                from aihub import AIHub
+
+                client = AIHub(api_root="<API-ROOT>",
+                                api_key="<API-TOKEN>",
+                                ib_context="<IB-CONTEXT>")
+
+                result = client.secrets.create(
+                  alias="my_secret",
+                  description="Sample secret",
+                  content="my password"
+                  allowed_workspaces_type="SOME",
+                  allowed_workspaces=['workspace1', 'workspace2']) # Only required when allowed_workspaces_type="SOME"
+
+  get:
+    operationId: listSecrets
+    x-fern-audiences:
+      - public
+    tags:
+      - secrets
+    summary: List secrets
+    description: |
+      List all secrets available to the organizaiton, in a given workspace, and with a given alias
+
+      <Note>Only organization admins can list all secrets in the organization.</Note>
+    parameters:
+      - $ref: '#/components/parameters/ib_context'
+      - in: query
+          name: workspace
+          schema:
+            type: string
+          description: |
+            Filter to secrets in the specified workspace.
+
+            <Info>In order to get the secrets for a given workspace, the user must be a member of that workspace.</Info>
+      - in: query
+        name: alias
+        schema:
+          type: string
+        description: |
+          Get only the secret with the specified alias. 
+    responses:
+      '200':
+        description: A list of secrets.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                secrets:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/secret'
+      default:
+        description: Error response.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/error'
+    x-fern-examples:
+      - code-samples:
+        - sdk: curl
+          code: |
+              curl "${API_ROOT}/v2/secrets" \
+                -H "Authorization: Bearer ${API_TOKEN}" \
+                -H "IB-Context: ${IB_CONTEXT}"\
+                -G \
+                --data-urlencode "workspace=my-workspace" \
+        - sdk: python
+          code: |
+              # AI Hub Python SDK example
+              from aihub import AIHub
+
+              client = AIHub(api_root="<API-ROOT>",
+                            api_key="<API-TOKEN>",
+                            ib_context="<IB-CONTEXT>")
+              batches = client.secrets.list(workspace="my-workspace")

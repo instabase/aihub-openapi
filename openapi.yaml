@@ -1995,13 +1995,13 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ib_context'
         - in: query
-            name: workspace
-            schema:
-              type: string
-            description: |
-              Filter to secrets in the specified workspace.
+          name: workspace
+          schema:
+            type: string
+          description: |
+            Filter to secrets in the specified workspace.
 
-              <Info>In order to get the secrets for a given workspace, the user must be a member of that workspace.</Info>
+            <Info>In order to get the secrets for a given workspace, the user must be a member of that workspace.</Info>
         - in: query
           name: alias
           schema:
@@ -2051,7 +2051,7 @@ paths:
         - public
       tags:
         - secrets
-      summary: Create an organization secret
+      summary: Create secret
       description: |
         Create a new secret in this organization.
 

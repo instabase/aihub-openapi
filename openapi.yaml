@@ -2204,59 +2204,59 @@ paths:
                     content="my password"
                     allowed_workspaces_type="ALL")
   
-  delete:
-    operationId: deleteSecret
-    x-fern-audiences:
-      - public
-    tags:
-      - secrets
-    summary: Delete secret
-    description: |
-      Delete a secret from the organization.
+    delete:
+      operationId: deleteSecret
+      x-fern-audiences:
+        - public
+      tags:
+        - secrets
+      summary: Delete secret
+      description: |
+        Delete a secret from the organization.
 
-      <Note>Only organization admins can delete secrets.</Note>
-    parameters:
-      - $ref: '#/components/parameters/ib_context'
-    requestBody:
-      required: true
-      content:
-        multipart/form-data:
-          schema:
-            type: object
-            properties:
-              alias:
-                type: string
-                description: Name of the secret to be deleted.
-            required:
-              - alias
-    responses:
-      '200':
-        description: Secret deleted successfully.
-      default:
-        description: Error response.
+        <Note>Only organization admins can delete secrets.</Note>
+      parameters:
+        - $ref: '#/components/parameters/ib_context'
+      requestBody:
+        required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              $ref: '#/components/schemas/error'
-    x-fern-examples:
-      - code-samples:
-          - sdk: curl
-            code: |
-                curl -X "DELETE" "${API_ROOT}/v2/secrets" \
-                  -H "Authorization: Bearer ${API_TOKEN}" \
-                  -H "IB-Context: ${IB_CONTEXT}"\
-                  -F alias="my_secret" \
-          - sdk: python
-            code: |
-                # AI Hub Python SDK example
-                from aihub import AIHub
+              type: object
+              properties:
+                alias:
+                  type: string
+                  description: Name of the secret to be deleted.
+              required:
+                - alias
+      responses:
+        '200':
+          description: Secret deleted successfully.
+        default:
+          description: Error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl -X "DELETE" "${API_ROOT}/v2/secrets" \
+                    -H "Authorization: Bearer ${API_TOKEN}" \
+                    -H "IB-Context: ${IB_CONTEXT}"\
+                    -F alias="my_secret" \
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
 
-                client = AIHub(api_root="<API-ROOT>",
-                                api_key="<API-TOKEN>",
-                                ib_context="<IB-CONTEXT>")
+                  client = AIHub(api_root="<API-ROOT>",
+                                  api_key="<API-TOKEN>",
+                                  ib_context="<IB-CONTEXT>")
 
-                result = client.secrets.delete(
-                  alias="my_secret")
+                  result = client.secrets.delete(
+                    alias="my_secret")
 components:
   securitySchemes:
     bearerAuth:

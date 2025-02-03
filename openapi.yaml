@@ -1989,9 +1989,9 @@ paths:
         - secrets
       summary: List secrets
       description: |
-        List all secrets available to the organizaiton, in a given workspace, and with a given alias
+        List secrets available to the organization, available to a given workspace, or with a given alias.
 
-        <Note>Only organization admins can list all secrets in the organization.</Note>
+        <Note>Only organization admins can list all secrets in the organization. Non-admins must specify a workspace.</Note>
       parameters:
         - $ref: '#/components/parameters/ib_context'
         - in: query
@@ -1999,15 +1999,15 @@ paths:
           schema:
             type: string
           description: |
-            Filter to secrets in the specified workspace.
+            Show secrets available in the specified workspace.
 
-            <Info>In order to get the secrets for a given workspace, the user must be a member of that workspace.</Info>
+            <Info>Only members of a workspace can access secrets that are available within that workspace.</Info>
         - in: query
           name: alias
           schema:
             type: string
           description: |
-            Get only the secret with the specified alias. 
+            Get the secret with the specified alias. 
       responses:
         '200':
           description: A list of secrets.
@@ -2073,7 +2073,7 @@ paths:
                   description: Description of the secret.
                 value:
                   type: string
-                  description: The content of the secret.
+                  description: Content of the secret.
                 allowed_workspaces_type:
                   type: string
                   description: Which workspaces in this organization are allowed to use this secret in custom functions.
@@ -2083,7 +2083,7 @@ paths:
                     - NONE
                 allowed_workspaces:
                   type: array
-                  description: Which workspaces are allowed if only SOME workspaces are allowed.
+                  description: Which workspaces are allowed to use this secret, if only some are allowed.
                   items:
                     type: string
               required:
@@ -2136,7 +2136,7 @@ paths:
         - secrets
       summary: Update secret
       description: |
-        Update the value, description, or allowed workspaces for a secret.
+        Update the description, value, or allowed workspaces for a secret. If a value for a parameter is not specified, it will remain the same.
 
         <Note>Only organization admins can update secrets.</Note>
       parameters:
@@ -2150,7 +2150,7 @@ paths:
               properties:
                 alias:
                   type: string
-                  description: Name of the secret to be edited.
+                  description: Name of the secret to update.
                 description:
                   type: string
                   description: New description of the secret.
@@ -2166,7 +2166,7 @@ paths:
                     - NONE
                 allowed_workspaces:
                   type: array
-                  description: New designation of which workspaces are allowed if only SOME workspaces are allowed.
+                  description: New designation of which workspaces are allowed to use this secret, if only some are.
                   items:
                     type: string
               required:
@@ -2226,7 +2226,7 @@ paths:
               properties:
                 alias:
                   type: string
-                  description: Name of the secret to be deleted.
+                  description: Name of the secret to delete.
               required:
                 - alias
       responses:
@@ -2837,18 +2837,18 @@ components:
             - NONE
         allowed_workspaces:
           type: array
-          description: If only SOME workspaces are allowed, which workspaces they are.
+          description: Which workspaces are allowed to use this secret, if only some are allowed.
           items:
             type: string
         org:
           type: string
-          description: The organization name in which this secret was created (`<ORGANIZATION-ID>`).
+          description: The organization name in which this secret was created.
         createdAt:
           type: number
-          description: When the secret was originally created in Unix time milliseconds.
+          description: When the secret was created in Unix time milliseconds.
         createdBy:
           type: string
-          description: The user ID of the user who originally created the secret.
+          description: The user ID of the user who created the secret.
         updatedAt:
           type: number
           description: When the secret was last updated in Unix time milliseconds.

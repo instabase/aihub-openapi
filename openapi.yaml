@@ -462,14 +462,14 @@ paths:
             - sdk: curl
               name: Simple request
               code: |
-                curl "${API_ROOT}/v2/apps/runs" \
-                  -H "Authorization: Bearer ${API_TOKEN}" \
-                  -H "IB-Context: ${IB_CONTEXT}"\
-                  -H "Content-Type: application/json" \
-                  -d '{
-                        "batch_id": "<BATCH-ID>",
-                        "app_name": "<APP-NAME>"
-                      }'
+                  curl "${API_ROOT}/v2/apps/runs" \
+                    -H "Authorization: Bearer ${API_TOKEN}" \
+                    -H "IB-Context: ${IB_CONTEXT}"\
+                    -H "Content-Type: application/json" \
+                    -d '{
+                          "batch_id": "<BATCH-ID>",
+                          "app_name": "<APP-NAME>"
+                        }'
             - sdk: python
               code: |
                   # AI Hub Python SDK example
@@ -485,31 +485,31 @@ paths:
             - sdk: curl
               name: Request with post-processed-pdf generation enabled
               code: |
-                curl "${API_ROOT}/v2/apps/runs" \
-                  -H "Authorization: Bearer ${API_TOKEN}" \
-                  -H "IB-Context: ${IB_CONTEXT}"\
-                  -H "Content-Type: application/json" \
-                  -d '{
-                        "batch_id": "<BATCH-ID>",
-                        "app_name": "<APP-NAME>",
-                        "settings":{
-                          "runtime_config":{
-                              "generate_post_process_pdf":true
+                  curl "${API_ROOT}/v2/apps/runs" \
+                    -H "Authorization: Bearer ${API_TOKEN}" \
+                    -H "IB-Context: ${IB_CONTEXT}"\
+                    -H "Content-Type: application/json" \
+                    -d '{
+                          "batch_id": "<BATCH-ID>",
+                          "app_name": "<APP-NAME>",
+                          "settings": {
+                            "runtime_config": {
+                                "generate_post_process_pdf": true
+                            }
                           }
-                        }
-                      }'
+                        }'
             - sdk: python
               code: |
-                # AI Hub Python SDK example
-                from aihub import AIHub
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
                 
-                client = AIHub(api_root="<API-ROOT>",
-                               api_key="<API-TOKEN>",
-                               ib_context="<IB-CONTEXT>")
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
                 
-                result = client.apps.runs.create(app_name='<APP-NAME>',
-                                                 batch_id='<BATCH-ID>',
-                                                 settings={"runtime_config":{"generate_post_process_pdf":true}})
+                  result = client.apps.runs.create(app_name='<APP-NAME>',
+                                                   batch_id='<BATCH-ID>',
+                                                   settings={"runtime_config":{"generate_post_process_pdf": true}})
     get:
       operationId: listRuns
       x-fern-audiences:

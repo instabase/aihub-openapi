@@ -424,7 +424,7 @@ paths:
 
                     - **Organization accounts**: Runs in and saves to the organization's default drive (`<ORGANIZATION-ID>/<USER-ID>/<default-drive>`).
                     
-                    When making this call from a service account, you must specify a value for either `workspace` or `output_dir`.
+                    When making this call from a service account, you must specify a value for either `output_workspace` or `output_dir`.
                 output_dir:
                   type: string
                   description: Defines a specific location for the output to be saved in a connected drive or Instabase Drive. If defined, overrides the `output_workspace` value. See [Specifying file paths.](/api-sdk/api-reference/run-reference#specifying-file-paths)
@@ -663,7 +663,7 @@ paths:
 
                     - **Organization accounts**: Runs in and saves to the organization's default drive (`<ORGANIZATION-ID>/<USER-ID>/<default-drive>`).
                     
-                    When making this call from a service account, you must specify a value for either `workspace` or `output_dir`.
+                    When making this call from a service account, you must specify a value for either `output_workspace` or `output_dir`.
                 output_dir:
                   type: string
                   description: Defines a specific location for the output to be saved in a connected drive or Instabase Drive. If defined, overrides the `output_workspace` value. See [Specifying file paths](/api-sdk/api-reference/run-reference#specifying-file-paths).

@@ -471,6 +471,7 @@ paths:
                           "app_name": "<APP-NAME>"
                         }'
             - sdk: python
+              name: Simple request
               code: |
                   # AI Hub Python SDK example
                   from aihub import AIHub
@@ -499,6 +500,7 @@ paths:
                           }
                         }'
             - sdk: python
+              name: Post-processed-pdf generation enabled
               code: |
                   # AI Hub Python SDK example
                   from aihub import AIHub

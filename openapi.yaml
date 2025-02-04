@@ -43,6 +43,8 @@ paths:
                   type: string
                   description: |
                     The name of the workspace in which to add the batch; the batch is created in the default drive of the workspace. If not specified, the default location for organization members is the default drive of your personal workspace. For community users, the default location is your personal workspace's Instabase Drive.
+                    
+                    When making this call from a service account, you must specify a workspace.
 
                     <Info>For organization members, if the default drive changes but is still connected, you can still use the batch as input for running an app. However, you can't upload any additional files to the batch. If the default drive is disconnected, you can't use batches stored on that drive as input for any app run.</Info>
               required:
@@ -421,6 +423,8 @@ paths:
                     - **Community accounts**: Runs in and saves to the personal workspace's Instabase Drive (`<USER-ID>/my-repo/Instabase Drive`).
 
                     - **Organization accounts**: Runs in and saves to the organization's default drive (`<ORGANIZATION-ID>/<USER-ID>/<default-drive>`).
+                    
+                    When making this call from a service account, you must specify a value for either `output_workspace` or `output_dir`.
                 output_dir:
                   type: string
                   description: Defines a specific location for the output to be saved in a connected drive or Instabase Drive. If defined, overrides the `output_workspace` value. See [Specifying file paths.](/api-sdk/api-reference/run-reference#specifying-file-paths)
@@ -658,6 +662,8 @@ paths:
                     - **Community accounts**: Runs in and saves to the personal workspace's Instabase Drive (`<USER-ID>/my-repo/Instabase Drive`).
 
                     - **Organization accounts**: Runs in and saves to the organization's default drive (`<ORGANIZATION-ID>/<USER-ID>/<default-drive>`).
+                    
+                    When making this call from a service account, you must specify a value for either `output_workspace` or `output_dir`.
                 output_dir:
                   type: string
                   description: Defines a specific location for the output to be saved in a connected drive or Instabase Drive. If defined, overrides the `output_workspace` value. See [Specifying file paths](/api-sdk/api-reference/run-reference#specifying-file-paths).
@@ -1123,6 +1129,8 @@ paths:
                   type: string
                   description: |
                     The name of your personal workspace, where the conversation is created. For organization members, your personal workspace name is your user ID. If not defined, the workspace is inferred from the `IB-Context` header value.
+                    
+                    When making this call from a service account, you must specify a workspace.
                 enable_object_detection:
                   type: boolean
                   description: Defines whether to enable [object detection](/chat/converse#digitization-and-object-detection) for the processed file. Object detection includes support for extracting tables and checkboxes.

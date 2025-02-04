@@ -483,7 +483,7 @@ paths:
                                                    batch_id='<BATCH-ID>')
         - code-samples:
             - sdk: curl
-              name: Request with post-processed-pdf generation enabled
+              name: Post-processed-pdf generation enabled
               code: |
                   curl "${API_ROOT}/v2/apps/runs" \
                     -H "Authorization: Bearer ${API_TOKEN}" \

@@ -379,7 +379,15 @@ paths:
       description: |
         Run an app by its name or app ID. The input for the run can be a batch ID or an input file path.
 
-        To run deployments by API, use the [Run deployment endpoint.](/api-sdk/api-reference/runs/run-deployment/)
+        <Tip>
+  
+        For <span class="badge">Commercial</span> or <span class="badge">Enterprise</span> license holders, running an app via a deployment is generally preferred over running an app directly.
+  
+        Deployments offer additional features including upstream and downstream integrations, deployment metrics, human review workflows, and secret and configuration management.
+  
+        Learn more about [deployments](/apps/run-and-deploy#creating-deployments) to decide if you'd rather use the [Run deployment](/api-sdk/api-reference/runs/run-deployment) API operation.
+  
+        </Tip>
 
         <Note>Any specified input or output is validated against the context set by the `IB-Context` header. For example, if the context is set to your community account, but the batch ID used as input for the run is stored in your organization, the call fails.</Note>
       parameters:
@@ -423,6 +431,8 @@ paths:
                     - **Community accounts**: Runs in and saves to the personal workspace's Instabase Drive (`<USER-ID>/my-repo/Instabase Drive`).
 
                     - **Organization accounts**: Runs in and saves to the organization's default drive (`<ORGANIZATION-ID>/<USER-ID>/<default-drive>`).
+                    
+                    <Note>If this parameter is not specified, the results are sent to the user's personal workspace. This can cause visibility problems in shared workspaces.</Note>
                     
                     When making this call from a service account, you must specify a value for either `output_workspace` or `output_dir`.
                 output_dir:
@@ -614,8 +624,10 @@ paths:
         - runs
       summary: Run deployment
       description: |
-        Run an AI Hub deployment by its deployment ID. The input for the run is specified using a batch ID or file path.
+        <span class="badge">Commercial</span> <span class="badge">Enterprise</span>
 
+        Run an AI Hub deployment by its deployment ID. The input for the run is specified using a batch ID or file path.
+        
         <Note>Any specified input or output is validated against the context set by the `IB-Context` header. For example, if the context is set to your community account, but the batch ID used as input for the run is stored in your organization, the call fails.</Note>
       parameters:
         - $ref: '#/components/parameters/ib_context'

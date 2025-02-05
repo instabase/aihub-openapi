@@ -464,16 +464,18 @@ paths:
       x-fern-examples:
         - code-samples:
             - sdk: curl
+              name: Simple request
               code: |
-                curl "${API_ROOT}/v2/apps/runs" \
-                  -H "Authorization: Bearer ${API_TOKEN}" \
-                  -H "IB-Context: ${IB_CONTEXT}"\
-                  -H "Content-Type: application/json" \
-                  -d '{
-                        "batch_id": "<BATCH-ID>",
-                        "app_name": "<APP-NAME>"
-                      }'
+                  curl "${API_ROOT}/v2/apps/runs" \
+                    -H "Authorization: Bearer ${API_TOKEN}" \
+                    -H "IB-Context: ${IB_CONTEXT}"\
+                    -H "Content-Type: application/json" \
+                    -d '{
+                          "batch_id": "<BATCH-ID>",
+                          "app_name": "<APP-NAME>"
+                        }'
             - sdk: python
+              name: Simple request
               code: |
                   # AI Hub Python SDK example
                   from aihub import AIHub
@@ -484,6 +486,36 @@ paths:
 
                   result = client.apps.runs.create(app_name='<APP-NAME>',
                                                    batch_id='<BATCH-ID>')
+        - code-samples:
+            - sdk: curl
+              name: Post-processed-pdf generation enabled
+              code: |
+                  curl "${API_ROOT}/v2/apps/runs" \
+                    -H "Authorization: Bearer ${API_TOKEN}" \
+                    -H "IB-Context: ${IB_CONTEXT}"\
+                    -H "Content-Type: application/json" \
+                    -d '{
+                          "batch_id": "<BATCH-ID>",
+                          "app_name": "<APP-NAME>",
+                          "settings": {
+                            "runtime_config": {
+                                "generate_post_process_pdf": true
+                            }
+                          }
+                        }'
+            - sdk: python
+              name: Post-processed-pdf generation enabled
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+                
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+                
+                  result = client.apps.runs.create(app_name='<APP-NAME>',
+                                                   batch_id='<BATCH-ID>',
+                                                   settings={"runtime_config":{"generate_post_process_pdf": true}})
     get:
       operationId: listRuns
       x-fern-audiences:

@@ -283,7 +283,7 @@ paths:
                   client = AIHub(api_root="<API-ROOT>",
                                  api_key="<API-TOKEN>",
                                  ib_context="<IB-CONTEXT>")
-                  client.batches.add_file(id="<BATCH-ID>",
+                  client.batches.add_file(batch_id="<BATCH-ID>",
                                           file_name="test.pdf",
                                           file=open("test.pdf", "rb"))
 

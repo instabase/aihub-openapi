@@ -380,8 +380,10 @@ paths:
         Run an app by its name or app ID. The input for the run can be a batch ID or an input file path.
 
         <Tip>
+
+        <span class="badge">Commercial & Enterprise</span>
   
-        For <span class="badge">Commercial</span> or <span class="badge">Enterprise</span> license holders, running an app via a deployment is generally preferred over running an app directly.
+        Running an app via a deployment is generally preferred over running an app directly.
   
         Deployments offer additional features including upstream and downstream integrations, deployment metrics, human review workflows, and secret and configuration management.
   
@@ -624,7 +626,7 @@ paths:
         - runs
       summary: Run deployment
       description: |
-        <span class="badge">Commercial</span> <span class="badge">Enterprise</span>
+        <span class="badge">Commercial & Enterprise</span>
 
         Run an AI Hub deployment by its deployment ID. The input for the run is specified using a batch ID or file path.
         

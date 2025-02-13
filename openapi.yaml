@@ -225,7 +225,44 @@ paths:
                       if job_status.state == 'COMPLETE':
                           break
                       time.sleep(5)
+  /v2/batches/{batch_id}/files:
+    get:
+      operationId: listFiles
+      x-fern-audiences:
+        - public
+      tags:
+        - batches
+      summary: List files in a batch
+      description: Return a list of files in a batch.
+      parameters:
+        - $ref: '#/components/parameters/batch_id'
+        - $ref: '#/components/parameters/ib_context'
+      responses:
+        '200':
+          description: Request successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/batchFilesResponse'
+        '404':
+          description: Batch does not exist, or denied access.
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                curl "${API_ROOT}/v2/batches/<BATCH-ID>/files" \
+                  -H "Authorization: Bearer ${API_TOKEN}"\
+                  -H "IB-Context: ${IB_CONTEXT}"
+            - sdk: python
+              code: |
+                # AI Hub Python SDK example
+                from aihub import AIHub
 
+                client = AIHub(api_root="<API-ROOT>", 
+                               api_key="<API-TOKEN>",
+                               ib_context="<IB-CONTEXT>")
+                files = client.batches.list_files("<BATCH-ID>")
+        
   /v2/batches/{batch_id}/files/{filename}:
     put:
       operationId: addFileToBatch

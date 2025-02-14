@@ -2061,7 +2061,7 @@ paths:
       requestBody:
         required: true
         content:
-          multipart/form-data:
+          application/json:
             schema:
               type: object
               properties:
@@ -2103,15 +2103,17 @@ paths:
         - code-samples:
             - sdk: curl
               code: |
-                  curl "${API_ROOT}/v2/secrets" \
+                  curl -X POST "${API_ROOT}/v2/secrets" \
                     -H "Authorization: Bearer ${API_TOKEN}" \
                     -H "IB-Context: ${IB_CONTEXT}"\
-                    -F alias="my_secret" \
-                    -F description="Sample secret" \
-                    -F content="my password" \
-                    -F allowed_workspaces_type="SOME" \
-                    -F allowed_workspaces="workspace1" \ # Only required when allowed_workspaces_type="SOME"
-                    -F allowed_workspaces="workspace2"
+                    -H "Content-Type: application/json" \
+                    -d '{
+                          "alias": "my_secret",
+                          "description": "Sample secret",
+                          "value": "my password",
+                          "allowed_workspaces_type": "SOME",
+                          "allowed_workspaces": ["workspace1", "workspace2"]
+                        }'
             - sdk: python
               code: |
                   # AI Hub Python SDK example
@@ -2124,10 +2126,9 @@ paths:
                   result = client.secrets.create(
                     alias="my_secret",
                     description="Sample secret",
-                    content="my password"
+                    value="my password",
                     allowed_workspaces_type="SOME",
                     allowed_workspaces=['workspace1', 'workspace2']) # Only required when allowed_workspaces_type="SOME"
-
     patch:
       operationId: updateSecret
       x-fern-audiences:
@@ -2144,7 +2145,7 @@ paths:
       requestBody:
         required: true
         content:
-          multipart/form-data:
+          application/json:
             schema:
               type: object
               properties:
@@ -2184,12 +2185,15 @@ paths:
         - code-samples:
             - sdk: curl
               code: |
-                  curl -X "PATCH" "${API_ROOT}/v2/secrets" \
+                  curl -X PATCH "${API_ROOT}/v2/secrets" \
                     -H "Authorization: Bearer ${API_TOKEN}" \
-                    -H "IB-Context: ${IB_CONTEXT}"\
-                    -F alias="my_secret" \
-                    -F content="new password" \
-                    -F allowed_workspaces_type="ALL"
+                    -H "IB-Context: ${IB_CONTEXT}" \
+                    -H "Content-Type: application/json" \
+                    -d '{
+                          "alias": "my_secret",
+                          "value": "new password",
+                          "allowed_workspaces_type": "ALL"
+                        }'
             - sdk: python
               code: |
                   # AI Hub Python SDK example
@@ -2200,9 +2204,10 @@ paths:
                                   ib_context="<IB-CONTEXT>")
 
                   result = client.secrets.update(
-                    alias="my_secret",
-                    content="my password"
-                    allowed_workspaces_type="ALL")
+                      alias="my_secret",
+                      value="new password",
+                      allowed_workspaces_type="ALL"
+                  )
   
     delete:
       operationId: deleteSecret
@@ -2220,7 +2225,7 @@ paths:
       requestBody:
         required: true
         content:
-          multipart/form-data:
+          application/json:
             schema:
               type: object
               properties:
@@ -2242,10 +2247,13 @@ paths:
         - code-samples:
             - sdk: curl
               code: |
-                  curl -X "DELETE" "${API_ROOT}/v2/secrets" \
+                  curl -X DELETE "${API_ROOT}/v2/secrets" \
                     -H "Authorization: Bearer ${API_TOKEN}" \
-                    -H "IB-Context: ${IB_CONTEXT}"\
-                    -F alias="my_secret" \
+                    -H "IB-Context: ${IB_CONTEXT}" \
+                    -H "Content-Type: application/json" \
+                    -d '{
+                          "alias": "my_secret"
+                        }'
             - sdk: python
               code: |
                   # AI Hub Python SDK example
@@ -2256,7 +2264,8 @@ paths:
                                   ib_context="<IB-CONTEXT>")
 
                   result = client.secrets.delete(
-                    alias="my_secret")
+                      alias="my_secret"
+                  )
 components:
   securitySchemes:
     bearerAuth:
@@ -2828,14 +2837,14 @@ components:
         description:
           type: string
           description: Description of the secret.
-        allowed_workspaces_type:
+        allowedWorkspacesType:
           type: string
           description: Which workspaces in this organization are allowed to use this secret in custom functions.
           enum:
             - ALL
             - SOME
             - NONE
-        allowed_workspaces:
+        allowedWorkspaces:
           type: array
           description: Which workspaces are allowed to use this secret, if only some are allowed.
           items:

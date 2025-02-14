@@ -1980,7 +1980,7 @@ paths:
                            ib_context="<IB-CONTEXT>")
 
                   content = client.files.read('<FILE-PATH>', expect_node_type='file')
-  /v2/secrets:
+  /v2/aihub/secrets:
     get:
       operationId: listSecrets
       x-fern-audiences:

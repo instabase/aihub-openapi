@@ -2075,7 +2075,7 @@ components:
       schema:
         type: string
       description: The unique identifier of the query.  This value is returned by a [Run query request.](/api-sdk/api-reference/queries/run-query/)
-  schemas: ## Schemas here
+  schemas:
     batch:
       type: object
       properties:

@@ -787,9 +787,9 @@ paths:
         - code-samples:
             - sdk: curl
               code: |
-                curl "${API_ROOT}/v2/apps/runs/<RUN-ID>" \
-                  -H "Authorization: Bearer ${API_TOKEN}"\
-                  -H "IB-Context: ${IB_CONTEXT}"
+                  curl "${API_ROOT}/v2/apps/runs/<RUN-ID>" \
+                    -H "Authorization: Bearer ${API_TOKEN}"\
+                    -H "IB-Context: ${IB_CONTEXT}"
             - sdk: python
               code: |
                   # AI Hub Python SDK example
@@ -883,13 +883,16 @@ paths:
                       resp.delete_log_dir_job_id
                   ]
 
+                  # Remove empty job IDs
+                  job_ids = [job_id for job_id in job_ids if job_id]
+
                   # Poll for job completion
                   while job_ids:
                       for job_id in job_ids[:]:
                           job_status = client.jobs.status(job_id)
                           if job_status.state == 'COMPLETE':
                               job_ids.remove(job_id)
-                      time.sleep(5)           
+                      time.sleep(5)
 
   /v2/apps/runs/{run_id}/results:
     get:
@@ -1260,7 +1263,7 @@ paths:
             - sdk: curl
               code: |
                   curl "${API_ROOT}/v2/conversations" \
-                    -H "Authorization: Bearer ${API_TOKEN}"`
+                    -H "Authorization: Bearer ${API_TOKEN}"\
                     -H "IB-Context: ${IB_CONTEXT}"
             - sdk: python
               code: |
@@ -1301,7 +1304,7 @@ paths:
             - sdk: curl
               code: |
                   curl "${API_ROOT}/v2/conversations/<CONVERSATION-ID>" \
-                    -H "Authorization: Bearer ${API_TOKEN}"`
+                    -H "Authorization: Bearer ${API_TOKEN}"\
                     -H "IB-Context: ${IB_CONTEXT}"
             - sdk: python
               code: |
@@ -1641,7 +1644,8 @@ paths:
             - sdk: curl
               code: |
                   curl "${API_ROOT}/v2/conversations/<CONVERSATION-ID>/documents/<DOCUMENT-ID>" \
-                    -H "Authorization: Bearer ${API_TOKEN}"
+                    -H "Authorization: Bearer ${API_TOKEN}"\
+                    -H "IB-Context: ${IB_CONTEXT}"
             - sdk: python
               code: |
                   # AI Hub Python SDK example

@@ -285,7 +285,7 @@ paths:
         - code-samples:
             - sdk: curl
               code: |
-                curl "${API_ROOT}/v2/batches/<BATCH-ID>/files?page_size=<PAGE-SIZE>&start_token=<START-TOKEN>" \
+                curl "${API_ROOT}/v2/batches/<BATCH-ID>/files" \
                   -H "Authorization: Bearer ${API_TOKEN}"\
                   -H "IB-Context: ${IB_CONTEXT}"
             - sdk: python
@@ -296,9 +296,7 @@ paths:
                 client = AIHub(api_root="<API-ROOT>",
                                api_key="<API-TOKEN>",
                                ib_context="<IB-CONTEXT>")
-                files = client.batches.list_files(batch_id="<BATCH-ID>",
-                                                  page_size="<PAGE-SIZE>",
-                                                  start_token="<START-TOKEN>")
+                files = client.batches.list_files(batch_id="<BATCH-ID>")
     
   /v2/batches/{batch_id}/files/{filename}:
     put:

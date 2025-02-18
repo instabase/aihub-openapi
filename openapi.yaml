@@ -1992,7 +1992,10 @@ paths:
       tags:
         - secrets
       summary: List secrets
+
       description: |
+        <span class="badge">Commercial & Enterprise</span>
+  
         List secrets available to the organization, available to a given workspace, or with a given alias.
 
         <Note>Only organization admins can list all secrets in the organization. Non-admins must specify a workspace.</Note>
@@ -2055,6 +2058,8 @@ paths:
         - secrets
       summary: Create secret
       description: |
+        <span class="badge">Commercial & Enterprise</span>
+        
         Create a new secret in this organization.
 
         <Note>Only organization admins can create secrets.</Note>
@@ -2140,6 +2145,8 @@ paths:
         - secrets
       summary: Update secret
       description: |
+        <span class="badge">Commercial & Enterprise</span>
+        
         Update the description, value, or allowed workspaces for a secret. If a value for a parameter is not specified, it will remain the same.
 
         <Note>Only organization admins can update secrets.</Note>
@@ -2220,6 +2227,8 @@ paths:
         - secrets
       summary: Delete secret
       description: |
+        <span class="badge">Commercial & Enterprise</span>
+        
         Delete a secret from the organization.
 
         <Note>Only organization admins can delete secrets.</Note>

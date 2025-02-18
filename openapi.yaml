@@ -1984,6 +1984,291 @@ paths:
                            ib_context="<IB-CONTEXT>")
 
                   content = client.files.read('<FILE-PATH>', expect_node_type='file')
+  /v2/aihub/secrets:
+    get:
+      operationId: listSecrets
+      x-fern-audiences:
+        - public
+      tags:
+        - secrets
+      summary: List secrets
+      description: |
+        List secrets available to the organization, available to a given workspace, or with a given alias.
+
+        <Note>Only organization admins can list all secrets in the organization. Non-admins must specify a workspace.</Note>
+      parameters:
+        - $ref: '#/components/parameters/ib_context'
+        - in: query
+          name: workspace
+          schema:
+            type: string
+          description: |
+            Show secrets available in the specified workspace.
+
+            <Info>Only members of a workspace can access secrets that are available within that workspace.</Info>
+        - in: query
+          name: alias
+          schema:
+            type: string
+          description: |
+            Get the secret with the specified alias. 
+      responses:
+        '200':
+          description: A list of secrets.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  secrets:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/secret'
+        default:
+          description: Error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-fern-examples:
+        - code-samples:
+          - sdk: curl
+            code: |
+                curl "${API_ROOT}/v2/secrets?workspace=<WORKSPACE>" \
+                  -H "Authorization: Bearer ${API_TOKEN}" \
+                  -H "IB-Context: ${IB_CONTEXT}"
+          - sdk: python
+            code: |
+                # AI Hub Python SDK example
+                from aihub import AIHub
+
+                client = AIHub(api_root="<API-ROOT>",
+                              api_key="<API-TOKEN>",
+                              ib_context="<IB-CONTEXT>")
+                resp = client.secrets.list(workspace=<WORKSPACE>)
+    
+    post:
+      operationId: createSecret
+      x-fern-audiences:
+        - public
+      tags:
+        - secrets
+      summary: Create secret
+      description: |
+        Create a new secret in this organization.
+
+        <Note>Only organization admins can create secrets.</Note>
+      parameters:
+        - $ref: '#/components/parameters/ib_context'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                alias:
+                  type: string
+                  description: Name of the secret.
+                description:
+                  type: string
+                  description: Description of the secret.
+                value:
+                  type: string
+                  description: Content of the secret.
+                allowed_workspaces_type:
+                  type: string
+                  description: Which workspaces in this organization are allowed to use this secret in custom functions.
+                  enum:
+                    - ALL
+                    - SOME
+                    - NONE
+                allowed_workspaces:
+                  type: array
+                  description: Which workspaces are allowed to use this secret, if only some are allowed.
+                  items:
+                    type: string
+              required:
+                - alias
+                - value
+                - allowed_workspaces_type
+      responses:
+        '200':
+          description: Secret created successfully.
+        default:
+          description: Error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl -X POST "${API_ROOT}/v2/secrets" \
+                    -H "Authorization: Bearer ${API_TOKEN}" \
+                    -H "IB-Context: ${IB_CONTEXT}" \
+                    -H "Content-Type: application/json" \
+                    -d '{
+                          "alias": "my_secret",
+                          "description": "Sample secret",
+                          "value": "my password",
+                          "allowed_workspaces_type": "SOME",
+                          "allowed_workspaces": ["workspace1", "workspace2"]
+                        }'
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                  api_key="<API-TOKEN>",
+                                  ib_context="<IB-CONTEXT>")
+
+                  result = client.secrets.create(
+                    alias="my_secret",
+                    description="Sample secret",
+                    value="my password",
+                    allowed_workspaces_type="SOME",
+                    # only required when allowed_workspaces_type=“SOME" 
+                    allowed_workspaces=['workspace1', 'workspace2'])
+    patch:
+      operationId: updateSecret
+      x-fern-audiences:
+        - public
+      tags:
+        - secrets
+      summary: Update secret
+      description: |
+        Update the description, value, or allowed workspaces for a secret. If a value for a parameter is not specified, it will remain the same.
+
+        <Note>Only organization admins can update secrets.</Note>
+      parameters:
+        - $ref: '#/components/parameters/ib_context'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                alias:
+                  type: string
+                  description: Name of the secret to update.
+                description:
+                  type: string
+                  description: New description of the secret.
+                value:
+                  type: string
+                  description: New content of the secret.
+                allowed_workspaces_type:
+                  type: string
+                  description: New designation of which workspaces in this organization are allowed to use this secret in custom functions.
+                  enum:
+                    - ALL
+                    - SOME
+                    - NONE
+                allowed_workspaces:
+                  type: array
+                  description: New designation of which workspaces are allowed to use this secret, if only some are.
+                  items:
+                    type: string
+              required:
+                - alias
+      responses:
+        '200':
+          description: Secret updated successfully.
+        default:
+          description: Error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl -X PATCH "${API_ROOT}/v2/secrets" \
+                    -H "Authorization: Bearer ${API_TOKEN}" \
+                    -H "IB-Context: ${IB_CONTEXT}" \
+                    -H "Content-Type: application/json" \
+                    -d '{
+                          "alias": "my_secret",
+                          "value": "new password",
+                          "allowed_workspaces_type": "ALL"
+                        }'
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                  api_key="<API-TOKEN>",
+                                  ib_context="<IB-CONTEXT>")
+
+                  result = client.secrets.update(
+                      alias="my_secret",
+                      value="new password",
+                      allowed_workspaces_type="ALL"
+                  )
+  
+    delete:
+      operationId: deleteSecret
+      x-fern-audiences:
+        - public
+      tags:
+        - secrets
+      summary: Delete secret
+      description: |
+        Delete a secret from the organization.
+
+        <Note>Only organization admins can delete secrets.</Note>
+      parameters:
+        - $ref: '#/components/parameters/ib_context'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                alias:
+                  type: string
+                  description: Name of the secret to delete.
+              required:
+                - alias
+      responses:
+        '200':
+          description: Secret deleted successfully.
+        default:
+          description: Error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl -X DELETE "${API_ROOT}/v2/secrets" \
+                    -H "Authorization: Bearer ${API_TOKEN}" \
+                    -H "IB-Context: ${IB_CONTEXT}" \
+                    -H "Content-Type: application/json" \
+                    -d '{
+                          "alias": "my_secret"
+                        }'
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                  api_key="<API-TOKEN>",
+                                  ib_context="<IB-CONTEXT>")
+
+                  result = client.secrets.delete(
+                      alias="my_secret"
+                  )
 components:
   securitySchemes:
     bearerAuth:
@@ -2546,3 +2831,39 @@ components:
         - top_y
         - bottom_x
         - bottom_y
+    secret:
+      type: object
+      properties:
+        alias:
+          type: string
+          description: Name of the secret.
+        description:
+          type: string
+          description: Description of the secret.
+        allowedWorkspacesType:
+          type: string
+          description: Which workspaces in this organization are allowed to use this secret in custom functions.
+          enum:
+            - ALL
+            - SOME
+            - NONE
+        allowedWorkspaces:
+          type: array
+          description: Which workspaces are allowed to use this secret, if only some are allowed.
+          items:
+            type: string
+        org:
+          type: string
+          description: The organization name in which this secret was created.
+        createdAt:
+          type: number
+          description: When the secret was created in Unix time milliseconds.
+        createdBy:
+          type: string
+          description: The user ID of the user who created the secret.
+        updatedAt:
+          type: number
+          description: When the secret was last updated in Unix time milliseconds.
+        lastUpdatedBy:
+          type: string
+          description: The user ID of the user who last edited the secret.

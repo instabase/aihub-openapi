@@ -2030,11 +2030,9 @@ paths:
         - code-samples:
           - sdk: curl
             code: |
-                curl "${API_ROOT}/v2/secrets" \
+                curl "${API_ROOT}/v2/secrets?workspace=<WORKSPACE>" \
                   -H "Authorization: Bearer ${API_TOKEN}" \
-                  -H "IB-Context: ${IB_CONTEXT}"\
-                  -G \
-                  --data-urlencode "workspace=my-workspace" \
+                  -H "IB-Context: ${IB_CONTEXT}"
           - sdk: python
             code: |
                 # AI Hub Python SDK example
@@ -2043,7 +2041,7 @@ paths:
                 client = AIHub(api_root="<API-ROOT>",
                               api_key="<API-TOKEN>",
                               ib_context="<IB-CONTEXT>")
-                secrets = client.secrets.list(workspace="my-workspace")
+                resp = client.secrets.list(workspace=<WORKSPACE>)
     
     post:
       operationId: createSecret
@@ -2105,7 +2103,7 @@ paths:
               code: |
                   curl -X POST "${API_ROOT}/v2/secrets" \
                     -H "Authorization: Bearer ${API_TOKEN}" \
-                    -H "IB-Context: ${IB_CONTEXT}"\
+                    -H "IB-Context: ${IB_CONTEXT}" \
                     -H "Content-Type: application/json" \
                     -d '{
                           "alias": "my_secret",
@@ -2128,7 +2126,8 @@ paths:
                     description="Sample secret",
                     value="my password",
                     allowed_workspaces_type="SOME",
-                    allowed_workspaces=['workspace1', 'workspace2']) # Only required when allowed_workspaces_type="SOME"
+                    # only required when allowed_workspaces_type=“SOME" 
+                    allowed_workspaces=['workspace1', 'workspace2'])
     patch:
       operationId: updateSecret
       x-fern-audiences:

@@ -1776,9 +1776,9 @@ paths:
                     "id": "<CHATBOT-ID>"
                   }
                   status = client.queries.run(query="When was the mail sent out?",
-                                            model= "multistep",
-                                            include_source_info= True,
-                                            source_app= source_app)
+                                              model="multistep",
+                                              include_source_info=True,
+                                              source_app=source_app)
   /v2/queries/{query_id}:
     get:
       operationId: getQueryStatus

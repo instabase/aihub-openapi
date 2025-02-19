@@ -296,7 +296,7 @@ paths:
                 client = AIHub(api_root="<API-ROOT>",
                                api_key="<API-TOKEN>",
                                ib_context="<IB-CONTEXT>")
-                files = client.batches.list_files(batch_id="<BATCH-ID>")
+                resp = client.batches.list_files(batch_id="<BATCH-ID>")
     
   /v2/batches/{batch_id}/files/{filename}:
     put:
@@ -2183,7 +2183,7 @@ components:
                     description: Whether the user has delete permission.
               name:
                 type: string
-                description: Name of the file.
+                description: Name of the file, including optional extension.
         next_page_token:
           type: string
           description: Token for retrieving the next page of results.

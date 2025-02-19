@@ -483,7 +483,7 @@ paths:
                     -H "IB-Context: ${IB_CONTEXT}"\
                     -H "Content-Type: application/json" \
                     -d '{
-                          "batch_id": "<BATCH-ID>",
+                          "batch_id": <BATCH-ID>,
                           "app_name": "<APP-NAME>"
                         }'
             - sdk: python
@@ -497,7 +497,7 @@ paths:
                                  ib_context="<IB-CONTEXT>")
 
                   result = client.apps.runs.create(app_name='<APP-NAME>',
-                                                   batch_id='<BATCH-ID>')
+                                                   batch_id=<BATCH-ID>)
         - code-samples:
             - sdk: curl
               name: Post-processed-pdf generation enabled
@@ -648,7 +648,6 @@ paths:
                                  ib_context="<IB-CONTEXT>")
                   runs = client.apps.runs.list()
 
-
   /v2/apps/deployments/{deployment-id}/runs:
     post:
       operationId: runDeployment
@@ -755,8 +754,18 @@ paths:
                   -H "IB-Context: ${IB_CONTEXT}"\
                   -H "Content-Type: application/json" \
                   -d '{
-                        "batch_id": "<BATCH-ID>",
+                        "batch_id": <BATCH-ID>,
                       }'
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+
+                  result = client.apps.deployments.runs.create(deployment_id='<DEPLOYMENT-ID>', batch_id=<BATCH-ID>)
 
   /v2/apps/runs/{run_id}:
     get:

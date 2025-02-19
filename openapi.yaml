@@ -226,6 +226,78 @@ paths:
                           break
                       time.sleep(5)
 
+  /v2/batches/{batch_id}/files:
+    get:
+      operationId: listFiles
+      x-fern-audiences:
+        - public
+      tags:
+        - batches
+      summary: List files in a batch
+      description: Return a list of files in a batch.
+      parameters:
+        - $ref: '#/components/parameters/batch_id'
+        - in: query
+          name: page_size
+          schema:
+            type: integer
+          description: The number of files to return in each page.
+        - in: query
+          name: start_token
+          schema:
+            type: string
+          description: The token to start the list from.
+        - $ref: '#/components/parameters/ib_context'
+      responses:
+        '200':
+          description: Request successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listBatchFilesResponse'
+              example:
+                nodes:
+                  - full_path: "/path/to/document1.pdf"
+                    metadata:
+                      node_type: "file"
+                      size: 1024
+                      modified_timestamp: 1647532800
+                    perms:
+                      can_read: true
+                      can_write: true
+                      can_delete: true
+                    name: "document1.pdf"
+                  - full_path: "/path/to/document2.pdf"
+                    metadata:
+                      node_type: "file"
+                      size: 2048
+                      modified_timestamp: 1647619200
+                    perms:
+                      can_read: true
+                      can_write: false
+                      can_delete: false
+                    name: "document2.pdf"
+                next_page_token: "eyJwYWdlIjogMn0="
+                has_more: true
+        '404':
+          description: Batch does not exist, or denied access.
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                curl "${API_ROOT}/v2/batches/<BATCH-ID>/files" \
+                  -H "Authorization: Bearer ${API_TOKEN}"\
+                  -H "IB-Context: ${IB_CONTEXT}"
+            - sdk: python
+              code: |
+                # AI Hub Python SDK example
+                from aihub import AIHub
+
+                client = AIHub(api_root="<API-ROOT>",
+                               api_key="<API-TOKEN>",
+                               ib_context="<IB-CONTEXT>")
+                resp = client.batches.list_files(batch_id="<BATCH-ID>")
+    
   /v2/batches/{batch_id}/files/{filename}:
     put:
       operationId: addFileToBatch
@@ -2378,6 +2450,53 @@ components:
       required:
         - id
         - name
+    listBatchFilesResponse:
+      type: object
+      properties:
+        nodes:
+          type: array
+          description: List of files in the batch.
+          items:
+            type: object
+            properties:
+              full_path:
+                type: string
+                description: Complete path to the file in the storage system.
+              metadata:
+                type: object
+                description: Metadata information about the file.
+                properties:
+                  node_type:
+                    type: string
+                    description: Type of the node (e.g., 'file').
+                  size:
+                    type: integer
+                    description: Size of the file in bytes.
+                  modified_timestamp:
+                    type: integer
+                    description: Last modification timestamp of the file.
+              perms:
+                type: object
+                description: Permission settings for the file.
+                properties:
+                  can_read:
+                    type: boolean
+                    description: Whether the user has read permission.
+                  can_write:
+                    type: boolean
+                    description: Whether the user has write permission.
+                  can_delete:
+                    type: boolean
+                    description: Whether the user has delete permission.
+              name:
+                type: string
+                description: Name of the file, including optional extension.
+        next_page_token:
+          type: string
+          description: Token for retrieving the next page of results.
+        has_more:
+          type: boolean
+          description: Indicates whether there are more files to be retrieved.
     batchDeletionJobResponse:
       type: object
       properties:

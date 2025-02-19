@@ -2803,7 +2803,10 @@ components:
       type: object
       properties:
         page_number:
-          type: integer
+          oneOf:
+            - type: integer
+            - type: number
+              format: float
           description: The number of the page referenced in the source document.
         bboxes:
           type: array

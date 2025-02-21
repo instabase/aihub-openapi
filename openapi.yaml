@@ -888,7 +888,10 @@ paths:
       tags:
         - runs
       summary: Delete run
-      description: Deletes a specified run and optionally its associated database data, input files, output files, and logs. This is an asynchronous operation that must be [checked for completion.](/api-sdk/api-reference/jobs/job-status)
+      description: |
+        Deletes a specified run and optionally its associated database data, input files, output files, and logs. This is an asynchronous operation that must be [checked for completion](/api-sdk/api-reference/jobs/job-status).
+        
+        <Warning>Deleting the run's input files also deletes the batch that the run processed.</Warning>
       parameters:
         - $ref: '#/components/parameters/run_id'
         - $ref: '#/components/parameters/ib_context'
@@ -1924,7 +1927,7 @@ paths:
                   client = AIHub(api_root="<API-ROOT>",
                                  api_key="<API-TOKEN>",
                                  ib_context="<IB-CONTEXT>")
-                  status = client.queries.status(query_id=<QUERY-ID>")
+                  status = client.queries.status(query_id="<QUERY-ID>")
   /v2/jobs/{job_id}:
     get:
       operationId: jobStatus

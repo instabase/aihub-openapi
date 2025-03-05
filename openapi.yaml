@@ -2686,6 +2686,9 @@ components:
         original_file_name:
           type: string
           description: The original name of the file processed.
+        input_file_path:
+          type: string
+          description: The path to the file in the storage system.
         documents:
           type: array
           description: An array containing each document within the file.
@@ -2706,6 +2709,11 @@ components:
           type: string
           nullable: true
           description: The classification label of the document. `null` if classification is not applicable.
+        page_numbers:
+          type: array
+          description: An array of integers, each representing a page number in the document.
+          items:
+            type: integer
         post_processed_paths:
           type: array
           description: An array of strings, each representing a path to post-processed documents.
@@ -2722,9 +2730,6 @@ components:
             final_result_pass:
               type: boolean
               description: Indicates whether the document has passed all validation rules.
-        doc_id:
-          type: integer
-          description: ID of document.
     documentField:
       type: object
       properties:

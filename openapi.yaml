@@ -2980,14 +2980,14 @@ components:
         description:
           type: string
           description: Description of the secret.
-        allowedWorkspacesType:
+        allowed_workspaces_type:
           type: string
           description: Which workspaces in this organization are allowed to use this secret in custom functions.
           enum:
             - ALL
             - SOME
             - NONE
-        allowedWorkspaces:
+        allowed_workspaces:
           type: array
           description: Which workspaces are allowed to use this secret, if only some are allowed.
           items:
@@ -2995,15 +2995,15 @@ components:
         org:
           type: string
           description: The organization name in which this secret was created.
-        createdAt:
+        created_at:
           type: number
           description: When the secret was created in Unix time milliseconds.
-        createdBy:
+        created_by:
           type: string
           description: The user ID of the user who created the secret.
-        updatedAt:
+        updated_at:
           type: number
           description: When the secret was last updated in Unix time milliseconds.
-        lastUpdatedBy:
+        last_updated_by:
           type: string
           description: The user ID of the user who last edited the secret.

@@ -2442,11 +2442,11 @@ components:
         created_at_ms:
           type: integer
           format: int64
-          description: When the batch was created, in Unix time.
+          description: When the batch was created, in Unix time milliseconds.
         updated_at_ms:
           type: integer
           format: int64
-          description: When the batch was last updated, in Unix time.
+          description: When the batch was last updated, in Unix time milliseconds.
         path_suffix:
           type: string
           description: Batch path suffix from the mount point.
@@ -2477,7 +2477,7 @@ components:
                     description: Size of the file in bytes.
                   modified_timestamp:
                     type: integer
-                    description: Last modification timestamp of the file.
+                    description: Last modification timestamp of the file (in s).
               perms:
                 type: object
                 description: Permission settings for the file.
@@ -2542,11 +2542,11 @@ components:
         start_timestamp:
           type: integer
           format: int64
-          description: When the run started, in Unix time.
+          description: When the run started, in Unix time nanoseconds.
         finish_timestamp:
           type: integer
           format: int64
-          description: When the run finished, in Unix time. `null` if run is still in progress.
+          description: When the run finished, in Unix time nanoseconds. `null` if run is still in progress.
           nullable: true
         msg:
           type: string

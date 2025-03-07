@@ -2477,7 +2477,7 @@ components:
                     description: Size of the file in bytes.
                   modified_timestamp:
                     type: integer
-                    description: Last modification timestamp of the file (in s).
+                    description: Last modification timestamp of the file, in Unix time seconds.
               perms:
                 type: object
                 description: Permission settings for the file.

@@ -42,7 +42,7 @@ paths:
                 workspace:
                   type: string
                   description: |
-                    The name of the workspace in which to add the batch. If not specified, the default location is the user's personal workspace.
+                    The name of the workspace in which to add the batch. If not specified, the default location is your personal workspace.
                     
                     When making this call from a service account, you must specify a workspace.
 
@@ -500,9 +500,9 @@ paths:
                 output_workspace:
                   type: string
                   description: |
-                    The workspace in which to run the app. If not defined, the default is the user's personal workspace.
+                    The workspace in which to run the app. Output saves to the specified workspace. If not defined, the default is your personal workspace.
                     
-                    <Note>If this parameter is not specified, the results are sent to the user's personal workspace. This can cause visibility problems in shared workspaces.</Note>
+                    <Note>Service accounts don't have personal workspaces. If making this call from a service account, you must specify a value for either `output_workspace` or `output_dir`.</Note>
                     
                     When making this call from a service account, you must specify a value for either `output_workspace` or `output_dir`.
                 output_dir:
@@ -770,9 +770,9 @@ paths:
                 output_workspace:
                   type: string
                   description: |
-                    The workspace in which to run the app. If not defined, the default is the user's personal workspace.
+                    The workspace in which to run the app.  Output saves to the specified workspace. If not defined, the default is your personal workspace.
                     
-                    When making this call from a service account, you must specify a value for either `output_workspace` or `output_dir`.
+                    <Note>Service accounts don't have personal workspaces. If making this call from a service account, you must specify a value for either `output_workspace` or `output_dir`.</Note>
                 output_dir:
                   type: string
                   description: Defines a specific location for the output to be saved in a connected drive or Instabase Drive. If defined, overrides the `output_workspace` value. See [Specifying file paths](/api-sdk/api-reference/run-reference#specifying-file-paths).

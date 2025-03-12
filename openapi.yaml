@@ -502,9 +502,7 @@ paths:
                   description: |
                     The workspace in which to run the app. Output saves to the specified workspace. If not defined, the default is your personal workspace.
                     
-                    <Note>Service accounts don't have personal workspaces. If making this call from a service account, you must specify a value for either `output_workspace` or `output_dir`.</Note>
-                    
-                    When making this call from a service account, you must specify a value for either `output_workspace` or `output_dir`.
+                    <Note>Service accounts don't have personal workspaces. If making this call from a service account, you must specify a value for either `output_workspace` or `output_dir`.</Note>                    
                 output_dir:
                   type: string
                   description: Defines a specific location for the output to be saved in a connected drive or Instabase Drive. If defined, overrides the `output_workspace` value. See [Specifying file paths.](/api-sdk/api-reference/run-reference#specifying-file-paths)

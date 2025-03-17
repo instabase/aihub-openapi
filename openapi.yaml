@@ -1119,21 +1119,23 @@ paths:
               has_more: false
               files:
                 - original_file_name: "test.png"
+                  input_file_path: "instabase-sandbox-org/test-org/fs/Instabase Drive/app-runs/1234-1235/input/test.png"
                   documents:
                     - class_name: "Wage And Tax Statement"
+                      page_numbers: [1, 2]
                       fields:
                         - value: "123 STREET RD ANYWHERE, USA,12345"
                           type: "TEXT"
                           field_name: "employers_address_and_ZIP_code"
-                      doc_id: null
                 - original_file_name: "test2.png"
+                  input_file_path: "instabase-sandbox-org/test-org/fs/Instabase Drive/app-runs/1234-1235/input/test2.png"
                   documents:
                     - class_name: "Driver License"
+                      page_numbers: [1]
                       fields:
                         - value: "Male"
                           type: "TEXT"
                           field_name: "sex"
-                      doc_id: 1002
           code-samples:
             - sdk: python
               name: Simple request

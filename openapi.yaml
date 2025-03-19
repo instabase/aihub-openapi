@@ -1046,6 +1046,7 @@ paths:
             The following values are returned at the extracted field level:
 
             - `confidence/model`
+            - `confidence/ocr`
 
             See the response schema for details and descriptions.
         - in: query
@@ -1166,6 +1167,7 @@ paths:
                           type: "TEXT"
                           confidence:
                             model: 0.5900550516
+                            ocr: 0.6900550516
                           source_coordinates:
                             - top_x: 36.0
                               top_y: 181.0
@@ -1189,6 +1191,7 @@ paths:
                           type: "TEXT"
                           confidence:
                             model: 0.6915
+                            ocr: 0.7915
                           source_coordinates: []
                           field_name: "sex"
                       post_processed_paths:
@@ -2749,6 +2752,11 @@ components:
               format: float
               nullable: true
               description: The model's confidence in the extracted value.
+            ocr:
+              type: number
+              format: float
+              nullable: true
+              description: The OCR's confidence in the extracted value.
         validations:
           type: object
           properties:

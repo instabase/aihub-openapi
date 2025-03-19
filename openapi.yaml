@@ -2756,7 +2756,7 @@ components:
               type: number
               format: float
               nullable: true
-              description: The OCR's confidence in the extracted value.
+              description: The OCR processor's confidence in the extracted value.
         validations:
           type: object
           properties:

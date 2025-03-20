@@ -1178,7 +1178,6 @@ paths:
                           field_name: "employers_address_and_ZIP_code"
                       post_processed_paths:
                         - "instabase-org/orguser/fs/S3 Drive/app-runs/dd97-42cb-8b8e-28a63066887e/4180-8508-b103afb67185/s1_process_files/images/test.png.PNG"
-                      doc_id: null
                 - original_file_name: "test2.png"
                   documents:
                     - class_name: "Driver License"
@@ -1192,7 +1191,6 @@ paths:
                           field_name: "sex"
                       post_processed_paths:
                         - "instabase-org/orguser/fs/S3 Drive/app-runs/dd97-42cb-8b8e-28a63066887e/4180-8508-b103afb67185/s1_process_files/images/test2.png.PNG"
-                      doc_id: null
           code-samples:
             - sdk: python
               name: Request with query parameters

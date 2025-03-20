@@ -1059,7 +1059,7 @@ paths:
 
             The following values are returned at the run or document level:
 
-            - `files/validations/final_result_pass`
+            - `files/documents/validations/final_result_pass`
 
             The following values are returned at the extracted field level:
 

@@ -765,15 +765,9 @@ paths:
                 version:
                   type: string
                   description: Version of the app to use. If not specified, defaults to the latest production version.
-                output_workspace:
-                  type: string
-                  description: |
-                    The workspace in which to run the app.  Output saves to the specified workspace. If not defined, the default is your personal workspace.
-                    
-                    <Note>Service accounts don't have personal workspaces. If making this call from a service account, you must specify a value for either `output_workspace` or `output_dir`.</Note>
                 output_dir:
                   type: string
-                  description: Defines a specific location for the output to be saved in a connected drive or Instabase Drive. If defined, overrides the `output_workspace` value. See [Specifying file paths](/api-sdk/api-reference/run-reference#specifying-file-paths).
+                  description: Defines a specific location for the output to be saved in a connected drive or Instabase Drive. If defined, overrides the `output_workspace` configured for the deployment. See [Specifying file paths](/api-sdk/api-reference/run-reference#specifying-file-paths).
                 settings:
                   type: object
                   description: JSON object containing settings for the app run.
@@ -1184,7 +1178,6 @@ paths:
                           field_name: "employers_address_and_ZIP_code"
                       post_processed_paths:
                         - "instabase-org/orguser/fs/S3 Drive/app-runs/dd97-42cb-8b8e-28a63066887e/4180-8508-b103afb67185/s1_process_files/images/test.png.PNG"
-                      doc_id: null
                 - original_file_name: "test2.png"
                   documents:
                     - class_name: "Driver License"
@@ -1198,7 +1191,6 @@ paths:
                           field_name: "sex"
                       post_processed_paths:
                         - "instabase-org/orguser/fs/S3 Drive/app-runs/dd97-42cb-8b8e-28a63066887e/4180-8508-b103afb67185/s1_process_files/images/test2.png.PNG"
-                      doc_id: null
           code-samples:
             - sdk: python
               name: Request with query parameters

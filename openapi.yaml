@@ -1031,11 +1031,7 @@ paths:
             type: boolean
             default: false
           description: |
-            Whether to include confidence scores in the results. When set to `true`, classification confidence scores at the run or document level and extraction confidence scores at the extracted field level are included.
-
-            The following values are returned at the run or document level:
-
-            - `files/documents/classification_confidence/ocr`
+            Whether to include confidence scores in the results. When set to `true`, extraction confidence scores at the extracted field level are included.
 
             The following values are returned at the extracted field level:
 

@@ -43,7 +43,7 @@ paths:
                   type: string
                   description: |
                     The name of the workspace in which to add the batch. If not specified, the default location is your personal workspace.
-                    
+
                     When making this call from a service account, you must specify a workspace.
 
                     <Info>For organization members, if the default drive changes but is still connected, you can still use the batch as input for running an app. However, you can't upload any additional files to the batch. If the default drive is disconnected, you can't use batches stored on that drive as input for any app run.</Info>
@@ -297,7 +297,7 @@ paths:
                                api_key="<API-TOKEN>",
                                ib_context="<IB-CONTEXT>")
                 resp = client.batches.list_files(batch_id="<BATCH-ID>")
-    
+
   /v2/batches/{batch_id}/files/{filename}:
     put:
       operationId: addFileToBatch
@@ -454,13 +454,13 @@ paths:
         <Tip>
 
         <span class="badge">Commercial & Enterprise</span>
-  
+
         Running an app via a deployment is generally preferred over running an app directly.
-  
+
         Deployments offer additional features including upstream and downstream integrations, deployment metrics, human review workflows, and secret and configuration management.
-  
+
         Learn more about [deployments](/apps/run-and-deploy#creating-deployments) to decide if you'd rather use the [Run deployment](/api-sdk/api-reference/runs/run-deployment) API operation.
-  
+
         </Tip>
 
         <Note>Any specified input or output is validated against the context set by the `IB-Context` header. For example, if the context is set to your community account, but the batch ID used as input for the run is stored in your organization, the call fails.</Note>
@@ -501,8 +501,8 @@ paths:
                   type: string
                   description: |
                     The workspace in which to run the app. Output saves to the specified workspace. If not defined, the default is your personal workspace.
-                    
-                    <Note>Service accounts don't have personal workspaces. If making this call from a service account, you must specify a value for either `output_workspace` or `output_dir`.</Note>                    
+
+                    <Note>Service accounts don't have personal workspaces. If making this call from a service account, you must specify a value for either `output_workspace` or `output_dir`.</Note>
                 output_dir:
                   type: string
                   description: Defines a specific location for the output to be saved in a connected drive or Instabase Drive. If defined, overrides the `output_workspace` value. See [Specifying file paths.](/api-sdk/api-reference/run-reference#specifying-file-paths)
@@ -586,11 +586,11 @@ paths:
               code: |
                   # AI Hub Python SDK example
                   from aihub import AIHub
-                
+
                   client = AIHub(api_root="<API-ROOT>",
                                  api_key="<API-TOKEN>",
                                  ib_context="<IB-CONTEXT>")
-                
+
                   result = client.apps.runs.create(app_name='<APP-NAME>',
                                                    batch_id='<BATCH-ID>',
                                                    settings={"runtime_config":{"generate_post_process_pdf": true}})
@@ -603,7 +603,7 @@ paths:
       summary: List runs
       description: Return a list of runs. Use query parameters to filter results.
       parameters:
-        - $ref: '#/components/parameters/ib_context'      
+        - $ref: '#/components/parameters/ib_context'
         - in: query
           name: app_id
           schema:
@@ -726,7 +726,7 @@ paths:
         <span class="badge">Commercial & Enterprise</span>
 
         Run an AI Hub deployment by its deployment ID. The input for the run is specified using a batch ID or file path.
-        
+
         <Note>Any specified input or output is validated against the context set by the `IB-Context` header. For example, if the context is set to your community account, but the batch ID used as input for the run is stored in your organization, the call fails.</Note>
       parameters:
         - $ref: '#/components/parameters/ib_context'
@@ -874,7 +874,7 @@ paths:
       summary: Delete run
       description: |
         Deletes a specified run and optionally its associated database data, input files, output files, and logs. This is an asynchronous operation that must be [checked for completion](/api-sdk/api-reference/jobs/job-status).
-        
+
         <Warning>Deleting the run's input files also deletes the batch that the run processed.</Warning>
       parameters:
         - $ref: '#/components/parameters/run_id'
@@ -972,25 +972,25 @@ paths:
       summary: Get run results
       description: |
         Get the results of a completed run.
-        
+
         <Info>
-        
-        This API operation might return field names that differ from those in the Build project. 
+
+        This API operation might return field names that differ from those in the Build project.
         The operation converts field names to valid Python variable names by:
-  
+
         * Allowing only letters, numbers, and underscores
         * Requiring names to start with a letter or underscore
         * Replacing invalid characters with underscores
         * Converting single underscores to double underscores
-        
+
         Examples:
         * `due date` → `due_date`
         * `driver's license` → `driver_s_license`
         * `3rd category` → `_3rd_category`
         * `secret_id` → `secret__id`
-        
+
         These changes apply only to field names in the API response. The field names in the Build project are not changed.
-        
+
         </Info>
 
       parameters:
@@ -1001,29 +1001,28 @@ paths:
             type: boolean
             default: false
           description: |
-            Whether to include human review details in the results. When set to `true`, details such as review status and edits at the run or document level and at the extracted field level are included.
-
-            The following values are returned at the run or document level:
-
-            - `review_completed`
-            - `files/documents/review_completed`
-            - `files/documents/class_edit_history`
-            - `files/documents/class_edit_history/timestamp`
-            - `files/documents/class_edit_history/user_id`
-            - `files/documents/class_edit_history/modifications`
-            - `files/documents/class_edit_history/modifications/message`
-
-            The following values are returned at the extracted field level:
-
-            - `edit_history`
-            - `files/edit_history/timestamp`
-            - `files/edit_history/user_id`
-            - `files/edit_history/modifications`
-            - `files/edit_history/modifications/message`
-
-            See the response schema for details and descriptions.
+            Whether to include human review details in the results. When set to `true`, various human review details are returned.
 
             <Note>The review process can include manually correcting values. This endpoint doesn't support returning the original and corrected values.</Note>
+
+            The following values are returned at the document level (`files/documents/...`):
+
+            - `review_completed`
+            - `class_edit_history`
+            - `class_edit_history/timestamp`
+            - `class_edit_history/user_id`
+            - `class_edit_history/modifications`
+            - `class_edit_history/modifications/message`
+
+            The following values are returned at the field level (`files/documents/fields/...`):
+
+            - `edit_history`
+            - `edit_history/timestamp`
+            - `edit_history/user_id`
+            - `edit_history/modifications`
+            - `edit_history/modifications/message`
+
+            See the response schema for details and descriptions.
 
         - in: query
           name: include_confidence_scores
@@ -1031,9 +1030,9 @@ paths:
             type: boolean
             default: false
           description: |
-            Whether to include confidence scores in the results. When set to `true`, extraction confidence scores at the extracted field level are included.
+            Whether to include confidence scores in the results. When set to `true`, various confidence scores are returned.
 
-            The following values are returned at the extracted field level:
+            The following values are returned at the field level (`files/documents/fields/...`):
 
             - `confidence/model`
             - `confidence/ocr`
@@ -1045,13 +1044,13 @@ paths:
             type: boolean
             default: false
           description: |
-            Whether to include validation status in the results. When set to `true`, validation results at the run or document level and extracted field level are included.
+            Whether to include validation status in the results. When set to `true`, various validation results are returned.
 
-            The following values are returned at the run or document level:
+            The following values are returned at the document level (`files/documents/...`):
 
-            - `files/documents/validations/final_result_pass`
+            - `validations/final_result_pass`
 
-            The following values are returned at the extracted field level:
+            The following values are returned at the field level (`files/documents/fields/...`):
 
             - `validations/valid`
             - `validations/alerts`
@@ -1063,16 +1062,18 @@ paths:
             type: boolean
             default: false
           description: |
-            Whether to include source information in the results. When set to `true`, source details such as the image path of the generated image are included in the results.
-            
-            When the app runs with `generate_post_process_pdf=true` in its [runtime config](/api-sdk/api-reference/run-reference#runtime-configs), the source information includes paths to PDFs generated from each document, with separate PDF paths for documents split during classification.
+            Whether to include source information in the results. When set to `true`, various source details are returned.
 
-            The following values are returned at the run or document level:
+            The following values are returned at the document level (`files/documents/...`):
 
-            - `files/documents/post_processed_paths`
-            - `files/documents/post_processed_pdf_path`
+            - `post_processed_paths`
+            - `post_processed_pdf_path`
 
-            The following values are returned at the extracted field level:
+               <Note>
+               A `post_processed_pdf_path` is populated when the app runs with `generate_post_process_pdf=true` in its [runtime config](/api-sdk/api-reference/run-reference#runtime-configs). Paths to PDFs are generated from each document, with separate PDF paths for documents split during classification.
+               </Note>
+
+            The following values are returned at the field level (`files/documents/fields/...`):
 
             - `source_coordinates/top_x`
             - `source_coordinates/top_y`
@@ -1245,7 +1246,7 @@ paths:
                   type: string
                   description: |
                     The name of your personal workspace, where the conversation is created. For organization members, your personal workspace name is your user ID. If not defined, the workspace is inferred from the `IB-Context` header value.
-                    
+
                     When making this call from a service account, you must specify a workspace.
                 enable_object_detection:
                   type: boolean
@@ -1479,7 +1480,7 @@ paths:
       summary: Converse with a document
       description:  |
         Converse with a document in a conversation.
-        
+
         <Tip>This endpoint supports querying a single document at a time and supports the standard and advanced models. To converse with multiple documents, or to use the multistep model or research mode, use the [Run query](/api-sdk/api-reference/queries/run-query) endpoint.</Tip>
       parameters:
         - $ref: '#/components/parameters/conversation_id'
@@ -1791,7 +1792,7 @@ paths:
                         The ID of the source app to query. You can query any AI Hub source app to which you have access.
 
                         <Tip>You can find the source app ID in its AI Hub URL. For Chatbot, URL will be <span>http</span>s://aihub.instabase.com/hub/apps/**788eba40-5a1f-45f4-ad56-57fb1abe62c7**. For Converse, URL will be <span>http</span>s://aihub.instabase.com/converse/**01930a30-f278-7dc1-be96-9abc5c0530b5**.</Tip>
-                        
+
                         <Note>Chatbot IDs change with [every version update.](/chat/creating-chatbots#updating-chatbots) For convenience, when making a request to a given version of a chatbot, the query is automatically directed to the latest version of the chatbot.</Note>
                   required:
                     - type
@@ -1838,10 +1839,10 @@ paths:
                   client = AIHub(api_root="<API-ROOT>",
                                  api_key="<API-TOKEN>",
                                  ib_context="<IB-CONTEXT>")
-                
+
                   source_app = {"type": "CHATBOT",
                                 "id": "<CHATBOT-ID>"}
-                
+
                   run_query_resp = client.queries.run(query="When was the mail sent out?",
                                                       source_app=source_app,
                                                       model_name="multistep",
@@ -2062,7 +2063,7 @@ paths:
 
       description: |
         <span class="badge">Commercial & Enterprise</span>
-  
+
         List secrets available to the organization, available to a given workspace, or with a given alias.
 
         <Note>Only organization admins can list all secrets in the organization. Non-admins must specify a workspace.</Note>
@@ -2081,7 +2082,7 @@ paths:
           schema:
             type: string
           description: |
-            Get the secret with the specified alias. 
+            Get the secret with the specified alias.
       responses:
         '200':
           description: A list of secrets.
@@ -2116,7 +2117,7 @@ paths:
                               api_key="<API-TOKEN>",
                               ib_context="<IB-CONTEXT>")
                 resp = client.secrets.list(workspace=<WORKSPACE>)
-    
+
     post:
       operationId: createSecret
       x-fern-audiences:
@@ -2126,7 +2127,7 @@ paths:
       summary: Create secret
       description: |
         <span class="badge">Commercial & Enterprise</span>
-        
+
         Create a new secret in this organization.
 
         <Note>Only organization admins can create secrets.</Note>
@@ -2202,7 +2203,7 @@ paths:
                     description="Sample secret",
                     value="my password",
                     allowed_workspaces_type="SOME",
-                    # only required when allowed_workspaces_type=“SOME" 
+                    # only required when allowed_workspaces_type=“SOME"
                     allowed_workspaces=['workspace1', 'workspace2'])
     patch:
       operationId: updateSecret
@@ -2213,7 +2214,7 @@ paths:
       summary: Update secret
       description: |
         <span class="badge">Commercial & Enterprise</span>
-        
+
         Update the description, value, or allowed workspaces for a secret. If a value for a parameter is not specified, it will remain the same.
 
         <Note>Only organization admins can update secrets.</Note>
@@ -2285,7 +2286,7 @@ paths:
                       value="new password",
                       allowed_workspaces_type="ALL"
                   )
-  
+
     delete:
       operationId: deleteSecret
       x-fern-audiences:
@@ -2295,7 +2296,7 @@ paths:
       summary: Delete secret
       description: |
         <span class="badge">Commercial & Enterprise</span>
-        
+
         Delete a secret from the organization.
 
         <Note>Only organization admins can delete secrets.</Note>
@@ -2741,12 +2742,12 @@ components:
               type: number
               format: float
               nullable: true
-              description: The model's confidence in the extracted value.
+              description: Field confidence. Indicates the model's certainty in predicting results for a given field.
             ocr:
               type: number
               format: float
               nullable: true
-              description: The OCR processor's confidence in the extracted value.
+              description: OCR confidence. Indicates the OCR processor's certainty in digitization accuracy.
         validations:
           type: object
           properties:
@@ -2805,19 +2806,19 @@ components:
       properties:
         timestamp:
           type: string
-          description: Datetime string of the class edit history event.
+          description: Datetime string of the edit history event.
         user_id:
           type: string
-          description: User ID of the user who edited the class.
+          description: User ID of the user who made the edit.
         modifications:
           type: array
-          description: List of class modifications made in this single edit history event.
+          description: List of modifications made in this single edit history event.
           items:
             type: object
             properties:
               message:
                 type: string
-                description: Message associated with the class edit history modification.
+                description: Message associated with the edit history modification.
     documentUploadResponse:
       type: object
       properties:

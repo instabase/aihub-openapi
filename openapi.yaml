@@ -765,15 +765,9 @@ paths:
                 version:
                   type: string
                   description: Version of the app to use. If not specified, defaults to the latest production version.
-                output_workspace:
-                  type: string
-                  description: |
-                    The workspace in which to run the app.  Output saves to the specified workspace. If not defined, the default is your personal workspace.
-                    
-                    <Note>Service accounts don't have personal workspaces. If making this call from a service account, you must specify a value for either `output_workspace` or `output_dir`.</Note>
                 output_dir:
                   type: string
-                  description: Defines a specific location for the output to be saved in a connected drive or Instabase Drive. If defined, overrides the `output_workspace` value. See [Specifying file paths](/api-sdk/api-reference/run-reference#specifying-file-paths).
+                  description: Defines a specific location for the output to be saved in a connected drive or Instabase Drive. If defined, overrides the `output_workspace` configured for the deployment. See [Specifying file paths](/api-sdk/api-reference/run-reference#specifying-file-paths).
                 settings:
                   type: object
                   description: JSON object containing settings for the app run.

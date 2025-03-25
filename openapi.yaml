@@ -188,7 +188,7 @@ paths:
       tags:
         - batches
       summary: Delete batch
-      description: Delete a batch and all its files. This is an asynchronous operation that must be [checked for completion.](/api-sdk/api-reference/batches/poll-batches-job)
+      description: Delete a batch and all its files. This is an asynchronous operation that must be [checked for completion](/api-sdk/api-reference/batches/poll-batches-job).
       parameters:
         - $ref: '#/components/parameters/batch_id'
         - $ref: '#/components/parameters/ib_context'
@@ -309,7 +309,7 @@ paths:
       description: |
         Upload a file to a batch or update the contents of a previously uploaded file in a batch.
 
-        <Info>Files can be uploaded one at a time and the suggested max size for each file is 10 MB. For larger files, see [Multipart file upload.](/api-sdk/multipart-upload/)</Info>
+        <Info>Files can be uploaded one at a time and the suggested max size for each file is 10 MB. For larger files, see [Multipart file upload](/api-sdk/multipart-upload/).</Info>
       parameters:
         - $ref: '#/components/parameters/batch_id'
         - name: filename
@@ -490,10 +490,10 @@ paths:
                     For custom AI Hub apps belonging to you, accept the default. For public AI Hub apps published by Instabase, specify `instabase`.
                 batch_id:
                   type: integer
-                  description: Required unless using `input_dir`. The batch ID of a batch created with the [Batches endpoint.](/api-sdk/api-reference/batches/create-batch/) All files uploaded to the batch are used as input for the run.
+                  description: Required unless using `input_dir`. The batch ID of a batch created with the [Batches endpoint](/api-sdk/api-reference/batches/create-batch/). All files uploaded to the batch are used as input for the run.
                 input_dir:
                   type: string
-                  description: Required unless using `batch_id`. The path of the input folder in a connected drive or Instabase Drive. See [Specifying file paths.](/api-sdk/api-reference/run-reference#specifying-file-paths)
+                  description: Required unless using `batch_id`. The path of the input folder in a connected drive or Instabase Drive. See [Specifying file paths](/api-sdk/api-reference/run-reference/).
                 version:
                   type: string
                   description: Version of the app to use. If not specified, defaults to the latest production version.
@@ -505,27 +505,38 @@ paths:
                     <Note>Service accounts don't have personal workspaces. If making this call from a service account, you must specify a value for either `output_workspace` or `output_dir`.</Note>
                 output_dir:
                   type: string
-                  description: Defines a specific location for the output to be saved in a connected drive or Instabase Drive. If defined, overrides the `output_workspace` value. See [Specifying file paths.](/api-sdk/api-reference/run-reference#specifying-file-paths)
+                  description: Defines a specific location for the output to be saved in a connected drive or Instabase Drive. If defined, overrides the `output_workspace` value. See [Specifying file paths](/api-sdk/api-reference/run-reference/).
                 settings:
                   type: object
                   description: JSON object containing settings for the app run.
                   properties:
+                    keys:
+                      type: object
+                      description: |
+                         Configure values for custom and secret keys referenced in any custom functions. Key values passed via API override any key values defined in the app or deployment configuration.
+
+                         <Note>For more information about various types of keys, see [Using keys in custom functions](apps/custom-functions#using-keys-in-custom-functions).</Note>
+                      properties:
+                         custom:
+                            type: object
+                            description: Configure any custom keys, using key/value pairs. In the key/value pair, define the key as the name of an existing key used in your app or deployment, and define the value as any custom value.
+                            additionalProperties:
+                               type: string
+                         secret:
+                            type: object
+                            description: Configure any secret keys, using key/value pairs. In the key/value pair, define the key as the name of an existing secret key used in your app or deployment, and define the value as any secret in the organization's secrets vault. For guidance on managing secrets, see [Managing secrets](/admin/secret-management/) or refer to the [Secrets endpoints](/api-sdk/api-reference/secrets/).
+                            additionalProperties:
+                               type: string
                     runtime_config:
                       type: object
-                      description: A dictionary containing the runtime configuration for the app run, for use in validation functions and to generate retrievable PDFs of processed documents. See [runtime config](/api-sdk/api-reference/run-reference#runtime-configs) for details.
-                      additionalProperties: true
-                    webhook_config:
-                      type: object
-                      description: Configuration for the webhook URL called on app run completion. See [webhook parameters](/api-sdk/api-reference/run-reference#webhook-parameters) for details.
+                      description: A dictionary supporting select runtime configurations, such as generating retrievable PDFs of processed documents. For all other runtime configurations, use the `keys` parameter.
                       properties:
-                        url:
-                          type: string
-                          description: The webhook URL to which an HTTP request is sent when the run is completed.
-                        headers:
-                          type: object
-                          description: Configure the headers that are sent alongside the HTTP request. The format is a dictionary of key-value pairs.
-                          additionalProperties:
-                            type: string
+                         generate_post_process_pdf:
+                            type: boolean
+                            description: |
+                               Set to `true` to generate a retrievable PDF for each document the app processes, including separate PDFs for each document created by split classification.
+
+                               <Note>When getting run results, use the [`include_source_info` query parameter](/api-sdk/api-reference/runs/get-run-results#request.query.include_source_info.include_source_info) to return the file path for any generated PDFs in your results. File paths are returned under `files/documents/post_processed_pdf_path`.</Note>
       responses:
         '200':
           content:
@@ -752,7 +763,7 @@ paths:
                   description: Required unless using `input_dir` or `manual_upstream_integration`. The batch ID of a batch created with the [Batches endpoint](/api-sdk/api-reference/batches/create-batch/). All files uploaded to the batch are used as input for the run.
                 input_dir:
                   type: integer
-                  description: Required unless using `batch_id` or `manual_upstream_integration`. The path of the input folder in a connected drive or Instabase Drive. See [Specifying file paths](/api-sdk/api-reference/run-reference#specifying-file-paths).
+                  description: Required unless using `batch_id` or `manual_upstream_integration`. The path of the input folder in a connected drive or Instabase Drive. See [Specifying file paths](/api-sdk/api-reference/run-reference/).
                 manual_upstream_integration:
                   type: boolean
                   description: Use the deployment's upstream integration as a source rather than a `batch_id` or `input_dir`. Requires an upstream integration to be configured for the deployment.
@@ -767,27 +778,44 @@ paths:
                   description: Version of the app to use. If not specified, defaults to the latest production version.
                 output_dir:
                   type: string
-                  description: Defines a specific location for the output to be saved in a connected drive or Instabase Drive. If defined, overrides the `output_workspace` configured for the deployment. See [Specifying file paths](/api-sdk/api-reference/run-reference#specifying-file-paths).
+                  description: Defines a specific location for the output to be saved in a connected drive or Instabase Drive. If defined, overrides the `output_workspace` configured for the deployment. See [Specifying file paths](/api-sdk/api-reference/run-reference).
                 settings:
                   type: object
-                  description: JSON object containing settings for the app run.
+                  description: JSON object containing settings for the deployment run.
                   properties:
+                    keys:
+                      type: object
+                      description: |
+                         Define the values for any custom or secret keys configured under your deployment's *Runtime configurations* settings. Key values passed via API override any key values defined in the app or deployment configuration.
+
+                         <Note>For more information about various types of keys, see [Using keys in custom functions](apps/custom-functions#using-keys-in-custom-functions).</Note>
+                      properties:
+                         custom:
+                            type: object
+                            description: |
+                               Configure any custom keys, using key/value pairs. In the key/value pair, define the key as the name of an existing key used in your app or deployment, and define the value as any custom value.
+
+                               <Note>Any keys being defined by API must match keys listed under your deployment's *Runtime configuration* settings. Keys included in the `custom` object must be listed on the **Custom keys** tab of the runtime configuration.</Note>
+                            additionalProperties:
+                               type: string
+                         secret:
+                            type: object
+                            description: |
+                               Configure any secret keys, using key/value pairs. In the key/value pair, define the key as the name of an existing secret key used in your app or deployment, and define the value as any secret in the organization's secrets vault. For guidance on managing secrets, see [Managing secrets](/admin/secret-management/) or refer to the [Secrets endpoints](/api-sdk/api-reference/secrets/).
+
+                               <Note>Any keys being defined by API must match keys listed under your deployment's *Runtime configuration* settings. Keys included in the `secret` object must be listed on the **Secret keys** tab of the runtime configuration.</Note>
+                            additionalProperties:
+                               type: string
                     runtime_config:
                       type: object
-                      description: A dictionary containing the runtime configuration for the app run, for use in validation functions. See [runtime config](/api-sdk/api-reference/run-reference#runtime-configs) for details.
-                      additionalProperties: true
-                    webhook_config:
-                      type: object
-                      description: Configuration for the webhook URL called on app run completion. See [Webhook parameters](/api-sdk/api-reference/run-reference#webhook-parameters).
+                      description: A dictionary supporting select runtime configurations, such as generating retrievable PDFs of processed documents. For all other runtime configurations, use the `keys` parameter.
                       properties:
-                        url:
-                          type: string
-                          description: The webhook URL to which an HTTP request is sent when the run is completed.
-                        headers:
-                          type: object
-                          description: Configure the headers that are sent alongside the HTTP request. The format is a dictionary of key-value pairs.
-                          additionalProperties:
-                            type: string
+                         generate_post_process_pdf:
+                            type: boolean
+                            description: |
+                               Set to `true` to generate a retrievable PDF for each document the app processes, including separate PDFs for each document created by split classification.
+
+                               <Note>When getting run results, use the [`include_source_info` query parameter](/api-sdk/api-reference/runs/get-run-results#request.query.include_source_info.include_source_info) to return the file path for any generated PDFs in your results. File paths are returned under `files/documents/post_processed_pdf_path`.</Note>
       responses:
         '202':
           content:
@@ -1070,7 +1098,7 @@ paths:
             - `post_processed_pdf_path`
 
                <Note>
-               A `post_processed_pdf_path` is populated when the app runs with `generate_post_process_pdf=true` in its [runtime config](/api-sdk/api-reference/run-reference#runtime-configs). Paths to PDFs are generated from each document, with separate PDF paths for documents split during classification.
+               A `post_processed_pdf_path` is populated when `settings/runtime_config/generate_post_process_pdf=true`. Paths to PDFs are generated from each document, with separate PDF paths for documents split during classification.
                </Note>
 
             The following values are returned at the field level (`files/documents/fields/...`):
@@ -1793,7 +1821,7 @@ paths:
 
                         <Tip>You can find the source app ID in its AI Hub URL. For Chatbot, URL will be <span>http</span>s://aihub.instabase.com/hub/apps/**788eba40-5a1f-45f4-ad56-57fb1abe62c7**. For Converse, URL will be <span>http</span>s://aihub.instabase.com/converse/**01930a30-f278-7dc1-be96-9abc5c0530b5**.</Tip>
 
-                        <Note>Chatbot IDs change with [every version update.](/chat/creating-chatbots#updating-chatbots) For convenience, when making a request to a given version of a chatbot, the query is automatically directed to the latest version of the chatbot.</Note>
+                        <Note>Chatbot IDs change with [every version update](/chat/creating-chatbots#updating-chatbots). For convenience, when making a request to a given version of a chatbot, the query is automatically directed to the latest version of the chatbot.</Note>
                   required:
                     - type
                     - id
@@ -2392,7 +2420,7 @@ components:
       required: true
       schema:
         type: string
-      description: The unique identifier of the query.  This value is returned by a [Run query request.](/api-sdk/api-reference/queries/run-query/)
+      description: The unique identifier of the query.  This value is returned by a [Run query request](/api-sdk/api-reference/queries/run-query/).
   schemas:
     batch:
       type: object
@@ -2701,6 +2729,11 @@ components:
         post_processed_paths:
           type: array
           description: An array of strings, each representing a path to post-processed documents.
+          items:
+            type: string
+        post_processed_pdf_path:
+          type: array
+          description: An array of strings, each representing a path to post-processed PDFs.
           items:
             type: string
         class_edit_history:

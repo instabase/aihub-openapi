@@ -517,7 +517,7 @@ paths:
                       properties:
                          custom:
                             type: object
-                            description: Configure any custom keys, using key/value pairs. In the key/value pair, define the key as the name of an existing key used in your app, and define the value as any custom value.
+                            description: Configure any custom keys, using key/value pairs. In the key/value pair, define the key as the name of an existing key used in your app, and define the value as any custom string.
                             additionalProperties:
                                type: string
                          secret:
@@ -789,7 +789,7 @@ paths:
                          custom:
                             type: object
                             description: |
-                               Configure any custom keys, using key/value pairs. In the key/value pair, define the key as the name of an existing key used in your deployment, and define the value as any custom value.
+                               Configure any custom keys, using key/value pairs. In the key/value pair, define the key as the name of an existing key used in your deployment, and define the value as any custom string.
 
                                <Note>Any keys being defined by API must match keys listed under your deployment's *Runtime configuration* settings. Keys included in the `custom` object must be listed on the **Custom keys** tab of the runtime configuration.</Note>
                             additionalProperties:

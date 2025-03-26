@@ -2105,7 +2105,7 @@ paths:
         - code-samples:
           - sdk: curl
             code: |
-                curl "${API_ROOT}/v2/secrets?workspace=<WORKSPACE>" \
+                curl "${API_ROOT}/v2/aihub/secrets?workspace=<WORKSPACE>" \
                   -H "Authorization: Bearer ${API_TOKEN}" \
                   -H "IB-Context: ${IB_CONTEXT}"
           - sdk: python
@@ -2178,7 +2178,7 @@ paths:
         - code-samples:
             - sdk: curl
               code: |
-                  curl -X POST "${API_ROOT}/v2/secrets" \
+                  curl -X POST "${API_ROOT}/v2/aihub/secrets" \
                     -H "Authorization: Bearer ${API_TOKEN}" \
                     -H "IB-Context: ${IB_CONTEXT}" \
                     -H "Content-Type: application/json" \
@@ -2263,7 +2263,7 @@ paths:
         - code-samples:
             - sdk: curl
               code: |
-                  curl -X PATCH "${API_ROOT}/v2/secrets" \
+                  curl -X PATCH "${API_ROOT}/v2/aihub/secrets" \
                     -H "Authorization: Bearer ${API_TOKEN}" \
                     -H "IB-Context: ${IB_CONTEXT}" \
                     -H "Content-Type: application/json" \
@@ -2327,7 +2327,7 @@ paths:
         - code-samples:
             - sdk: curl
               code: |
-                  curl -X DELETE "${API_ROOT}/v2/secrets" \
+                  curl -X DELETE "${API_ROOT}/v2/aihub/secrets" \
                     -H "Authorization: Bearer ${API_TOKEN}" \
                     -H "IB-Context: ${IB_CONTEXT}" \
                     -H "Content-Type: application/json" \

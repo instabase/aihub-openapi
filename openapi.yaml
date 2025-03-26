@@ -637,12 +637,12 @@ paths:
               type: string
           description: Filter jobs by status, such as COMPLETE, RUNNING, or FAILED.
         - in: query
-          name: output_repo
+          name: output_workspaces
           schema:
             type: array
             items:
               type: string
-          description: Filter runs by the output repo.
+          description: Filter runs by run's output workspace.
         - in: query
           name: from_timestamp
           schema:

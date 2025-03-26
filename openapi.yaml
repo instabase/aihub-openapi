@@ -513,15 +513,21 @@ paths:
                     keys:
                       type: object
                       description: |
-                         Configure runtime values for any custom and secret keys referenced in the app.
+                         Configure runtime values for any custom and secret keys referenced in the app. Undefined keys run without a value.
                       properties:
                          custom:
                             type: object
-                            description: Configure any custom keys, using key/value pairs. In the key/value pair, define the key as the name of an existing key used in your app, and define the value as any custom value.
+                            description: |
+                               Configure any custom keys, using key/value pairs. In the key/value pair, define the key as the name of an existing key used in your app, and define the value as any custom value.
+
+                               <Note>Any keys being defined by API should correspond to keys listed on the app **Overview** page, on the **Keys** tab.</Note>
                             additionalProperties: true
                          secret:
                             type: object
-                            description: Configure any secret keys, using key/value pairs. In the key/value pair, define the key as the name of an existing secret key used in your app, and define the value as any secret in the organization's secrets vault. For guidance on managing secrets, see [Managing secrets](/admin/secret-management/) or refer to the [Secrets endpoints](/api-sdk/api-reference/secrets/).
+                            description: |
+                               Configure any secret keys, using key/value pairs. In the key/value pair, define the key as the name of an existing secret key used in your app, and define the value as any secret in the organization's secrets vault. For guidance on managing secrets, see [Managing secrets](/admin/secret-management/) or refer to the [Secrets endpoints](/api-sdk/api-reference/secrets/).
+
+                               <Note>Any keys being defined by API should correspond to keys listed on the app **Overview** page, on the **Keys** tab.</Note>
                             additionalProperties:
                                type: string
                     runtime_config:
@@ -790,14 +796,14 @@ paths:
                             description: |
                                Configure any custom keys, using key/value pairs. In the key/value pair, define the key as the name of an existing key used in your deployment, and define the value as any custom value.
 
-                               <Note>Any keys being defined by API must match keys listed under your deployment's *Runtime configuration* settings. Keys included in the `custom` object must be listed on the **Custom keys** tab of the runtime configuration.</Note>
+                               <Note>Any keys being defined by API should correspond to keys listed under your deployment's *Runtime configuration* settings. For keys included in the `custom` object, match against the keys listed on the **Custom keys** tab of the runtime configuration.</Note>
                             additionalProperties: true
                          secret:
                             type: object
                             description: |
                                Configure any secret keys, using key/value pairs. In the key/value pair, define the key as the name of an existing secret key used in your deployment, and define the value as any secret in the organization's secrets vault. For guidance on managing secrets, see [Managing secrets](/admin/secret-management/) or refer to the [Secrets endpoints](/api-sdk/api-reference/secrets/).
 
-                               <Note>Any keys being defined by API must match keys listed under your deployment's *Runtime configuration* settings. Keys included in the `secret` object must be listed on the **Secret keys** tab of the runtime configuration.</Note>
+                               <Note>Any keys being defined by API should correspond to keys listed under your deployment's *Runtime configuration* settings. For keys included in the `secret` object, match against the keys listed on the **Secret keys** tab of the runtime configuration.</Note>
                             additionalProperties:
                                type: string
                     runtime_config:

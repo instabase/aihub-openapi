@@ -513,18 +513,16 @@ paths:
                     keys:
                       type: object
                       description: |
-                         Configure values for custom and secret keys referenced in any custom functions. Key values passed via API override any key values defined in the app or deployment configuration.
-
-                         <Note>For more information about various types of keys, see [Using keys in custom functions](apps/custom-functions#using-keys-in-custom-functions).</Note>
+                         Configure runtime values for any custom and secret keys referenced in the app.
                       properties:
                          custom:
                             type: object
-                            description: Configure any custom keys, using key/value pairs. In the key/value pair, define the key as the name of an existing key used in your app or deployment, and define the value as any custom value.
+                            description: Configure any custom keys, using key/value pairs. In the key/value pair, define the key as the name of an existing key used in your app, and define the value as any custom value.
                             additionalProperties:
                                type: string
                          secret:
                             type: object
-                            description: Configure any secret keys, using key/value pairs. In the key/value pair, define the key as the name of an existing secret key used in your app or deployment, and define the value as any secret in the organization's secrets vault. For guidance on managing secrets, see [Managing secrets](/admin/secret-management/) or refer to the [Secrets endpoints](/api-sdk/api-reference/secrets/).
+                            description: Configure any secret keys, using key/value pairs. In the key/value pair, define the key as the name of an existing secret key used in your app, and define the value as any secret in the organization's secrets vault. For guidance on managing secrets, see [Managing secrets](/admin/secret-management/) or refer to the [Secrets endpoints](/api-sdk/api-reference/secrets/).
                             additionalProperties:
                                type: string
                     runtime_config:
@@ -787,8 +785,6 @@ paths:
                       type: object
                       description: |
                          Define the values for any custom or secret keys configured under your deployment's *Runtime configurations* settings. Key values passed via API override any key values defined in the app or deployment configuration.
-
-                         <Note>For more information about various types of keys, see [Using keys in custom functions](apps/custom-functions#using-keys-in-custom-functions).</Note>
                       properties:
                          custom:
                             type: object

@@ -642,7 +642,7 @@ paths:
             type: array
             items:
               type: string
-          description: Filter runs by the run's output workspace.
+          description: Filter runs by the run's output workspace. By default, all runs across all workspaces you have access to are returned, use this query parameter to filter by specific workspace names. You must have access to the named workspaces.
         - in: query
           name: from_timestamp
           schema:

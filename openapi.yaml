@@ -642,7 +642,7 @@ paths:
             type: array
             items:
               type: string
-          description: Filter runs by run's output workspace.
+          description: Filter runs by the run's output workspace.
         - in: query
           name: from_timestamp
           schema:

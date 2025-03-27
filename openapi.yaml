@@ -781,7 +781,7 @@ paths:
                   description: Version of the app to use. If not specified, defaults to the latest production version.
                 output_dir:
                   type: string
-                  description: Defines a specific location for the output to be saved in a connected drive or Instabase Drive. If defined, overrides the `output_workspace` configured for the deployment. See [Specifying file paths](/api-sdk/api-reference/run-reference).
+                  description: Defines a specific location for the output to be saved in a connected drive or Instabase Drive. If defined, overrides the output workspace configured for the deployment. See [Specifying file paths](/api-sdk/api-reference/run-reference).
                 settings:
                   type: object
                   description: JSON object containing settings for the deployment run.

@@ -1279,6 +1279,18 @@ paths:
                 enable_object_detection:
                   type: boolean
                   description: Defines whether to enable [object detection](/chat/converse#digitization-and-object-detection) for the processed file. Object detection includes support for extracting tables and checkboxes.
+                enable_entity_detection:
+                  type: boolean
+                  description: If true, enables signature and barcode detection for the processed file.
+                  default: true
+                write_converted_image:
+                  type: boolean
+                  description: If true, the processed images for the document pages are saved in the storage system.
+                  default: true
+                write_thumbnail:
+                  type: boolean
+                  description: If true, thumbnails for the document's pages are saved in the storage system.
+                  default: true
               required:
                 - files
       responses:

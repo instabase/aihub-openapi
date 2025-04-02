@@ -1289,7 +1289,7 @@ paths:
                   default: true
                 write_thumbnail:
                   type: boolean
-                  description: Defines whether to save the thumbnails generated when processing the document. One thumbnail per document page is saved.
+                  description: Defines whether to generate and save thumbnails of each image file generated when processing the document. One thumbnail--a small image representation of the larger image--per document page is saved.
                   default: true
               required:
                 - files

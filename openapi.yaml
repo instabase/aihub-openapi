@@ -1060,6 +1060,10 @@ paths:
           description: |
             Whether to include confidence scores in the results. When set to `true`, various confidence scores are returned.
 
+            The following values are returned at the document level (`files/documents/...`):
+
+            - `classification_confidence`
+
             The following values are returned at the field level (`files/documents/fields/...`):
 
             - `confidence/model`

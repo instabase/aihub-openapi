@@ -2758,7 +2758,7 @@ components:
               type: number
               format: float
               nullable: true
-              description: The model's confidence for the document classification.
+              description: Classification confidence. Indicates the model’s certainty in predicting the class of a document.
     documentField:
       type: object
       properties:

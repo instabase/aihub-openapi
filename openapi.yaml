@@ -2747,6 +2747,14 @@ components:
             final_result_pass:
               type: boolean
               description: Indicates whether the document has passed all validation rules.
+        classification_confidence:
+          type: object
+          properties:
+            model:
+              type: number
+              format: float
+              nullable: true
+              description: The model's confidence for the document classification.
     documentField:
       type: object
       properties:

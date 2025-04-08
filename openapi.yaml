@@ -449,13 +449,13 @@ paths:
         - runs
       summary: Run app
       description: |
-        Run an app by its name or app ID. The input for the run can be a batch ID or an input file path.
+        Run an automation app by its name or app ID. The input for the run can be a batch ID or an input file path.
 
         <Tip>
 
         <span class="badge">Commercial & Enterprise</span>
 
-        Running an app via a deployment is generally preferred over running an app directly.
+        Running an automation app via a deployment is generally preferred over running an app directly.
 
         Deployments offer additional features including upstream and downstream integrations, deployment metrics, human review workflows, and secret and configuration management.
 
@@ -475,11 +475,11 @@ paths:
               properties:
                 app_name:
                   type: string
-                  description: Required unless using `app_id`. The name of the AI Hub app to run.
+                  description: Required unless using `app_id`. The name of the automation app to run.
                 app_id:
                   type: string
                   description: |
-                    Required unless using `app_name`. The app ID of the AI Hub app to run.
+                    Required unless using `app_name`. The app ID of the automation app to run.
 
                     <Tip>You can find an app ID in the app URL, such as http<span>s://</span>aihub.instabase.com/hub/apps/**528c36e8-ac5b-490d-a41b-7eec9c404b87**.</Tip>
                 owner:
@@ -487,7 +487,7 @@ paths:
                   description: |
                     The account that generated the app. If not specified, defaults to your AI Hub username.
 
-                    For custom AI Hub apps belonging to you, accept the default. For public AI Hub apps published by Instabase, specify `instabase`.
+                    For custom automation apps belonging to you, accept the default. For public automation apps published by Instabase, specify `instabase`.
                 batch_id:
                   type: integer
                   description: Required unless using `input_dir`. The batch ID of a batch created with the [Batches endpoint](/api-sdk/api-reference/batches/create-batch/). All files uploaded to the batch are used as input for the run.
@@ -632,7 +632,7 @@ paths:
           name: deployment_id
           schema:
             type: string
-          description: Filter runs by app deployment ID.
+          description: Filter runs by deployment ID.
         - in: query
           name: username
           schema:
@@ -901,7 +901,7 @@ paths:
         - runs
       summary: Delete run
       description: |
-        Deletes a specified run and optionally its associated database data, input files, output files, and logs. This is an asynchronous operation that must be [checked for completion](/api-sdk/api-reference/jobs/job-status).
+        Deletes a specified automation app run and optionally its associated database data, input files, output files, and logs. This is an asynchronous operation that must be [checked for completion](/api-sdk/api-reference/jobs/job-status).
 
         <Warning>Deleting the run's input files also deletes the batch that the run processed.</Warning>
       parameters:
@@ -999,11 +999,11 @@ paths:
         - runs
       summary: Get run results
       description: |
-        Get the results of a completed run.
+        Get the results of a completed automation app run.
 
         <Info>
 
-        This API operation might return field names that differ from those in the Build project.
+        This API operation might return field names that differ from those in the automation project.
         The operation converts field names to valid Python variable names by:
 
         * Allowing only letters, numbers, and underscores
@@ -1017,7 +1017,7 @@ paths:
         * `3rd category` → `_3rd_category`
         * `secret_id` → `secret__id`
 
-        These changes apply only to field names in the API response. The field names in the Build project are not changed.
+        These changes apply only to field names in the API response. The field names in the automation project are not changed.
 
         </Info>
 

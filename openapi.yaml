@@ -2015,6 +2015,7 @@ paths:
           description: Full path to the file.
         - in: query
           name: expect-node-type
+          required: true
           schema:
             type: string
             enum: [file, folder]

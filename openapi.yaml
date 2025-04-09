@@ -475,11 +475,11 @@ paths:
               properties:
                 app_name:
                   type: string
-                  description: Required unless using `app_id`. The name of the automation app to run.
+                  description: Required unless using `app_id`. The name of the app to run.
                 app_id:
                   type: string
                   description: |
-                    Required unless using `app_name`. The app ID of the automation app to run.
+                    Required unless using `app_name`. The app ID of the app to run.
 
                     <Tip>You can find an app ID in the app URL, such as http<span>s://</span>aihub.instabase.com/hub/apps/**528c36e8-ac5b-490d-a41b-7eec9c404b87**.</Tip>
                 owner:
@@ -487,7 +487,7 @@ paths:
                   description: |
                     The account that generated the app. If not specified, defaults to your AI Hub username.
 
-                    For custom automation apps belonging to you, accept the default. For public automation apps published by Instabase, specify `instabase`.
+                    For custom apps belonging to you, accept the default. For AI Hub Marketplace apps published by Instabase, specify `instabase`.
                 batch_id:
                   type: integer
                   description: Required unless using `input_dir`. The batch ID of a batch created with the [Batches endpoint](/api-sdk/api-reference/batches/create-batch/). All files uploaded to the batch are used as input for the run.

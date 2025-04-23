@@ -1283,6 +1283,19 @@ paths:
                 enable_object_detection:
                   type: boolean
                   description: Defines whether to enable [object detection](/chat/converse#digitization-and-object-detection) for the processed file. Object detection includes support for extracting tables and checkboxes.
+                  default: false
+                enable_entity_detection:
+                  type: boolean
+                  description: Defines whether to enable entity detection for the processed file. Entity detection is supported for signatures and barcodes. If entity detection is not required, consider disabling to improve processing speed.
+                  default: true
+                write_converted_image:
+                  type: boolean
+                  description: Defines whether to save the image files generated when processing the document. One `.jpeg` image file per document page is saved. If storage space is a consideration, consider disabling for documents with many pages.
+                  default: true
+                write_thumbnail:
+                  type: boolean
+                  description: Defines whether to generate and save thumbnails of each image file generated when processing the document. One `.jpeg` thumbnail--a small image representation of the larger image--per document page is saved. If storage space is a consideration, consider disabling for documents with many pages.
+                  default: true
               required:
                 - files
       responses:

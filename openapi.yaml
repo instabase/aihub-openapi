@@ -1246,7 +1246,10 @@ paths:
       tags:
         - conversations
       summary: Create conversation and upload files
-      description: Create a new conversation and upload files to it.
+      description: |
+         Create a new conversation and upload files to it.
+
+         <Note>For an overview of file upload limitations and supported file types, see [File limitations and processing](/overview/limitations/).</Note>
       parameters:
         - $ref: '#/components/parameters/ib_context'
       requestBody:
@@ -1604,13 +1607,7 @@ paths:
       description: |
         Upload documents to a specified conversation.
 
-        <Note>
-        There are some limitations when uploading files to a conversation:
-          - Files can be up to 50 MB or 800 pages.
-          - You can upload up to 100 MB per request.
-          - You can have up to 100 documents per conversation.
-          - There are specific [supported file types](/overview/limitations#supported-file-types)
-        </Note>
+        <Note>For an overview of file upload limitations and supported file types, see [File limitations and processing](/overview/limitations/).</Note>
       parameters:
         - $ref: '#/components/parameters/conversation_id'
         - $ref: '#/components/parameters/ib_context'

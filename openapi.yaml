@@ -2105,7 +2105,7 @@ paths:
       description: |
         Create a non-empty file or overwrite a file.
 
-        If the parent folder of PATH doesn't exist, the file system creates the parent folder first before creating the file. The parent folder must be a folder or an error is returned.
+        If the parent folder of the `path` parameter doesn't exist, the file system creates it before creating the file. 
         <Note>Ensure the path is accessible within the context defined by the `IB-Context` header.</Note>
       parameters:
         - in: path
@@ -2125,7 +2125,7 @@ paths:
               format: binary
       responses:
         '201':
-          description: The request succeeded and a new file was created at the target location. This status code is only returned when If-None-Match is specified * in the header.
+          description: The request succeeded and a new file was created at the target location. AI Hub returns this status code only when the request includes an `If-None-Match` header with a value of `*`.
           headers:
             Location:
               schema:
@@ -2134,7 +2134,7 @@ paths:
         '204':
           description: The request succeeded.
         '412':
-          description: The request failed because a file existed at the target location that matched the If-None-Match header.
+          description: The request failed because a file exists at the target location that matches the `If-None-Match` header.
         default:
           content:
             application/json:
@@ -2169,7 +2169,7 @@ paths:
       description: |
         Read metadata of a file or folder at the target path.
 
-        This API can be used to tell whether the object at the target path is a file or folder. If it is a file, it can also be used to find the size of the file and the time the file was last modified.
+        This API operation reports whether the object at the target path is a file or folder. If a file, it also reports the file size and last modification time.
         <Note>Ensure the path is accessible within the context defined by the `IB-Context` header.</Note>
       parameters:
         - in: path
@@ -2185,7 +2185,7 @@ paths:
             type: string
           required: false
           description: |
-            Configures retry logic if no file or folder is found at the target path. Uses a constant backoff algorithm. Don't retry if this header isn't provided. Example: `{retries:3,backoff-seconds:5}`
+            Configures retry logic if no file or folder is found at the target path. Uses a constant backoff algorithm. Don't retry if this header isn't provided. Example: `{'retries': 3, 'backoff-seconds': 5}`
       responses:
         '200':
           description: Successfully retrieved metadata.
@@ -2193,7 +2193,7 @@ paths:
             Content-Type:
               schema:
                 type: string
-              description: application/json if it is a folder, application/octet-stream if it is a file.
+              description: `application/json` if it is a folder, `application/octet-stream` if it is a file.
             Content-Length:
               schema:
                 type: integer

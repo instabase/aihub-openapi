@@ -2193,7 +2193,7 @@ paths:
             Content-Type:
               schema:
                 type: string
-              description: `application/json` if it is a folder, `application/octet-stream` if it is a file.
+              description: Returns `application/json` if it is a folder and `application/octet-stream` if it is a file.
             Content-Length:
               schema:
                 type: integer

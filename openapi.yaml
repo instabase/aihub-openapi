@@ -2095,6 +2095,185 @@ paths:
                            ib_context="<IB-CONTEXT>")
 
                   content = client.files.read('<FILE-PATH>', expect_node_type='file')
+    put:
+      operationId: writeFile
+      x-fern-audiences:
+        - hidden
+      tags:
+        - files
+      summary: Create or overwrite file
+      description: |
+        Create a non-empty file or overwrite a file.
+
+        If the parent folder of the `path` parameter doesn't exist, the file system creates it before creating the file. 
+        <Note>Ensure the path is accessible within the context defined by the `IB-Context` header.</Note>
+      parameters:
+        - in: path
+          name: path
+          required: true
+          schema:
+            type: string
+          description: Full path to the file.
+        - $ref: '#/components/parameters/ib_context'
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              description: The raw contents of the file to write.
+              type: string
+              format: binary
+      responses:
+        '201':
+          description: The request succeeded and a new file was created at the target location. AI Hub returns this status code only when the request includes an `If-None-Match` header with a value of `*`.
+          headers:
+            Location:
+              schema:
+                type: string
+              description: Contains a URL leading to the created file.
+        '204':
+          description: The request succeeded.
+        '412':
+          description: The request failed because a file exists at the target location that matches the `If-None-Match` header.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: Error response.
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                curl -X PUT "${API_ROOT}/v2/files/<FILE-PATH>" \
+                  -H "Authorization: Bearer ${API_TOKEN}" \
+                  -H "IB-Context: ${IB_CONTEXT}" \
+                  -H "Content-Type: application/octet-stream" \
+                  --data-binary "@<LOCAL_FILEPATH>"
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+                  client = AIHub(api_root="<API-ROOT>",
+                           api_key="<API-TOKEN>",
+                           ib_context="<IB-CONTEXT>")
+                  data = bytes('hello world', 'utf-8')
+                  client.files.write('<FILE-PATH>', data)
+    head:
+      operationId: getFileMetadata
+      x-fern-audiences:
+        - hidden
+      tags:
+        - files
+      summary: Read file or folder metadata
+      description: |
+        Read metadata of a file or folder at the target path.
+
+        This API operation reports whether the object at the target path is a file or folder. If a file, it also reports the file size and last modification time.
+        <Note>Ensure the path is accessible within the context defined by the `IB-Context` header.</Note>
+      parameters:
+        - in: path
+          name: path
+          required: true
+          schema:
+            type: string
+          description: Full path to the file or folder.
+        - $ref: '#/components/parameters/ib_context'
+        - in: header
+          name: IB-Retry-Config
+          schema:
+            type: string
+          required: false
+          description: |
+            Configures retry logic if no file or folder is found at the target path. Uses a constant backoff algorithm. Don't retry if this header isn't provided. Example: `{'retries': 3, 'backoff-seconds': 5}`
+      responses:
+        '200':
+          description: Successfully retrieved metadata.
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: Returns `application/json` if it is a folder and `application/octet-stream` if it is a file.
+            Content-Length:
+              schema:
+                type: integer
+                format: int64
+              description: Optional. Only present if the target path is a file. The length of the file, in bytes.
+            last-modified:
+              schema:
+                type: string
+                format: date-time # Or http-date if more appropriate
+              description: Optional. Only present if the target path is a file. The date and time the file was last modified.
+        '404':
+          description: No file or folder was found at the target path.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: Error response.
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                curl -I "${API_ROOT}/v2/files/<FILE-PATH>" \
+                  -H "Authorization: Bearer ${API_TOKEN}" \
+                  -H "IB-Context: ${IB_CONTEXT}"
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+                  client = AIHub(api_root="<API-ROOT>",
+                           api_key="<API-TOKEN>",
+                           ib_context="<IB-CONTEXT>")
+                  client.files.get_file_metadata('<FILE-PATH>')
+    delete:
+      operationId: deleteFileOrFolder
+      x-fern-audiences:
+        - hidden
+      tags:
+        - files
+      summary: Delete a file or folder
+      description: |
+        Delete a single file or folder.
+        <Note>Ensure the path is accessible within the context defined by the `IB-Context` header.</Note>
+      parameters:
+        - in: path
+          name: path
+          required: true
+          schema:
+            type: string
+          description: Full path to the file or folder.
+        - $ref: '#/components/parameters/ib_context'
+      responses:
+        '202':
+          description: Indicates that the deletion request has been accepted.
+          headers:
+            Location:
+              schema:
+                type: string
+              description: A URL where the status of the deletion job can be checked.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: Error response.
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                curl -X DELETE "${API_ROOT}/v2/files/<FILE-PATH>" \
+                  -H "Authorization: Bearer ${API_TOKEN}" \
+                  -H "IB-Context: ${IB_CONTEXT}"
+            - sdk: python
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+                  client = AIHub(api_root="<API-ROOT>",
+                           api_key="<API-TOKEN>",
+                           ib_context="<IB-CONTEXT>")
+                  client.files.delete('<FILE-PATH>')
   /v2/aihub/secrets:
     get:
       operationId: listSecrets
@@ -2246,7 +2425,7 @@ paths:
                     description="Sample secret",
                     value="my password",
                     allowed_workspaces_type="SOME",
-                    # only required when allowed_workspaces_type=“SOME"
+                    # only required when allowed_workspaces_type="SOME"
                     allowed_workspaces=['workspace1', 'workspace2'])
     patch:
       operationId: updateSecret
@@ -2769,7 +2948,7 @@ components:
               type: number
               format: float
               nullable: true
-              description: Classification confidence. Indicates the model’s certainty in predicting the class of a document.
+              description: Classification confidence. Indicates the model's certainty in predicting the class of a document.
     documentField:
       type: object
       properties:

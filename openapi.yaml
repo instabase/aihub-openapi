@@ -661,12 +661,12 @@ paths:
           name: from_timestamp
           schema:
             type: integer
-          description: Filter runs starting from this timestamp. Timestamp in s. Defaults to 24 hours before the current time.
+          description: Filter runs starting from this timestamp. Timestamp in Unix time in seconds. Defaults to 24 hours before the current time.
         - in: query
           name: to_timestamp
           schema:
             type: integer
-          description: Filter runs up to this timestamp. Timestamp in s. Defaults to the current time.
+          description: Filter runs up to this timestamp. Timestamp in Unix time in seconds. Defaults to the current time.
         - in: query
           name: limit
           schema:

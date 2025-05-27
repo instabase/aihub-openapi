@@ -1165,12 +1165,48 @@ paths:
               name: Simple request
               code: |
                   # AI Hub Python SDK example
+                  # The results from this endpoint are paginated.
+                  # The `has_more` field in the response indicates if there are more results to fetch,
+                  # and `file_offset` can be used to specify the starting point for the next set of results.
+                  # The following example demonstrates how to retrieve all results:
                   from aihub import AIHub
 
-                  client = AIHub(api_root="<API-ROOT>",
-                                 api_key="<API-TOKEN>",
-                                 ib_context="<IB-CONTEXT>")
-                  results = client.apps.runs.results('<RUN-ID>')
+                  # Initialize the AIHub client
+                  # Replace with your actual API root, API token, and IB context
+                  client = AIHub(
+                      api_root="<API-ROOT>",
+                      api_token="<API-TOKEN>",
+                      ib_context="<IB-CONTEXT>",
+                  )
+
+                  # Initialize an empty list to store all file results
+                  all_files_results = []
+
+                  # Initialize the starting offset for pagination
+                  current_offset = 0
+
+                  # Replace with your actual RUN ID
+                  run_id = "<RUN-ID>"
+
+                  # Loop to fetch all results using pagination
+                  while True:
+                      # Fetch results with the current offset
+                      results = client.apps.runs.results(run_id, file_offset=current_offset)
+
+                      # Extend the list with the files from the current response
+                      all_files_results.extend(results.files)
+
+                      # Check if there are more results to fetch
+                      if not results.has_more:
+                          # If not, break the loop
+                          break
+
+                      # Increment the offset by the number of files received in the current response
+                      current_offset += len(results.files)
+
+                  # Now, all_files_results contains all files from all pages
+                  # You can then process the all_files_results list as needed
+                  print(f"Successfully fetched {len(all_files_results)} files.")
             - sdk: curl
               name: Simple request
               code: |

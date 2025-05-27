@@ -1175,7 +1175,7 @@ paths:
                   # Replace with your actual API root, API token, and IB context
                   client = AIHub(
                       api_root="<API-ROOT>",
-                      api_token="<API-TOKEN>",
+                      api_key="<API-TOKEN>",
                       ib_context="<IB-CONTEXT>",
                   )
 

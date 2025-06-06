@@ -2576,6 +2576,8 @@ paths:
       summary: Get audit logs
       description: |
         Retrieve audit logs based on specified filters. Returns a paginated list of audit log entries.
+
+        <Note>User must have audit log app access to query this endpoint.</Note>
       requestBody:
         required: true
         content:

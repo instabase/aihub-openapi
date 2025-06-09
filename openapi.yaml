@@ -2597,38 +2597,12 @@ paths:
                   type: string
                   description: |
                     Type of audit log to filter by. Valid values are:
-                    - login: Login operation logs
                     - account: Account operation logs
-                    - acl: ACL operation logs
-                    - org: Organization operation logs
-                    - repo: Repository operation logs
-                    - mount: Mount operation logs
                     - api: API operation logs
-                    - oauth2: OAuth2 operation logs
-                    - env: Environment configuration logs
-                    - site: Site operation logs
-                    - flow: Flow app operation logs
-                    - reader: Reader app operation logs
-                    - flow_correction: Flow correction operation logs
-                    - flow_job: Flow job operation logs
-                    - flow_editor: Flow editor operation logs
-                    - redactor: Redactor app operation logs
-                    - nlp: NLP pipeline operation logs
-                    - nlp_step: NLP pipeline step operation logs
-                    - model_service: Model service operation logs
-                    - model_training: Model training operation logs
-                    - app_access: App access operation logs
-                    - diff: Diff app operation logs
-                    - ml_studio: ML Studio operation logs
-                    - refiner: Refiner operation logs
-                    - flow_pipeline: Flow pipeline operation logs
-                    - solution_builder: Solution builder operation logs
-                    - global_drives: Global drive operation logs
-                    - flagged_moderation: Flagged moderation operation logs
-                    - org_secret: Organization secret operation logs
                     - app_deployment_run: App deployment run operation logs
                     - app_deployment: App deployment operation logs
-                    - apps: Apps operation logs
+                    - org_secret: Organization secret operation logs
+                    - org: Organization operation logs
                   nullable: true
                 email:
                   type: string

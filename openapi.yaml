@@ -2654,6 +2654,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl "${API_ROOT}/v1/auditlogs" \
+                    -H "Authorization: Bearer ${API_TOKEN}" \
+                    -H "Content-Type: application/json" \
+                    -d '{
+                          "log_type": "org_secret",
+                          "size": 50,
+                          "start_time": "1749139277810",
+                          "start": 200
+                        }'
 
 components:
   securitySchemes:

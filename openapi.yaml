@@ -2105,7 +2105,7 @@ paths:
       description: |
         Create a non-empty file or overwrite a file.
 
-        If the parent folder of the `path` parameter doesn't exist, the file system creates it before creating the file. 
+        If the parent folder of the `path` parameter doesn't exist, the file system creates it before creating the file.
         <Note>Ensure the path is accessible within the context defined by the `IB-Context` header.</Note>
       parameters:
         - in: path
@@ -2577,7 +2577,7 @@ paths:
       description: |
         Retrieve audit logs based on specified filters. Returns a paginated list of audit log entries.
 
-        <Note>User must have audit log app access to query this endpoint.</Note>
+        <Note>The audit logs feature is available for Enterprise-tier organizations with single-tenant environments. To use this endpoint, you must have audit log access permissions. Contact Instabase Support to request access to audit logs for your organization.</Note>
       requestBody:
         required: true
         content:
@@ -2599,10 +2599,13 @@ paths:
                     Type of audit log to filter by. Valid values are:
                     - account: Account operation logs
                     - api: API operation logs
-                    - app_deployment_run: App deployment run operation logs
-                    - app_deployment: App deployment operation logs
+                    - apps: Automation app operation logs
+                    - app_deployment_run: Deployment run operation logs
+                    - app_deployment: Deployment operation logs
                     - org_secret: Organization secret operation logs
                     - org: Organization operation logs
+
+                    For details about tracked operations, see [Viewing audit logs](/admin/audit-logs/).
                   nullable: true
                 email:
                   type: string

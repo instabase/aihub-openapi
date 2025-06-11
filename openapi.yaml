@@ -2596,14 +2596,17 @@ paths:
                 log_type:
                   type: string
                   description: |
-                    Type of audit log to filter by. Valid values are:
-                    - account: Account operation logs
-                    - api: API operation logs
+                    Type of audit log to filter by. Valid values include:
+                    - account: Account creation logs
+                    - acl: Workspace and group membership operation logs
                     - apps: Automation app operation logs
                     - app_deployment_run: Deployment run operation logs
                     - app_deployment: Deployment operation logs
+                    - login: Member login and authentication logs
+                    - mount: Data connection operation logs
+                    - oauth2: OAuth token operation logs
+                    - org: Organization role change logs
                     - org_secret: Organization secret operation logs
-                    - org: Organization operation logs
 
                     For details about tracked operations, see [Viewing audit logs](/admin/audit-logs/).
                   nullable: true

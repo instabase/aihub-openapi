@@ -2606,7 +2606,7 @@ paths:
                     - mount: Data connection operation logs
                     - oauth2: OAuth token operation logs
                     - org: Organization role change logs
-                    - org_secret: Organization secret operation logs
+                    - org_secret: Organization secrets operation logs
 
                     For details about tracked operations, see [Viewing audit logs](/admin/audit-logs/).
                   nullable: true

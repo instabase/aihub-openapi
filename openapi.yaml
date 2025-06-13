@@ -1001,6 +1001,12 @@ paths:
       description: |
         Get the results of a completed automation app run.
 
+        <Note>
+        The results from this endpoint are paginated. The `has_more` field in the response indicates if there are more results to fetch and the `file_offset` query parameter can be used to specify the starting point for the next set of results.
+
+        For an example of using `file_offset` to fetch all results, see the *Retrieving paginated results* code sample.
+        </Note>
+
         <Info>
 
         This API operation might return field names that differ from those in the automation project.
@@ -1165,8 +1171,8 @@ paths:
               name: Simple request
               code: |
                   # AI Hub Python SDK example
-                  from aihub import AIHub
 
+                  from aihub import AIHub
                   client = AIHub(api_root="<API-ROOT>",
                                  api_key="<API-TOKEN>",
                                  ib_context="<IB-CONTEXT>")
@@ -1222,7 +1228,7 @@ paths:
                         - "instabase-org/orguser/fs/S3 Drive/app-runs/dd97-42cb-8b8e-28a63066887e/4180-8508-b103afb67185/s1_process_files/images/test2.png.PNG"
           code-samples:
             - sdk: python
-              name: Request with query parameters
+              name: Using query parameters
               code: |
                   # AI Hub Python SDK example
                   from aihub import AIHub
@@ -1234,10 +1240,48 @@ paths:
                                                      include_confidence_score=True,
                                                      include_source_info=True)
             - sdk: curl
-              name: Request with query parameters
+              name: Using query parameters
               code: |
                   curl "${API_ROOT}/v2/apps/runs/<RUN-ID>/results?include_confidence_scores=true&include_source_info=true" \
                     -H "Authorization: Bearer ${API_TOKEN}"`
+            - sdk: python
+              name: Retrieving paginated results
+              code: |
+                  # AI Hub Python SDK example
+                  # The results from this endpoint are paginated.
+                  # The `has_more` field in the response indicates if there are more results to fetch,
+                  # and `file_offset` can be used to specify the starting point for the next set of results.
+                  # The following example demonstrates how to retrieve all results:
+                  from aihub import AIHub
+
+                  client = AIHub(
+                      api_root="<API-ROOT>",
+                      api_key="<API-TOKEN>",
+                      ib_context="<IB-CONTEXT>",
+                  )
+
+                  all_files_results = []
+
+                  current_offset = 0
+
+                  run_id = "<RUN-ID>"
+
+                  while True:
+                      # Fetch results with the current offset
+                      results = client.apps.runs.results(run_id, file_offset=current_offset)
+
+                      # Extend the list with the files from the current response
+                      all_files_results.extend(results.files)
+
+                      # Check if there are more results to fetch
+                      if not results.has_more:
+                          # If not, break the loop
+                          break
+
+                      # Increment the offset by the number of files received in the current response
+                      current_offset += len(results.files)
+
+                  print(f"Successfully fetched {len(all_files_results)} files.")
   /v2/conversations:
     post:
       operationId: createConversation
@@ -2988,7 +3032,7 @@ components:
             $ref: '#/components/schemas/fileWithDocuments'
         has_more:
           type: boolean
-          description: Indicates whether additional results are available beyond those included in the current response.
+          description: Indicates whether additional results are available beyond those included in the current response. Use the `file_offset` query parameter to specify the starting point when fetching the next set of results.
         review_completed:
           type: boolean
           description: Indicates whether the run or document has completed review.

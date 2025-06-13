@@ -3067,6 +3067,9 @@ components:
         type:
           type: string
           description: The type of the field.
+        error_msg:
+          type: string
+          description: The error message for the field.
         source_coordinates:
           type: array
           items:

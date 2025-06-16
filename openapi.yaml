@@ -26,6 +26,8 @@ paths:
       description: |
         Create a new batch.
 
+        This API operation is wrapped by the SDK method `client.batches.create()`.
+
         <Note>[Upload files to the batch](/api-sdk/api-reference/batches/add-file-to-batch) in a separate request.</Note>
       parameters:
         - $ref: '#/components/parameters/ib_context'
@@ -73,13 +75,16 @@ paths:
                     -d '{"name": "test"}'
             - sdk: python
               code: |
-                  # AI Hub Python SDK example
+                  # SDK example
                   from aihub import AIHub
-                  client = AIHub(api_root="<API-ROOT>",
-                           api_key="<API-TOKEN>",
-                           ib_context="<IB-CONTEXT>")
+                  client = AIHub(api_root='https://aihub.instabase.com/api',
+                                 api_key='abcdefghijklmnopqrst1234567890',
+                                 ib_context='john.doe_acme.com')
 
-                  batch = client.batches.create(name='test')
+                  # returns instance of Batch model
+                  batch = client.batches.create(name='MyBatch',
+                                                workspace='MyWorkspace')
+                  print(f"batch_id: {batch.id}")
     get:
       operationId: listBatches
       x-fern-audiences:
@@ -87,7 +92,11 @@ paths:
       tags:
         - batches
       summary: List batches
-      description: Return a list of batches. Use query parameters to filter results.
+      description: |
+        Return a list of batches. Use query parameters to filter results.
+
+        This API operation is wrapped by the SDK method `client.batches.list()`.
+
       parameters:
         - in: query
           name: workspace
@@ -135,14 +144,21 @@ paths:
                     --data-urlencode "limit=100"
             - sdk: python
               code: |
-                  # AI Hub Python SDK example
+                  # SDK example
                   from aihub import AIHub
+                  client = AIHub(api_root='https://aihub.instabase.com/api',
+                                 api_key='abcdefghijklmnopqrst1234567890',
+                                 ib_context='john.doe_acme.com')
 
-                  client = AIHub(api_root="<API-ROOT>",
-                                 api_key="<API-TOKEN>",
-                                 ib_context="<IB-CONTEXT>")
-                  batches = client.batches.list(workspace="my-workspace",
-                                                limit=100)
+                  # returns instance of ListBatches200Response model
+                  batches = client.batches.list(workspace='MyWorkspace',
+                                                username='john.doe_acme.com',
+                                                limit=3,
+                                                file_offset=6)
+
+                  for batch_info in batches:
+                      print(f"id: {batch_info.id")
+                      print(f"name: {batch_info.name")
 
   /v2/batches/{batch_id}:
     get:
@@ -152,7 +168,10 @@ paths:
       tags:
         - batches
       summary: Get batch information
-      description: Retrieve information about a batch.
+      description: | 
+        Retrieve information about a batch.
+        
+        This API operation is wrapped by the SDK method `client.batches.list()`.
       parameters:
         - $ref: '#/components/parameters/batch_id'
         - $ref: '#/components/parameters/ib_context'
@@ -174,13 +193,18 @@ paths:
                     -H "IB-Context: ${IB_CONTEXT}"
             - sdk: python
               code: |
-                  # AI Hub Python SDK example
+                  # SDK example
                   from aihub import AIHub
+                  client = AIHub(api_root='https://aihub.instabase.com/api',
+                                 api_key='abcdefghijklmnopqrst1234567890',
+                                 ib_context='john.doe_acme.com')
+  
+                  # returns instance of BatchInfo model
+                  batch_info = client.batches.get(batch_id=123456)
+  
+                  print(f"id: {batch_info.id")
+                  print(f"name: {batch_info.name")
 
-                  client = AIHub(api_root="<API-ROOT>",
-                                 api_key="<API-TOKEN>",
-                                 ib_context="<IB-CONTEXT>")
-                  batch = client.batches.get("<BATCH-ID>")
     delete:
       operationId: deleteBatch
       x-fern-audiences:
@@ -188,7 +212,10 @@ paths:
       tags:
         - batches
       summary: Delete batch
-      description: Delete a batch and all its files. This is an asynchronous operation that must be [checked for completion](/api-sdk/api-reference/batches/poll-batches-job).
+      description: |
+        Delete a batch and all its files. This is an asynchronous operation that must be [checked for completion](/api-sdk/api-reference/batches/poll-batches-job).
+        
+        This API operation is wrapped by the SDK method `client.batches.delete()`.
       parameters:
         - $ref: '#/components/parameters/batch_id'
         - $ref: '#/components/parameters/ib_context'
@@ -210,21 +237,21 @@ paths:
                     -H "IB-Context: ${IB_CONTEXT}"
             - sdk: python
               code: |
-                  # AI Hub Python SDK example
+                  # SDK example
                   from aihub import AIHub
-
-                  client = AIHub(api_root="<API-ROOT>",
-                                 api_key="<API-TOKEN>",
-                                 ib_context="<IB-CONTEXT>")
-                  resp = client.batches.delete("<BATCH-ID>")
-                  job_id = resp.job_id
-
-                  # Poll for job completion
+                  import time
+                  client = AIHub(api_root='https://aihub.instabase.com/api',
+                                 api_key='abcdefghijklmnopqrst1234567890',
+                                 ib_context='john.doe_acme.com')
+                  
+                  delete_resp = client.batches.delete(batch_id=123456)
+                
+                  # check delete job status until done
                   while True:
-                      job_status = client.jobs.status(job_id)
-                      if job_status.state == 'COMPLETE':
+                      poll_resp = client.batches.poll_job(job_id=delete_resp.job_id)
+                      if poll_resp.state not in ['PENDING', 'RUNNING']:
                           break
-                      time.sleep(5)
+                      time.sleep(3)  # pause before polling the status again
 
   /v2/batches/{batch_id}/files:
     get:
@@ -234,7 +261,10 @@ paths:
       tags:
         - batches
       summary: List files in a batch
-      description: Return a list of files in a batch.
+      description: |
+          Return a list of files in a batch.
+        
+          This API operation is wrapped by the SDK method `client.batches.list_files()`.
       parameters:
         - $ref: '#/components/parameters/batch_id'
         - in: query
@@ -290,13 +320,20 @@ paths:
                   -H "IB-Context: ${IB_CONTEXT}"
             - sdk: python
               code: |
-                # AI Hub Python SDK example
+                # SDK example
                 from aihub import AIHub
+                client = AIHub(api_root='https://aihub.instabase.com/api',
+                               api_key='abcdefghijklmnopqrst1234567890',
+                               ib_context='john.doe_acme.com')
 
-                client = AIHub(api_root="<API-ROOT>",
-                               api_key="<API-TOKEN>",
-                               ib_context="<IB-CONTEXT>")
-                resp = client.batches.list_files(batch_id="<BATCH-ID>")
+                # returns instance of ListBatchFilesResponse model
+                resp = client.batches.list_files(batch_id=123456,
+                                                 page_size=2,
+                                                 start_token='1Cv...<snip>...TI=')
+                
+                print(f"has more files? {resp.has_more}")
+                for node in resp.nodes:
+                    print(f"file name: {node.name}")
 
   /v2/batches/{batch_id}/files/{filename}:
     put:
@@ -308,7 +345,9 @@ paths:
       summary: Upload file to batch
       description: |
         Upload a file to a batch or update the contents of a previously uploaded file in a batch.
-
+        
+        This API operation is wrapped by the SDK method `client.batches.add_file()`.
+        
         <Info>Files can be uploaded one at a time and the suggested max size for each file is 10 MB. For larger files, see [Multipart file upload](/api-sdk/multipart-upload/).</Info>
       parameters:
         - $ref: '#/components/parameters/batch_id'
@@ -349,15 +388,16 @@ paths:
                     --upload-file '<LOCAL_FILEPATH>' # Full path to the file in the machine that's making the request
             - sdk: python
               code: |
-                  # AI Hub Python SDK example
+                  # SDK example
                   from aihub import AIHub
-
-                  client = AIHub(api_root="<API-ROOT>",
-                                 api_key="<API-TOKEN>",
-                                 ib_context="<IB-CONTEXT>")
-                  client.batches.add_file(batch_id="<BATCH-ID>",
-                                          file_name="test.pdf",
-                                          file=open("test.pdf", "rb"))
+                  client = AIHub(api_root='https://aihub.instabase.com/api',
+                                 api_key='abcdefghijklmnopqrst1234567890',
+                                 ib_context='john.doe_acme.com')
+                
+                  # returns None on success, throws Exception on failure
+                  client.batches.add_file(batch_id=123456,
+                                          file_name='MyFile1.pdf',
+                                          file=open('file1.pdf', 'rb'))
 
     delete:
       operationId: deleteFileFromBatch
@@ -366,7 +406,10 @@ paths:
       tags:
         - batches
       summary: Delete file from batch
-      description: Delete a file from a batch.
+      description: |
+        Delete a file from a batch.
+        
+        This API operation is wrapped by SDK method `client.batches.delete_file()`.
       parameters:
         - $ref: '#/components/parameters/batch_id'
         - name: filename
@@ -390,15 +433,16 @@ paths:
                     -H "IB-Context: ${IB_CONTEXT}"
             - sdk: python
               code: |
-                  # AI Hub Python SDK example
+                  # SDK example
                   from aihub import AIHub
+                  client = AIHub(api_root='https://aihub.instabase.com/api',
+                                 api_key='abcdefghijklmnopqrst1234567890',
+                                 ib_context='john.doe_acme.com')
 
-                  client = AIHub(api_root="<API-ROOT>",
-                                 api_key="<API-TOKEN>",
-                                 ib_context="<IB-CONTEXT>")
-                  resp = client.batches.delete_file("<BATCH-ID>",
-                                                    "<FILENAME>")
-
+                  # Returns None on success, or if file isn't found in the batch.
+                  # Throws an exception if the batch isn't found.
+                  client.batches.delete_file(batch_id=123456,
+                                             file_name='MyFile.txt')
   /v2/batches/jobs/{job_id}:
     get:
       operationId: pollBatchesJob
@@ -407,7 +451,10 @@ paths:
       tags:
         - batches
       summary: Poll batches job
-      description: Poll the asynchronous job created when deleting a batch or deleting a file from a batch.
+      description: |
+        Poll the asynchronous job created when deleting a batch or deleting a file from a batch.
+        
+        <Info>This method is maintained for backward compatibility, but the functionally identical [client.jobs.status()](/api-sdk/api-reference/jobs/job-status) method is preferred.</Info>
       parameters:
         - name: job_id
           in: path
@@ -432,13 +479,24 @@ paths:
                     -H "IB-Context: ${IB_CONTEXT}"
             - sdk: python
               code: |
-                  # AI Hub Python SDK example
+                  # SDK example
                   from aihub import AIHub
+                  import time
+                
+                  client = AIHub(api_root='https://aihub.instabase.com/api',
+                                 api_key='abcdefghijklmnopqrst1234567890',
+                                 ib_context='john.doe_acme.com')
+                
+                  # start a job to delete a batch
+                  delete_resp = client.batches.delete(batch_id=123456)
 
-                  client = AIHub(api_root="<API-ROOT>",
-                                 api_key="<API-TOKEN>",
-                                 ib_context="<IB-CONTEXT>")
-                  resp = client.batches.poll_job("<JOB-ID>")
+                  # poll the status of the job until it's done
+                  while True:
+                      # returns instance of JobStatusResponse model
+                      poll_resp = client.batches.poll_job(job_id=delete_resp.job_id)
+                      if poll_resp.state not in ['PENDING', 'RUNNING']:
+                          break
+                      time.sleep(3)  # pause before polling the status again               
 
   /v2/apps/runs:
     post:
@@ -741,6 +799,8 @@ paths:
 
         Run an AI Hub deployment by its deployment ID. The input for the run is specified using a batch ID or file path.
 
+        This API operation is wrapped by the SDK method `client.apps.deployments.runs.create()`.
+
         <Note>Any specified input or output is validated against the context set by the `IB-Context` header. For example, if the context is set to your community account, but the batch ID used as input for the run is stored in your organization, the call fails.</Note>
       parameters:
         - $ref: '#/components/parameters/ib_context'
@@ -842,14 +902,17 @@ paths:
                       }'
             - sdk: python
               code: |
-                  # AI Hub Python SDK example
-                  from aihub import AIHub
-
-                  client = AIHub(api_root="<API-ROOT>",
-                                 api_key="<API-TOKEN>",
-                                 ib_context="<IB-CONTEXT>")
-
-                  result = client.apps.deployments.runs.create(deployment_id='<DEPLOYMENT-ID>', batch_id=<BATCH-ID>)
+                # SDK example
+                from aihub import AIHub
+                client = AIHub(api_root='https://aihub.instabase.com/api',
+                               api_key='abcdefghijklmnopqrst1234567890',
+                               ib_context='john.doe_acme.com')
+    
+                # returns instance of Run model
+                run = client.apps.deployments.runs.create(deployment_id='12345678-abcde-1234-abcd-123456789012',
+                                                          batch_id=123456)
+                
+                print(f"run ID: {run.id}")
 
   /v2/apps/runs/{run_id}:
     get:
@@ -2034,7 +2097,8 @@ paths:
       tags:
         - jobs
       summary: Poll file operation job status
-      description: Poll the asynchronous job created during a file operation request such as deleting a batch or file.
+      description: |
+          Poll the asynchronous job created during a file operation request such as deleting a batch or file.
       parameters:
         - name: job_id
           in: path

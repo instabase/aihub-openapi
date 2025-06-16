@@ -3035,7 +3035,7 @@ components:
           properties:
             custom:
               type: object
-              description: key-value pair of custom variables which were set for a run. 
+              description: key-value pair of custom keys which were set for a run. 
         has_more:
           type: boolean
           description: Indicates whether additional results are available beyond those included in the current response. Use the `file_offset` query parameter to specify the starting point when fetching the next set of results.

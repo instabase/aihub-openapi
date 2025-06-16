@@ -1166,6 +1166,8 @@ paths:
                         - value: "Male"
                           type: "TEXT"
                           field_name: "sex"
+              keys:
+                - custom: {}
           code-samples:
             - sdk: python
               name: Simple request
@@ -3030,6 +3032,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/fileWithDocuments'
+        keys:
+          type: object
+          properties:
+            custom:
+              type: object
+              description: Key/value pairs representing non-secret custom keys set for the run.
         has_more:
           type: boolean
           description: Indicates whether additional results are available beyond those included in the current response. Use the `file_offset` query parameter to specify the starting point when fetching the next set of results.

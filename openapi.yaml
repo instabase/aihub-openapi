@@ -1026,7 +1026,6 @@ paths:
         These changes apply only to field names in the API response. The field names in the automation project are not changed.
 
         </Info>
-
       parameters:
         - $ref: '#/components/parameters/run_id'
         - in: query
@@ -1129,7 +1128,14 @@ paths:
         - $ref: '#/components/parameters/ib_context'
       responses:
         '200':
-          description: Run results retrieved successfully.
+          description: |
+            Run results retrieved successfully.
+            
+            <Note>
+
+            If errors occur at the class, field, or document levels, the response status code is `200` and the response body includes error details.
+            
+            </Note>
           content:
             application/json:
               schema:
@@ -1166,6 +1172,8 @@ paths:
                         - value: "Male"
                           type: "TEXT"
                           field_name: "sex"
+              keys:
+                - custom: {}
           code-samples:
             - sdk: python
               name: Simple request
@@ -3035,7 +3043,7 @@ components:
           properties:
             custom:
               type: object
-              description: key-value pair of custom keys which were set for a run. 
+              description: Key/value pairs representing non-secret custom keys set for the run.
         has_more:
           type: boolean
           description: Indicates whether additional results are available beyond those included in the current response. Use the `file_offset` query parameter to specify the starting point when fetching the next set of results.

@@ -1026,7 +1026,6 @@ paths:
         These changes apply only to field names in the API response. The field names in the automation project are not changed.
 
         </Info>
-
       parameters:
         - $ref: '#/components/parameters/run_id'
         - in: query
@@ -1129,7 +1128,14 @@ paths:
         - $ref: '#/components/parameters/ib_context'
       responses:
         '200':
-          description: Run results retrieved successfully.
+          description: |
+            Run results retrieved successfully.
+            
+            <Note>
+
+            If errors occur at the class, field, or document levels, the response status code is `200` and the response body includes error details.
+            
+            </Note>
           content:
             application/json:
               schema:

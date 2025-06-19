@@ -1351,6 +1351,12 @@ paths:
                   type: boolean
                   description: Defines whether to generate and save thumbnails of each image file generated when processing the document. One `.jpeg` thumbnail--a small image representation of the larger image--per document page is saved. If storage space is a consideration, consider disabling for documents with many pages.
                   default: true
+                enable_multilanguage_support:
+                  type: boolean
+                  description: Defines whether to enable the multi-language support. If the conversation contains non-english documents then consider enabling this. It will enable the multi-language support in standard mode by default. It will [supports most languages](/overview/languages#standard-non-latin-language-set) that use non-Latin characters. It will be only available for commercial users.
+                enable_multilanguage_advanced_mode:
+                  type: boolean
+                  description: Defines whether to enable the advanced mode for the multi-language support. It will enable the multi-language support in advanced mode. It will [supports additional languages](/overview/languages#advanced-non-latin-language-set) that use non-Latin characters, including Greek, Hebrew, Thai, and more. It will be only available for enterprise users.
               required:
                 - files
       responses:

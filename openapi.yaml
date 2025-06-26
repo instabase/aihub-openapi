@@ -1351,6 +1351,14 @@ paths:
                   type: boolean
                   description: Defines whether to generate and save thumbnails of each image file generated when processing the document. One `.jpeg` thumbnail--a small image representation of the larger image--per document page is saved. If storage space is a consideration, consider disabling for documents with many pages.
                   default: true
+                enable_multilanguage_support:
+                  type: boolean
+                  description: <span class="badge">Commercial & Enterprise</span> Enable if the conversation contains documents in a [standard non-Latin language](/overview/languages#standard-non-latin-language-set).
+                  default: false
+                enable_multilanguage_advanced_mode:
+                  type: boolean
+                  description: <span class="badge">Enterprise</span> Enable this and `enable_multilanguage_support` if the conversation contains documents in an [advanced non-Latin language](/overview/languages#advanced-non-latin-language-set), including Greek, Hebrew, Thai, and others.
+                  default: false
               required:
                 - files
       responses:
@@ -1377,6 +1385,12 @@ paths:
                     -F description="Sample Conversation Description" \
                     -F org="<ORGANIZATION-ID>" \ # Optional for community accounts
                     -F workspace="<WORKSPACE-NAME>" \ # Optional for community accounts
+                    -F enable_object_detection='false' \ # Optional
+                    -F enable_entity_detection='true' \ # Optional
+                    -F write_converted_image='true' \ # Optional
+                    -F write_thumbnail='true' \ # Optional
+                    -F enable_multilanguage_support='false' \ # Optional
+                    -F enable_multilanguage_advanced_mode='false' \ # Optional
                     -F files="@/path/to/test.pdf" \
                     -F files="@/path/to/test2.pdf"
             - sdk: python
@@ -1393,6 +1407,12 @@ paths:
                     description="Sample Conversation Description",
                     org="<ORGANIZATION-ID>", # Optional for community accounts
                     workspace="<WORKSPACE-NAME>", # Optional for community accounts
+                    enable_object_detection = False, # Optional
+                    enable_entity_detection = True, # Optional
+                    write_converted_image = True, # Optional
+                    write_thumbnail = True, # Optional
+                    enable_multilanguage_support = False, # Optional
+                    enable_multilanguage_advanced_mode = False, # Optional
                     files=['test.pdf', 'test2.pdf'])
 
     get:

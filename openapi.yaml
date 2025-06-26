@@ -1385,6 +1385,12 @@ paths:
                     -F description="Sample Conversation Description" \
                     -F org="<ORGANIZATION-ID>" \ # Optional for community accounts
                     -F workspace="<WORKSPACE-NAME>" \ # Optional for community accounts
+                    -F enable_object_detection='false' \ # Optional
+                    -F enable_entity_detection='true' \ # Optional
+                    -F write_converted_image='true' \ # Optional
+                    -F write_thumbnail='true' \ # Optional
+                    -F enable_multilanguage_support='false' \ # Optional
+                    -F enable_multilanguage_advanced_mode='false' \ # Optional
                     -F files="@/path/to/test.pdf" \
                     -F files="@/path/to/test2.pdf"
             - sdk: python
@@ -1401,6 +1407,12 @@ paths:
                     description="Sample Conversation Description",
                     org="<ORGANIZATION-ID>", # Optional for community accounts
                     workspace="<WORKSPACE-NAME>", # Optional for community accounts
+                    enable_object_detection = False, # Optional
+                    enable_entity_detection = True, # Optional
+                    write_converted_image = True, # Optional
+                    write_thumbnail = True, # Optional
+                    enable_multilanguage_support = False, # Optional
+                    enable_multilanguage_advanced_mode = False, # Optional
                     files=['test.pdf', 'test2.pdf'])
 
     get:

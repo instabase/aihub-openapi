@@ -105,7 +105,7 @@ paths:
             type: integer
           description: If paginating results, specify how many batches to return.
         - in: query
-          name: file_offset
+          name: offset
           schema:
             type: integer
           description: If paginating results, specify the offset of the returned list.

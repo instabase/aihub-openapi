@@ -3118,10 +3118,8 @@ components:
           items:
             type: string
         post_processed_pdf_path:
-          type: array
-          description: An array of strings, each representing a path to post-processed PDFs.
-          items:
-            type: string
+          type: string
+          description: Path to post-processed PDF.
         class_edit_history:
           type: array
           description: An array containing the history of edits to the document class.

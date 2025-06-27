@@ -3064,20 +3064,12 @@ components:
             custom:
               type: object
               description: Key/value pairs representing non-secret custom keys set for the run.
-          required:
-            - custom
         has_more:
           type: boolean
           description: Indicates whether additional results are available beyond those included in the current response. Use the `file_offset` query parameter to specify the starting point when fetching the next set of results.
         review_completed:
           type: boolean
           description: Indicates whether the run or document has completed review.
-      required:
-        - batch_id
-        - files
-        - keys
-        - has_more
-        - review_completed
     fileWithDocuments:
       type: object
       properties:

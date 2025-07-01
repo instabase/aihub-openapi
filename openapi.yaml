@@ -2671,6 +2671,7 @@ paths:
                     Type of audit log to filter by. Valid values include:
                     - account: Account creation logs
                     - acl: Workspace and group membership operation logs
+                    - api: API request logs
                     - apps: Automation app operation logs
                     - app_deployment_run: Deployment run operation logs
                     - app_deployment: Deployment operation logs

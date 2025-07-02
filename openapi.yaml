@@ -76,7 +76,6 @@ paths:
 
             - sdk: python
               code: |
-                  # SDK example
                   from aihub import AIHub
                 
                   client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -147,7 +146,6 @@ paths:
 
             - sdk: python
               code: |
-                  # SDK example
                   from aihub import AIHub
                 
                   client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -197,7 +195,6 @@ paths:
 
             - sdk: python
               code: |
-                  # SDK example
                   from aihub import AIHub
                 
                   client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -242,7 +239,6 @@ paths:
 
             - sdk: python
               code: |
-                  # SDK example
                   from aihub import AIHub
                   import time
                 
@@ -328,7 +324,6 @@ paths:
 
             - sdk: python
               code: |
-                # SDK example
                 from aihub import AIHub
                 
                 client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -397,7 +392,6 @@ paths:
 
             - sdk: python
               code: |
-                  # SDK example
                   from aihub import AIHub
                 
                   client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -444,7 +438,6 @@ paths:
 
             - sdk: python
               code: |
-                  # SDK example
                   from aihub import AIHub
                 
                   client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -493,7 +486,6 @@ paths:
 
             - sdk: python
               code: |
-                  # SDK example
                   from aihub import AIHub
                   import time
 
@@ -644,7 +636,6 @@ paths:
             - sdk: python
               name: app_name and batch_id
               code: |
-                  # SDK example
                   from aihub import AIHub
 
                   client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -659,7 +650,6 @@ paths:
             - sdk: python
               name: app_id and input_dir
               code: |
-                  # SDK example
                   from aihub import AIHub
 
                   client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -698,7 +688,6 @@ paths:
             - sdk: python
               name: with generate-post-process-pdf
               code: |
-                  # SDK example
                   from aihub import AIHub
 
                   client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -831,7 +820,6 @@ paths:
             - sdk: python
               name: basic example
               code: |
-                # SDK example
                 from aihub import AIHub
                 
                 client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -845,7 +833,6 @@ paths:
             - sdk: python
               name: advanced example
               code: |
-                # SDK example
                 from aihub import AIHub
                 
                 client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -981,7 +968,6 @@ paths:
             - sdk: python
               name: run by batch_id
               code: |
-                # SDK example
                 from aihub import AIHub
                 
                 client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -997,7 +983,6 @@ paths:
             - sdk: python
               name: run by input_dir
               code: |
-                # SDK example
                 from aihub import AIHub
 
                 client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -1053,7 +1038,6 @@ paths:
 
             - sdk: python
               code: |
-                  # SDK example
                   from aihub import AIHub
                 
                   client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -1140,7 +1124,6 @@ paths:
 
             - sdk: python
               code: |
-                  # SDK example
                   from aihub import AIHub
                 
                   client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -1362,7 +1345,6 @@ paths:
             - sdk: python
               name: basic example
               code: |
-                # SDK example
                 from aihub import AIHub
 
                 client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -1427,7 +1409,6 @@ paths:
             - sdk: python
               name: retrieving paginated results
               code: |
-                  # SDK example
                   # The results from this endpoint are paginated.
                   # The `has_more` field in the response indicates whether there are more results to fetch,
                   # and `file_offset` specifies the starting point for the next set of results.
@@ -1566,7 +1547,6 @@ paths:
 
             - sdk: python
               code: |
-                  # SDK example
                   from aihub import AIHub
   
                   client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -1632,7 +1612,6 @@ paths:
 
             - sdk: python
               code: |
-                  # SDK example
                   from aihub import AIHub
                   
                   client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -1682,7 +1661,6 @@ paths:
 
             - sdk: python
               code: |
-                # SDK example
                 from aihub import AIHub
                 
                 client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -1738,7 +1716,6 @@ paths:
 
             - sdk: python
               code: |
-                  # SDK example
                   from aihub import AIHub
                   
                   client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -1785,7 +1762,6 @@ paths:
 
             - sdk: python
               code: |
-                # SDK example
                 from aihub import AIHub
                 
                 client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -1866,7 +1842,6 @@ paths:
 
             - sdk: python
               code: |
-                  # SDK example
                   from aihub import AIHub
                 
                   client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -1941,7 +1916,6 @@ paths:
 
             - sdk: python
               code: |
-                  # SDK example
                   from aihub import AIHub
                   
                   client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -2005,7 +1979,6 @@ paths:
 
             - sdk: python
               code: |
-                # SDK example
                 from aihub import AIHub
   
                 client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -2066,7 +2039,6 @@ paths:
 
             - sdk: python
               code: |
-                  # SDK example
                   from aihub import AIHub
                   
                   client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -2193,7 +2165,6 @@ paths:
             - sdk: python
               name: basic example
               code: |
-                # SDK example
                 from aihub import AIHub
 
                 client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -2210,7 +2181,6 @@ paths:
             - sdk: python
               name: advanced example
               code: |
-                # SDK example
                 from aihub import AIHub
 
                 client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -2288,7 +2258,6 @@ paths:
 
             - sdk: python
               code: |
-                  # SDK example
                   import time
                   from aihub import AIHub
 
@@ -2347,7 +2316,6 @@ paths:
 
             - sdk: python
               code: |
-                  # SDK example
                   import time
                   from aihub import AIHub
 
@@ -2465,7 +2433,6 @@ paths:
             - sdk: python
               name: basic example
               code: |
-                # SDK example
                 from aihub import AIHub
                 
                 client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -2486,7 +2453,6 @@ paths:
             - sdk: python
               name: advanced example
               code: |
-                # SDK example
                 from aihub import AIHub
   
                 client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -2583,7 +2549,6 @@ paths:
 
             - sdk: python
               code: |
-                # SDK example
                 from aihub import AIHub
 
                 client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -2670,7 +2635,6 @@ paths:
 
             - sdk: python
               code: |
-                # SDK example
                 from aihub import AIHub
 
                 client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -2752,7 +2716,6 @@ paths:
             - sdk: python
               name: delete file
               code: |
-                # SDK example
                 from aihub import AIHub
 
                 client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -2772,7 +2735,6 @@ paths:
             - sdk: python
               name: delete folder and contents
               code: |
-                # SDK example
                 from aihub import AIHub
 
                 client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -2850,7 +2812,6 @@ paths:
           - sdk: python
             name: by alias
             code: |
-                # SDK example
                 from aihub import AIHub
     
                 client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -2865,7 +2826,6 @@ paths:
           - sdk: python
             name: by workspace
             code: |
-                # SDK example
                 from aihub import AIHub
 
                 client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -2880,7 +2840,6 @@ paths:
           - sdk: python
             name: by organization
             code: |
-              # SDK example
               from aihub import AIHub
 
               client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -2967,7 +2926,6 @@ paths:
                         }'
             - sdk: python
               code: |
-                # SDK example
                 from aihub import AIHub
 
                 client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -3055,7 +3013,6 @@ paths:
             - sdk: python
               name: basic example
               code: |
-                  # SDK example
                   from aihub import AIHub
                 
                   client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -3069,7 +3026,6 @@ paths:
             - sdk: python
               name: advanced example
               code: |
-                  # SDK example
                   from aihub import AIHub
 
                   client = AIHub(api_root='https://aihub.instabase.com/api',
@@ -3135,7 +3091,6 @@ paths:
 
             - sdk: python
               code: |
-                  # SDK example
                   from aihub import AIHub
 
                   client = AIHub(api_root='https://aihub.instabase.com/api',

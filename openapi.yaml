@@ -741,6 +741,8 @@ paths:
 
         Run an AI Hub deployment by its deployment ID. The input for the run is specified using a batch ID or file path.
 
+        <Info>Use the UI to optionally [configure email notifications or webhooks](/automate/deployments#configuring-notifications) for certain events within the deployed app's lifecycle.</Info>
+
         <Note>Any specified input or output is validated against the context set by the `IB-Context` header. For example, if the context is set to your community account, but the batch ID used as input for the run is stored in your organization, the call fails.</Note>
       parameters:
         - $ref: '#/components/parameters/ib_context'
@@ -753,7 +755,7 @@ paths:
           description: |
             The deployment ID.
 
-            <Tip>You can find the deployment ID by opening the deployment in AI Hub and looking at the site URL, such as https<span>://</span>aihub.instabase.com/deployments/**01902d6f-bb35-74cb-bd27-c09b38bbf20a**/runs.</Tip>
+            <Tip>Find the deployment ID by opening the deployment in AI Hub and looking at the site URL, such as https<span>://</span>aihub.instabase.com/deployments/**01902d6f-bb35-74cb-bd27-c09b38bbf20a**/runs.</Tip>
       requestBody:
         required: true
         content:

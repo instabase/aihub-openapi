@@ -1355,7 +1355,7 @@ paths:
                   default: true
                 fast_mode:
                   type: boolean
-                  description: Defines whether to perform digitization in fast mode that skips several preprocessing steps. This flag needs following flags set to false: `enable_entity_detection`, `write_converted_image`, `write_thumbnail`.
+                  description: Defines whether to skip several digitization preprocessing steps. The `enable_entity_detection`, `write_converted_image`, and `write_thumbnail` flags must all be set to false.
                   default: false
                 enable_multilanguage_support:
                   type: boolean
@@ -1633,9 +1633,9 @@ paths:
                     The model to use to answer the question. Supports the standard (`default`) and advanced (`advanced`) models. See [Choosing a model](/overview/models/) for details about each model.
                     <Note>The multistep model and research mode are not supported. To use the multistep model or research mode in a query, use the [Run query](/api-sdk/api-reference/queries/run-query) endpoint.</Note>
                 fast_mode:
-                    type: bool
+                    type: boolean
                     default: false
-                    description: To be used if conversation was created with fast_mode set to true.
+                    description: To be used if conversation was created with fast_mode set to true. If this setting does not match the original conversation settings, the API response may take longer than normal.
               required:
                 - question
                 - document_ids

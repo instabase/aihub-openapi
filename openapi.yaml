@@ -2916,13 +2916,20 @@ components:
           description: Run ID of the run.
         status:
           type: string
-          description: Status of the run.
+          description: |
+            Status of the run. Possible values and meanings:
+            - `CANCELLED` -- A user cancelled the run
+            - `COMPLETE` -- The run successfully completed. A human review completed if it was required. Results are retrievable, but some fields may have failed and have the value `ERROR`.
+            - `FAILED` -- The run failed to complete
+            - `PAUSED` -- A user has paused the run
+            - `RUNNING` -- The run is in progress and is not paused
+            - `STOPPED_AT_CHECKPOINT` -- A validation error has paused the run for human review
           enum:
-            - RUNNING
-            - COMPLETE
-            - PAUSED
-            - FAILED
             - CANCELLED
+            - COMPLETE
+            - FAILED
+            - PAUSED
+            - RUNNING
             - STOPPED_AT_CHECKPOINT
         start_timestamp:
           type: integer

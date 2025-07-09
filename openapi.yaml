@@ -2921,7 +2921,7 @@ components:
             - `CANCELLED` -- A user cancelled the run
             - `COMPLETE` -- The run successfully completed. A human review completed if it was required. Results are retrievable, but some fields may have failed and have the value `ERROR`.
             - `FAILED` -- The run failed to complete
-            - `PAUSED` -- A user has paused the run
+            - `PAUSED` -- This status is reserved for future use
             - `RUNNING` -- The run is in progress and is not paused
             - `STOPPED_AT_CHECKPOINT` -- A validation error has paused the run for human review
           enum:

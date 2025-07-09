@@ -1353,6 +1353,10 @@ paths:
                   type: boolean
                   description: Defines whether to generate and save thumbnails of each image file generated when processing the document. One `.jpeg` thumbnail--a small image representation of the larger image--per document page is saved. If storage space is a consideration, consider disabling for documents with many pages.
                   default: true
+                fast_mode:
+                  type: boolean
+                  description: Defines whether to skip several digitization preprocessing steps. The `enable_entity_detection`, `write_converted_image`, and `write_thumbnail` flags must all be set to false.
+                  default: false
                 enable_multilanguage_support:
                   type: boolean
                   description: <span class="badge">Commercial & Enterprise</span> Enable if the conversation contains documents in a [standard non-Latin language](/overview/languages#standard-non-latin-language-set).
@@ -1628,6 +1632,10 @@ paths:
                   description: |
                     The model to use to answer the question. Supports the standard (`default`) and advanced (`advanced`) models. See [Choosing a model](/overview/models/) for details about each model.
                     <Note>The multistep model and research mode are not supported. To use the multistep model or research mode in a query, use the [Run query](/api-sdk/api-reference/queries/run-query) endpoint.</Note>
+                fast_mode:
+                    type: boolean
+                    default: false
+                    description: To be used if conversation was created with fast_mode set to true. If this setting does not match the original conversation settings, the API response may take longer than normal.
               required:
                 - question
                 - document_ids

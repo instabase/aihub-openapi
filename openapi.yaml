@@ -1635,7 +1635,7 @@ paths:
                 fast_mode:
                     type: boolean
                     default: false
-                    description: To be used if conversation was created with fast_mode set to true. If this setting does not match the original conversation settings, the API response may take longer than normal.
+                    description: This should match the value of the `fast_mode` parameter used when creating the conversation. Mismatched values may cause the API response to take longer than normal.
               required:
                 - question
                 - document_ids

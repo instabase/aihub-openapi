@@ -81,6 +81,31 @@ paths:
                            ib_context="<IB-CONTEXT>")
 
                   batch = client.batches.create(name='test')
+            - sdk: python
+              name: without SDK
+              code: |
+                import requests
+
+                url = "https://aihub.instabase.com/api/v2/batches"
+                headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                            "IB-Context": 'john.doe_acme.com',
+                            "Content-Type": "application/json" }
+
+                # create the request payload
+                data = { "name": "my batch" }
+
+                # make the POST request
+                response = requests.post(url,
+                                         headers=headers,
+                                         json=data)
+
+                # handle the response
+                if response.status_code == 200:
+                    batch = response.json()
+                    print(f"Batch created with ID: {batch['id']}")
+                else:
+                    print(f"Error: {response.status_code} - {response.text}")
+
     get:
       operationId: listBatches
       x-fern-audiences:
@@ -149,20 +174,20 @@ paths:
               name: without SDK
               code: |
                 import requests
-                
+
                 url = "https://aihub.instabase.com/api/v2/batches"
                 headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
                             "IB-Context": 'john.doe_acme.com' }
-                
+
                 # create query parameters
                 params = { "workspace": "Development-Workspace",
                            "limit": 100 }
-                
-                # Make the GET request
+
+                # make the GET request
                 response = requests.get(url,
                                         headers=headers,
                                         params=params)
-                
+
                 # handle the response
                 if response.status_code == 200:
                     batches = response.json()
@@ -208,6 +233,26 @@ paths:
                                  api_key="<API-TOKEN>",
                                  ib_context="<IB-CONTEXT>")
                   batch = client.batches.get("<BATCH-ID>")
+            - sdk: python
+              name: without SDK
+              code: |
+                import requests
+
+                url = "https://aihub.instabase.com/api/v2/batches/<BATCH-ID>"
+                headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                                             "IB-Context": 'john.doe_acme.com' }
+
+                # make the GET request
+                response = requests.get(url,
+                                        headers=headers)
+
+                # handle the response
+                if response.status_code == 200:
+                    batch = response.json()
+                    print(f"Batch: {batch['name']}")
+                else:
+                    print(f"Error: {response.status_code} - {response.text}")
+
     delete:
       operationId: deleteBatch
       x-fern-audiences:
@@ -257,15 +302,15 @@ paths:
               name: without SDK
               code: |
                 import requests
-                
+
                 url = "https://aihub.instabase.com/api/v2/batches/123456"
                 headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
                                              "IB-Context": 'john.doe_acme.com' }
-                
-                # Make the DELETE request
+
+                # make the DELETE request
                 response = requests.delete(url,
                                            headers=headers)
-                
+
                 # handle the response
                 if response.status_code == 202:
                     job_response = response.json()
@@ -354,7 +399,7 @@ paths:
                 headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
                             "IB-Context": "john.doe_acme.com" }
                 
-                # Make the GET request
+                # make the GET request
                 response = requests.get(url,
                                         headers=headers)
                 
@@ -436,11 +481,11 @@ paths:
                                              "IB-Context": 'john.doe_acme.com',
                                              "Content-Type": "application/octet-stream" }
                 
-                # Read the file contents
+                # read the file contents
                 with open('path/to/local/test.pdf', 'rb') as file:
                     file_content = file.read()
                 
-                # Make the PUT request
+                # make the PUT request
                 response = requests.put(url,
                                         headers=headers,
                                         data=file_content)
@@ -500,7 +545,7 @@ paths:
                 headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
                             "IB-Context": 'john.doe_acme.com' }
                 
-                # Make the DELETE request
+                # make the DELETE request
                 response = requests.delete(url,
                                            headers=headers)
                 
@@ -560,7 +605,7 @@ paths:
                 headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
                             "IB-Context": 'john.doe_acme.com' }
                 
-                # Make the GET request
+                # make the GET request
                 response = requests.get(url,
                                         headers=headers)
                 
@@ -723,7 +768,7 @@ paths:
                 data = { "batch_id": "123456",
                          "app_name": "My App" }
                 
-                # Make the POST request
+                # make the POST request
                 response = requests.post(url,
                                          headers=headers,
                                          json=data)
@@ -763,6 +808,39 @@ paths:
                   result = client.apps.runs.create(app_name='<APP-NAME>',
                                                    batch_id='<BATCH-ID>',
                                                    settings={"runtime_config":{"generate_post_process_pdf": true}})
+            - sdk: python
+              name: Post-processed-pdf generation without SDK
+              code: |
+                  import requests
+
+                  url = "https://aihub.instabase.com/api/v2/apps/runs"
+                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                              "IB-Context": 'john.doe_acme.com',
+                              "Content-Type": "application/json" }
+
+                  # create the request payload
+                  data = {
+                      "batch_id": "123456",
+                      "app_name": "My App",
+                      "settings": {
+                          "runtime_config": {
+                              "generate_post_process_pdf": True
+                          }
+                      }
+                  }
+
+                  # make the POST request
+                  response = requests.post(url,
+                                           headers=headers,
+                                           json=data)
+
+                  # handle the response
+                  if response.status_code == 200:
+                      run = response.json()
+                      print(f"Run started with ID: {run['id']}")
+                  else:
+                      print(f"Error: {response.status_code} - {response.text}")
+
     get:
       operationId: listRuns
       x-fern-audiences:
@@ -892,7 +970,7 @@ paths:
                 headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
                             "IB-Context": 'john.doe_acme.com' }
                 
-                # Make the GET request
+                # make the GET request
                 response = requests.get(url,
                                         headers=headers)
                 
@@ -1041,7 +1119,7 @@ paths:
                 # create the request payload
                 data = { "batch_id": "123456" }
                 
-                # Make the POST request
+                # make the POST request
                 response = requests.post(url,
                                         headers=headers,
                                         json=data)
@@ -1105,7 +1183,7 @@ paths:
                 headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
                             "IB-Context": 'john.doe_acme.com' }
                 
-                # Make the GET request
+                # make the GET request
                 response = requests.get(url,
                                         headers=headers)
                 
@@ -1222,7 +1300,7 @@ paths:
                 headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
                             "IB-Context": 'john.doe_acme.com' }
                 
-                # Make the DELETE request
+                # make the DELETE request
                 response = requests.delete(url,
                                           headers=headers)
                 
@@ -1443,7 +1521,7 @@ paths:
                 headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
                             "IB-Context": 'john.doe_acme.com' }
                 
-                # Make the GET request
+                # make the GET request
                 response = requests.get(url,
                                         headers=headers)
                 
@@ -1525,7 +1603,7 @@ paths:
                 headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
                             "IB-Context": 'john.doe_acme.com' }
                 
-                # Make the GET request
+                # make the GET request
                 response = requests.get(url,
                                         headers=headers)
                 
@@ -1850,6 +1928,25 @@ paths:
                                  api_key="<API-TOKEN>",
                                  ib_context="<IB-CONTEXT>")
                   result = client.conversations.status(<CONVERSATION-ID>)
+            - sdk: python
+              name: without SDK
+              code: |
+                  import requests
+
+                  url = "https://aihub.instabase.com/api/v2/conversations/a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                              "IB-Context": 'john.doe_acme.com' }
+
+                  # make the GET request
+                  response = requests.get(url,
+                                          headers=headers)
+
+                  # handle the response
+                  if response.status_code == 200:
+                      conversation = response.json()
+                      print(f"Conversation: {conversation['name']}")
+                  else:
+                      print(f"Error: {response.status_code} - {response.text}")
 
     put:
       operationId: updateConversation
@@ -2547,7 +2644,7 @@ paths:
               code: |
                 # AI Hub Python SDK example
                 from aihub import AIHub
-                
+
                 client = AIHub(api_root="<API-ROOT>",
                                api_key="<API-TOKEN>",
                                ib_context="<IB-CONTEXT>")
@@ -3086,6 +3183,7 @@ paths:
                   -H "Authorization: Bearer ${API_TOKEN}" \
                   -H "IB-Context: ${IB_CONTEXT}"
           - sdk: python
+            name: with SDK
             code: |
                 # AI Hub Python SDK example
                 from aihub import AIHub
@@ -3316,6 +3414,31 @@ paths:
                       value="new password",
                       allowed_workspaces_type="ALL"
                   )
+            - sdk: python
+              name: without SDK
+              code: |
+                  import requests
+                    
+                  url = "https://aihub.instabase.com/api/v2/aihub/secrets"
+                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                              "IB-Context": 'john.doe_acme.com',
+                              "Content-Type": "application/json" }
+                  
+                  # create the request payload
+                  data = { "alias": "my_secret",
+                           "value": "new password",
+                           "allowed_workspaces_type": "ALL" }
+                  
+                  # make the PATCH request
+                  response = requests.patch(url,
+                                            headers=headers,
+                                            json=data)
+                  
+                  # handle the response
+                  if response.status_code == 200:
+                      print("Secret updated successfully")
+                  else:
+                      print(f"Error: {response.status_code} - {response.text}")
 
     delete:
       operationId: deleteSecret

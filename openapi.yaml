@@ -654,6 +654,7 @@ paths:
                   description: Required unless using `app_id`. The name of the app to run.
                 app_id:
                   type: string
+                  format: uuid
                   description: |
                     Required unless using `app_name`. The app ID of the app to run.
 
@@ -666,6 +667,7 @@ paths:
                     For custom apps belonging to you, accept the default. For AI Hub Marketplace apps published by Instabase, specify `instabase`.
                 batch_id:
                   type: integer
+                  minimum: 1
                   description: Required unless using `input_dir`. The batch ID of a batch created with the [Batches endpoint](/api-sdk/api-reference/batches/create-batch/). All files uploaded to the batch are used as input for the run.
                 input_dir:
                   type: string
@@ -723,7 +725,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/run'
           description: Run started successfully.
-        default:
+        'default':
           content:
             application/json:
               schema:
@@ -3824,12 +3826,21 @@ components:
           description: Job status message.
     run:
       type: object
+      required:
+        - id
+        - status
+        - start_timestamp
+        - finish_timestamp
+        - msg
       properties:
         id:
           type: string
+          format: uuid
+          example: 0284af3a-18f8-465c-9f16-58ad7377a904
           description: Run ID of the run.
         status:
           type: string
+          example: RUNNING
           description: |
             Status of the run. Possible values and meanings:
             - `CANCELLED` -- A user cancelled the run
@@ -3848,10 +3859,14 @@ components:
         start_timestamp:
           type: integer
           format: int64
+          minimum: 0
+          example: 1755734837610282851
           description: When the run started, in Unix time nanoseconds.
         finish_timestamp:
           type: integer
           format: int64
+          minimum: 0
+          example: null
           description: When the run finished, in Unix time nanoseconds. `null` if run is still in progress.
           nullable: true
         msg:

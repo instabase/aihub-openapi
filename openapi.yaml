@@ -38,7 +38,8 @@ paths:
               properties:
                 name:
                   type: string
-                  description: Name of the batch. Maximum length is 255 characters.
+                  description: Name of the batch.
+                  maxLength: 255
                 workspace:
                   type: string
                   description: |
@@ -47,6 +48,7 @@ paths:
                     When making this call from a service account, you must specify a workspace.
 
                     <Info>For organization members, if the default drive changes but is still connected, you can still use the batch as input for running an app. However, you can't upload any additional files to the batch. If the default drive is disconnected, you can't use batches stored on that drive as input for any app run.</Info>
+                  # TODO is there a max length?
               required:
                 - name
       responses:
@@ -119,21 +121,25 @@ paths:
           name: workspace
           schema:
             type: string
+            minLength: 1  # TODO is there a max length?
           description: Filter to batches in the specified workspace.
         - in: query
           name: username
           schema:
             type: string
+            minLength: 1  # TODO is there a max length?
           description: Filter to batches created by the specified username (user ID).
         - in: query
           name: limit
           schema:
             type: integer
+            # TODO are there min or max values?
           description: If paginating results, specify how many batches to return.
         - in: query
           name: offset
           schema:
             type: integer
+            # TODO are there min or max values?
           description: If paginating results, specify the offset of the returned list.
         - $ref: '#/components/parameters/ib_context'
       responses:
@@ -146,9 +152,11 @@ paths:
                 properties:
                   batches:
                     type: array
-                    description: List of batches. See response schema for each batch object.
+                    description: List of batchInfo objects.
                     items:
                       $ref: '#/components/schemas/batchInfo'
+                required:
+                  - batches
       x-fern-examples:
         - code-samples:
             - sdk: curl
@@ -216,6 +224,11 @@ paths:
                 $ref: '#/components/schemas/batchInfo'
         '404':
           description: Batch does not exist, or denied access.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+
       x-fern-examples:
         - code-samples:
             - sdk: curl
@@ -273,6 +286,10 @@ paths:
                 $ref: '#/components/schemas/batchDeletionJobResponse'
         '404':
           description: Batch does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
       x-fern-examples:
         - code-samples:
             - sdk: curl
@@ -394,15 +411,15 @@ paths:
               name: without SDK
               code: |
                 import requests
-                
+
                 url = "https://aihub.instabase.com/api/v2/batches/123456/files"
                 headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
                             "IB-Context": "john.doe_acme.com" }
-                
+
                 # make the GET request
                 response = requests.get(url,
                                         headers=headers)
-                
+
                 # handle the response
                 if response.status_code == 200:
                     files = response.json()
@@ -427,7 +444,7 @@ paths:
         - name: filename
           in: path
           required: true
-          description: A user-defined name for the file. Include the file extension.
+          description: A user-defined name for the file on the AI Hub filesystem. Include the file extension.
           schema:
             type: string
         - $ref: '#/components/parameters/ib_context'
@@ -436,7 +453,7 @@ paths:
         content:
           application/octet-stream:
             schema:
-              description: The raw contents of the file to upload. See the example request, being sure to define the `<LOCAL_FILEPATH>` with the full path to the file in the machine running the script.
+              description: The raw contents of the file to upload. See the example request, being sure to define the `<LOCAL_FILEPATH>` with the full path to the file on the machine running the script.
               type: string
               format: binary
       responses:
@@ -503,21 +520,25 @@ paths:
       tags:
         - batches
       summary: Delete file from batch
-      description: Delete a file from a batch.
+      description: Delete a file from a batch. This is an asynchronous operation that must be checked for completion.<br/><br/>To check with the API, send a `GET` to the URL listed in the `Location` header of the response.<br/><br/>To check with the SDK, extract the Job ID from the `Location` header of the response and use the [Poll batches job](/api-sdk/api-reference/batches/poll-batches-job) operation.
       parameters:
         - $ref: '#/components/parameters/batch_id'
         - name: filename
           in: path
           required: true
-          description: The name of the file.
+          description: The name of the file on the AI Hub filesystem.
           schema:
             type: string
         - $ref: '#/components/parameters/ib_context'
       responses:
         '202':
-          description: File deletion request accepted. Poll the deletion job for completion status.
+          description: File deletion request accepted. Poll the deletion job for completion status. This response also occurs when the file doesn't exist in the batch.
         '404':
-          description: Batch does not exist.
+          description: Batch doesn't exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
       x-fern-examples:
         - code-samples:
             - sdk: curl
@@ -570,6 +591,7 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid
           description: The job ID returned by a [Delete batch](/api-sdk/api-reference/batches/delete-batch) request or the `Location` header value returned by a [Delete file from a batch](/api-sdk/api-reference/batches/delete-file-from-batch) request.
         - $ref: '#/components/parameters/ib_context'
       responses:
@@ -3716,7 +3738,9 @@ components:
       properties:
         id:
           type: integer
+          minimum: 1
           description: Unique identifier for the batch.
+          example: 346526
       required:
         - id
     batchInfo:
@@ -3725,41 +3749,51 @@ components:
         id:
           type: integer
           description: The batch ID.
+          example: 346526
         name:
           type: string
           description: The batch name.
+          example: "Bank Statements 32"
         workspace:
           type: string
           description: The name of the workspace in which the batch exists.
+          example: "Banking"
         mount_point:
           type: string
           description: The name of the connected drive in which the batch is stored.
+          example: "Instabase Drive"
         repo_owner:
           type: string
           description: The owner of the workspace (also known as the repo) in which the batch exists.
+          example: "acme-anvils"
         batch_owner:
           type: string
           description: Username of the user that created the batch.
+          example: "john.doe_acme_anvils.com"
         created_at_ms:
           type: integer
           format: int64
           description: When the batch was created, in Unix time milliseconds.
+          example: 1756160271000
         updated_at_ms:
           type: integer
           format: int64
           description: When the batch was last updated, in Unix time milliseconds.
+          example: 1756160993000
         path_suffix:
           type: string
           description: Batch path suffix from the mount point.
+          example: "'file-batches/d34e6677-6382-4158-9824-949ce98bd2b4'"
       required:
         - id
         - name
+        # TODO are any other properties required? They all show up when I call client.batches.list().
     listBatchFilesResponse:
       type: object
       properties:
         nodes:
           type: array
-          description: List of files in the batch.
+          description: List of files in the batch. May be empty.
           items:
             type: object
             properties:
@@ -3772,13 +3806,17 @@ components:
                 properties:
                   node_type:
                     type: string
-                    description: Type of the node (e.g., 'file').
+                    description: Type of the node (for example, "file").
                   size:
                     type: integer
                     description: Size of the file in bytes.
                   modified_timestamp:
                     type: integer
                     description: Last modification timestamp of the file, in Unix time seconds.
+                required:
+                  - node_type
+                  - size
+                  - modified_timestamp
               perms:
                 type: object
                 description: Permission settings for the file.
@@ -3792,21 +3830,36 @@ components:
                   can_delete:
                     type: boolean
                     description: Whether the user has delete permission.
+                required:
+                  - can_read
+                  - can_write
+                  - can_delete
               name:
                 type: string
                 description: Name of the file, including optional extension.
+            required:
+              - full_path
+              - metadata
+              - perms
+              - name
         next_page_token:
           type: string
-          description: Token for retrieving the next page of results.
+          description: Token for retrieving the next page of results. May be empty string.
         has_more:
           type: boolean
-          description: Indicates whether there are more files to be retrieved.
+          description: Whether there are more retrievable files.
+      required:
+        - nodes
+        - next_page_token
+        - has_more
     batchDeletionJobResponse:
       type: object
       properties:
         job_id:
           type: string
+          format: uuid
           description: The job ID of the operation. Use the job ID with the [Poll batches job endpoint](/api-sdk/api-reference/batches/poll-batches-job) to check batch deletion status.
+          example: f2e798f7-5e11-4cb3-85e3-d4bee5cad9d0
       required:
         - job_id
     jobStatusResponse:
@@ -3821,9 +3874,14 @@ components:
             - CANCELLED
             - RUNNING
             - PENDING
+          example: COMPLETE
         message:
           type: string
           description: Job status message.
+          example: OK
+      required:
+        - state
+        - message  # TODO: is there always a message regardless of status, or should this not be marked as required?
     run:
       type: object
       required:
@@ -3984,7 +4042,8 @@ components:
       type: object
       properties:
         message:
-          type: string
+          type: string  # TODO: is this required? I've run a few tests and I have always seen a message so far.
+          example: "<ERROR-MESSAGE>"
     resultsResponse:
       type: object
       properties:

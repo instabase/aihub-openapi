@@ -548,7 +548,7 @@ paths:
                 # make the DELETE request
                 response = requests.delete(url,
                                            headers=headers)
-                
+
                 # handle the response
                 if response.status_code == 202:
                     print("File deletion request accepted")
@@ -3566,9 +3566,9 @@ paths:
                     - `human_review_v2`: Human review operation logs
                     - `login_v2`: Member login and authentication logs
                     - `mount_v2`: Data connection operation logs
-                    - `oauth2`: OAuth token operation logs
-                    - `org`: Organization role change logs
-                    - `org_secret`: Organization secrets operation logs
+                    - `oauth2_v2`: OAuth token operation logs
+                    - `org_v2`: Organization role change logs
+                    - `org_secret_v2`: Organization secrets operation logs
 
                     For details about tracked operations, see [Viewing audit logs](/admin/audit-logs/).
 

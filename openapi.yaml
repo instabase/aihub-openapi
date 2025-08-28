@@ -1027,6 +1027,7 @@ paths:
           name: deployment-id
           schema:
             type: string
+            format: uuid
             default: false
           required: true
           description: |

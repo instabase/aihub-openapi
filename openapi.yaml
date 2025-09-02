@@ -548,7 +548,7 @@ paths:
                 # make the DELETE request
                 response = requests.delete(url,
                                            headers=headers)
-                
+
                 # handle the response
                 if response.status_code == 202:
                     print("File deletion request accepted")
@@ -3554,20 +3554,23 @@ paths:
                 log_type:
                   type: string
                   description: |
-                    Type of audit log to filter by. Valid values include:
-                    - account: Account creation logs
-                    - acl: Workspace and group membership operation logs
-                    - api: API request logs
-                    - apps: Automation app operation logs
-                    - app_deployment_run: Deployment run operation logs
-                    - app_deployment: Deployment operation logs
-                    - login: Member login and authentication logs
-                    - mount: Data connection operation logs
-                    - oauth2: OAuth token operation logs
-                    - org: Organization role change logs
-                    - org_secret: Organization secrets operation logs
+                     Type of audit log to filter by. Valid values include:
+                     - `account_v2`: User account creation logs
+                     - `api_v2`: API request logs
+                     - `app_deployment_run_v2`: Deployment run operation logs
+                     - `app_deployment_v2`: Deployment operation logs
+                     - `app_v2`: Automation app operation logs
+                     - `datasource_v2`: Data connection operation logs
+                     - `login_v2`: User login and authentication logs
+                     - `oauth2_v2`: OAuth token operation logs
+                     - `org_v2`: Organization role change logs
+                     - `org_secrets_v2`: Organization secrets operation logs
+                     - `perms_v2`: Membership and role change logs, for the organization, workspaces, and groups
+                     - `projects_v2`: Automation project operation logs
+                     - `review_v2`: Human review operation logs
+                     - `workspace_v2`: Workspace management operation logs
 
-                    For details about tracked operations, see [Viewing audit logs](/admin/audit-logs/).
+                     For details about tracked operations, see [Viewing audit logs](/admin/audit-logs/).
                   nullable: true
                 email:
                   type: string

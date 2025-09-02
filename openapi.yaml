@@ -3559,8 +3559,8 @@ paths:
                      - `api_v2`: API request logs
                      - `app_deployment_run_v2`: Deployment run operation logs
                      - `app_deployment_v2`: Deployment operation logs
-                     - `apps_v2`: Automation app operation logs
-                     - `datasources_v2`: Data connection operation logs
+                     - `app_v2`: Automation app operation logs
+                     - `datasource_v2`: Data connection operation logs
                      - `login_v2`: User login and authentication logs
                      - `oauth2_v2`: OAuth token operation logs
                      - `org_v2`: Organization role change logs

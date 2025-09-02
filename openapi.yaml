@@ -1051,10 +1051,12 @@ paths:
                   type: boolean
                   description: Use the deployment's upstream integration as a source rather than a `batch_id` or `input_dir`. Requires an upstream integration to be configured for the deployment.
                 from_timestamp:
-                  type: number
+                  type: integer # TODO: will this change break SDK auto-generation?
+                  format: int64  # TODO: will this change break SDK auto-generation?
                   description: Required if `manual_upstream_integration` is true and the upstream integration is a mailbox integration. Specifies the earliest date in Unix time milliseconds from which to pull emails.
                 to_timestamp:
-                  type: number
+                  type: integer # TODO: will this change break SDK auto-generation?
+                  format: int64  # TODO: will this change break SDK auto-generation?
                   description: Required if `manual_upstream_integration` is true and the upstream integration is a mailbox integration. Specifies the latest date in Unix time milliseconds from which to pull emails.
                 version:
                   type: string

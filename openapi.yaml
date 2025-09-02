@@ -3565,7 +3565,7 @@ paths:
                      - `oauth2_v2`: OAuth token operation logs
                      - `org_v2`: Organization role change logs
                      - `org_secrets_v2`: Organization secrets operation logs
-                     - `perms_v2`: Workspace, group, and organization membership operation logs
+                     - `perms_v2`: Membership and role change logs, at the organization, workspace, or group level
                      - `projects_v2`: Automation project operation logs
                      - `review_v2`: Human review operation logs
                      - `workspace_v2`: Workspace management operation logs

@@ -4221,6 +4221,11 @@ components:
               message:
                 type: string
                 description: Message associated with the edit history modification.
+            required:
+              - message
+      required:
+        - timestamp
+        - user_id
     documentUploadResponse:
       type: object
       properties:
@@ -4443,6 +4448,9 @@ components:
           description: The history of edits to the case field. Returned when include_review_results=true.
           items:
             $ref: '#/components/schemas/modificationObject'
+      required:
+        - name
+        - value
 
     caseInputField:
       type: object

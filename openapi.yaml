@@ -1376,6 +1376,14 @@ paths:
             - `edit_history/modifications`
             - `edit_history/modifications/message`
 
+            The following values are returned at the case level (`case_info/fields/...`):
+
+            - `edit_history`
+            - `edit_history/timestamp`
+            - `edit_history/user_id`
+            - `edit_history/modifications`
+            - `edit_history/modifications/message`
+
             See the response schema for details and descriptions.
 
         - in: query
@@ -1495,6 +1503,29 @@ paths:
                           field_name: "sex"
               keys:
                 - custom: {}
+              case_info:
+                fields:
+                  - name: "Employee_Address"
+                    value: "123 STREET RD ANYWHERE, USA,12345"
+                    input_fields:
+                      - record_index: 0
+                        refined_phrase_name: "employers_address_and_ZIP_code"
+                    chosen_field:
+                      record_index: 0
+                      refined_phrase_name: "employers_address_and_ZIP_code"
+                    edit_history:
+                      - timestamp: "08/27/2025 00:58:39"
+                        user_id: "john.doe_instabase.com"
+                        modifications:
+                          - message: "Edited to \"123 STREET RD ANYWHERE, USA,12345\""
+                  - name: "Sex"
+                    value: "Male"
+                    input_fields:
+                      - record_index: 0
+                        refined_phrase_name: "sex"
+                    chosen_field:
+                      record_index: 0
+                      refined_phrase_name: "sex"
           code-samples:
             - sdk: curl
               name: Simple request
@@ -1574,6 +1605,29 @@ paths:
                           field_name: "sex"
                       post_processed_paths:
                         - "instabase-org/orguser/fs/S3 Drive/app-runs/dd97-42cb-8b8e-28a63066887e/4180-8508-b103afb67185/s1_process_files/images/test2.png.PNG"
+              case_info:
+                fields:
+                  - name: "Employee_Address"
+                    value: "123 STREET RD ANYWHERE, USA,12345"
+                    input_fields:
+                      - record_index: 0
+                        refined_phrase_name: "employers_address_and_ZIP_code"
+                    chosen_field:
+                      record_index: 0
+                      refined_phrase_name: "employers_address_and_ZIP_code"
+                    edit_history:
+                      - timestamp: "08/27/2025 00:58:39"
+                        user_id: "john.doe_instabase.com"
+                        modifications:
+                          - message: "Edited to \"123 STREET RD ANYWHERE, USA,12345\""
+                  - name: "Sex"
+                    value: "Male"
+                    input_fields:
+                      - record_index: 0
+                        refined_phrase_name: "sex"
+                    chosen_field:
+                      record_index: 0
+                      refined_phrase_name: "sex"
           code-samples:
             - sdk: curl
               name: Using query parameters
@@ -3992,6 +4046,9 @@ components:
         has_more:
           type: boolean
           description: Indicates whether additional results are available beyond those included in the current response. Use the `file_offset` query parameter to specify the starting point when fetching the next set of results.
+        case_info:
+          $ref: '#/components/schemas/caseInfo'
+          description: Case-level information captured for the run, including optional edit history per case field when include_review_results=true.
         review_completed:
           type: boolean
           description: Indicates whether the run or document has completed review.
@@ -4346,3 +4403,54 @@ components:
         last_updated_by:
           type: string
           description: The user ID of the user who last edited the secret.
+
+    caseInfo:
+      type: object
+      properties:
+        fields:
+          type: array
+          description: A list of case-level fields captured for this run.
+          items:
+            $ref: '#/components/schemas/caseInfoField'
+
+    caseInfoField:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the case field.
+        value:
+          type: string
+          description: The value of the case field.
+        input_fields:
+          type: array
+          description: |
+            Only applicable for ranked case fields. Input options the user can choose from
+            when determining the value of this ranked field.
+          items:
+            $ref: '#/components/schemas/caseInputField'
+        chosen_field:
+          $ref: '#/components/schemas/caseInputField'
+          nullable: true
+          description: |
+            Only applicable for ranked case fields. The input option from `input_fields` that was
+            selected for the ranked field's value.
+        error_msg:
+          type: string
+          description: Error message for the case field, if any.
+        edit_history:
+          type: array
+          description: The history of edits to the case field. Returned when include_review_results=true.
+          items:
+            $ref: '#/components/schemas/modificationObject'
+
+    caseInputField:
+      type: object
+      description: Input option for ranked case fields.
+      properties:
+        record_index:
+          type: integer
+          description: Index of the document used for the input option
+        refined_phrase_name:
+          type: string
+          description: Refined phrase name of the input option.

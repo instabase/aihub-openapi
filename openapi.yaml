@@ -3651,11 +3651,9 @@ paths:
                 start:
                   type: integer
                   description: Number of results to skip for pagination
-                  nullable: true
                 size:
                   type: integer
                   description: Maximum number of results to return
-                  nullable: true
                 log_type:
                   type: string
                   description: |
@@ -3714,27 +3712,24 @@ paths:
                           type: object
                           required:
                             - timestamp_millis
-                            - email
-                            - user_ip
-                            - log_type
+                            - audit_log_type
                           properties:
                             timestamp_millis:
-                              type: integer
-                              format: int64
+                              type: string
                               description: Unix time in milliseconds
                               example: 1749139277810
-                            email:
+                            requestor_email:
                               type: string
                               description: User email associated with the log entry
                               example: john.doe_acme-anvils.com
-                            user_ip:
+                            requestor_ip:
                               type: string
-                              description: IP address of the user
+                              description: IP address of the user associated with the log entry
                               example: 1.2.3.4
-                            log_type:
+                            audit_log_type:
                               type: string
                               description: Type of the audit log
-                              example: account_v2
+                              example: "API_OPERATION_V2"
                           additionalProperties: true
         default:
           description: Error response

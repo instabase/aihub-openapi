@@ -38,7 +38,8 @@ paths:
               properties:
                 name:
                   type: string
-                  description: Name of the batch. Maximum length is 255 characters.
+                  description: Name of the batch.
+                  maxLength: 255
                 workspace:
                   type: string
                   description: |
@@ -47,6 +48,7 @@ paths:
                     When making this call from a service account, you must specify a workspace.
 
                     <Info>For organization members, if the default drive changes but is still connected, you can still use the batch as input for running an app. However, you can't upload any additional files to the batch. If the default drive is disconnected, you can't use batches stored on that drive as input for any app run.</Info>
+                  # TODO: maxLength: ???
               required:
                 - name
       responses:
@@ -146,9 +148,11 @@ paths:
                 properties:
                   batches:
                     type: array
-                    description: List of batches. See response schema for each batch object.
+                    description: List of batchInfo objects.
                     items:
                       $ref: '#/components/schemas/batchInfo'
+                required:
+                  - batches
       x-fern-examples:
         - code-samples:
             - sdk: curl
@@ -216,6 +220,11 @@ paths:
                 $ref: '#/components/schemas/batchInfo'
         '404':
           description: Batch does not exist, or denied access.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+
       x-fern-examples:
         - code-samples:
             - sdk: curl
@@ -273,6 +282,10 @@ paths:
                 $ref: '#/components/schemas/batchDeletionJobResponse'
         '404':
           description: Batch does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
       x-fern-examples:
         - code-samples:
             - sdk: curl
@@ -349,26 +362,26 @@ paths:
                 $ref: '#/components/schemas/listBatchFilesResponse'
               example:
                 nodes:
-                  - full_path: "/path/to/document1.pdf"
+                  - full_path: "acme-anvils/john.doe_acme-anvils.com/fs/Instabase Drive/file-batches/32c82600-c586-45c4-ab56-dd7839511b31/receipt1.jpg"
                     metadata:
                       node_type: "file"
-                      size: 1024
+                      size: 11240
                       modified_timestamp: 1647532800
                     perms:
                       can_read: true
                       can_write: true
                       can_delete: true
-                    name: "document1.pdf"
-                  - full_path: "/path/to/document2.pdf"
+                    name: "document1.jpg"
+                  - full_path: "acme-anvils/john.doe_acme-anvils.com/fs/Instabase Drive/file-batches/32c82600-c586-45c4-ab56-dd7839511b31/receipt2.jpg"
                     metadata:
                       node_type: "file"
-                      size: 2048
+                      size: 39922
                       modified_timestamp: 1647619200
                     perms:
                       can_read: true
                       can_write: false
                       can_delete: false
-                    name: "document2.pdf"
+                    name: "document2.jpg"
                 next_page_token: "eyJwYWdlIjogMn0="
                 has_more: true
         '404':
@@ -394,15 +407,15 @@ paths:
               name: without SDK
               code: |
                 import requests
-                
+
                 url = "https://aihub.instabase.com/api/v2/batches/123456/files"
                 headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
                             "IB-Context": "john.doe_acme.com" }
-                
+
                 # make the GET request
                 response = requests.get(url,
                                         headers=headers)
-                
+
                 # handle the response
                 if response.status_code == 200:
                     files = response.json()
@@ -427,7 +440,7 @@ paths:
         - name: filename
           in: path
           required: true
-          description: A user-defined name for the file. Include the file extension.
+          description: A user-defined name for the file on the AI Hub filesystem. Include the file extension.
           schema:
             type: string
         - $ref: '#/components/parameters/ib_context'
@@ -436,7 +449,7 @@ paths:
         content:
           application/octet-stream:
             schema:
-              description: The raw contents of the file to upload. See the example request, being sure to define the `<LOCAL_FILEPATH>` with the full path to the file in the machine running the script.
+              description: The raw contents of the file to upload. See the example request, being sure to define the `<LOCAL_FILEPATH>` with the full path to the file on the machine running the script.
               type: string
               format: binary
       responses:
@@ -503,21 +516,25 @@ paths:
       tags:
         - batches
       summary: Delete file from batch
-      description: Delete a file from a batch.
+      description: Delete a file from a batch.<br/>br/>This is an asynchronous operation that must be checked for completion.<br/><br/>To check with the API, send a `GET` to the URL listed in the `Location` header of the response.<br/><br/>To check with the SDK, extract the Job ID from the `Location` header of the response and use the [Poll batches job](/api-sdk/api-reference/batches/poll-batches-job) operation.
       parameters:
         - $ref: '#/components/parameters/batch_id'
         - name: filename
           in: path
           required: true
-          description: The name of the file.
+          description: The name of the file on the AI Hub filesystem.
           schema:
             type: string
         - $ref: '#/components/parameters/ib_context'
       responses:
         '202':
-          description: File deletion request accepted. Poll the deletion job for completion status.
+          description: File deletion request accepted. Poll the deletion job for completion status. This response also occurs when the file doesn't exist in the batch.
         '404':
-          description: Batch does not exist.
+          description: Batch doesn't exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
       x-fern-examples:
         - code-samples:
             - sdk: curl
@@ -548,7 +565,7 @@ paths:
                 # make the DELETE request
                 response = requests.delete(url,
                                            headers=headers)
-
+                
                 # handle the response
                 if response.status_code == 202:
                     print("File deletion request accepted")
@@ -570,6 +587,7 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid
           description: The job ID returned by a [Delete batch](/api-sdk/api-reference/batches/delete-batch) request or the `Location` header value returned by a [Delete file from a batch](/api-sdk/api-reference/batches/delete-file-from-batch) request.
         - $ref: '#/components/parameters/ib_context'
       responses:
@@ -654,6 +672,7 @@ paths:
                   description: Required unless using `app_id`. The name of the app to run.
                 app_id:
                   type: string
+                  format: uuid
                   description: |
                     Required unless using `app_name`. The app ID of the app to run.
 
@@ -664,6 +683,7 @@ paths:
                     The account that generated the app. If not specified, defaults to your AI Hub username.
 
                     For custom apps belonging to you, accept the default. For AI Hub Marketplace apps published by Instabase, specify `instabase`.
+                  default: <YOUR AI HUB USERNAME>  # TODO will adding this line break SDK autogen? https://instabase.slack.com/archives/C05QM5Z8Q23/p1756847169750319
                 batch_id:
                   type: integer
                   description: Required unless using `input_dir`. The batch ID of a batch created with the [Batches endpoint](/api-sdk/api-reference/batches/create-batch/). All files uploaded to the batch are used as input for the run.
@@ -723,7 +743,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/run'
           description: Run started successfully.
-        default:
+        'default':
           content:
             application/json:
               schema:
@@ -875,6 +895,7 @@ paths:
           name: run_id
           schema:
             type: string
+            format: uuid
           description: Filter specific run by run ID.
         - in: query
           name: status
@@ -889,16 +910,18 @@ paths:
             type: array
             items:
               type: string
-          description: Filter runs by the run's output workspace. By default, all runs across all workspaces you have access to are returned, use this query parameter to filter by specific workspace names. You must have access to the named workspaces.
+          description: Filter runs by the run's output workspace. By default, all runs across all workspaces you have access to are returned. You must have access to the named workspaces.
         - in: query
           name: from_timestamp
           schema:
             type: integer
+            format: int64
           description: Filter runs starting from this timestamp. Timestamp in Unix time in seconds. Defaults to 24 hours before the current time.
         - in: query
           name: to_timestamp
           schema:
             type: integer
+            format: int64
           description: Filter runs up to this timestamp. Timestamp in Unix time in seconds. Defaults to the current time.
         - in: query
           name: limit
@@ -925,7 +948,7 @@ paths:
             enum:
               - ASCENDING
               - DESCENDING
-          description: Order of sorting, such as ASCENDING or DESCENDING.
+          description: Sort order.
       responses:
         '200':
           description: A list of all runs.
@@ -933,11 +956,23 @@ paths:
             application/json:
               schema:
                 type: object
+                required:
+                  - runs
+                  - has_more
+                  - next_offset
                 properties:
                   runs:
                     type: array
                     items:
                       $ref: '#/components/schemas/run'
+                  has_more:
+                    type: boolean
+                    example: false
+                    description: Whether there are more retrievable runs.
+                  next_offset:
+                    type: integer
+                    example: -1
+                    description: if positive, the offset to use with another call to this API operation, to get the next batch of runs
         default:
           description: Error response.
           content:
@@ -1003,7 +1038,7 @@ paths:
           name: deployment-id
           schema:
             type: string
-            default: false
+            format: uuid
           required: true
           description: |
             The deployment ID.
@@ -1026,10 +1061,12 @@ paths:
                   type: boolean
                   description: Use the deployment's upstream integration as a source rather than a `batch_id` or `input_dir`. Requires an upstream integration to be configured for the deployment.
                 from_timestamp:
-                  type: number
+                  type: integer
+                  format: int64
                   description: Required if `manual_upstream_integration` is true and the upstream integration is a mailbox integration. Specifies the earliest date in Unix time milliseconds from which to pull emails.
                 to_timestamp:
-                  type: number
+                  type: integer
+                  format: int64
                   description: Required if `manual_upstream_integration` is true and the upstream integration is a mailbox integration. Specifies the latest date in Unix time milliseconds from which to pull emails.
                 version:
                   type: string
@@ -1244,14 +1281,18 @@ paths:
                     type: string
                     description: Job ID for deleting the input directory.
                     nullable: true
+                    example: 036fbbfd-9376-4664-b77f-ecdbc7c8c3f0
                   delete_output_dir_job_id:
                     type: string
                     description: Job ID for deleting the output directory.
                     nullable: true
+                    example: 8f0a38ed-a5d7-4bf0-b7d1-a54ed5892bd0
                   delete_log_dir_job_id:
                     type: string
                     description: Job ID for deleting the log directory.
                     nullable: true
+                    example: 86247bba-b898-49e1-a3a3-1ac00bee2c6c
+                    # TODO: is the response supposed to include an ID for the job of deleting the run itself, or is the run nothing more than the input dir, output dir, and logs?
         default:
           description: Error response.
           content:
@@ -1453,7 +1494,7 @@ paths:
           schema:
             type: integer
             default: 0
-          description: The initial file index to start returning results from. Defaults to `0`.
+          description: The initial file index to start returning results from.
         - $ref: '#/components/parameters/ib_context'
       responses:
         '200':
@@ -1720,9 +1761,11 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ib_context'
       requestBody:
-        required: true
         content:
           multipart/form-data:
+            # A fern bug means all fields are marked as required in the API reference documentation,
+            # except for `files`. There's no workaround that I can find.
+            # https://github.com/fern-api/fern/issues/9175
             schema:
               type: object
               properties:
@@ -1747,9 +1790,10 @@ paths:
                 workspace:
                   type: string
                   description: |
-                    The name of your personal workspace, where the conversation is created. For organization members, your personal workspace name is your user ID. If not defined, the workspace is inferred from the `IB-Context` header value.
+                    The name of your personal workspace, where the conversation is created. For organization members, your personal workspace name is your user ID.
 
                     When making this call from a service account, you must specify a workspace.
+                  default: IB-Context value
                 enable_object_detection:
                   type: boolean
                   description: Defines whether to enable [object detection](/chat/converse#digitization-and-object-detection) for the processed file. Object detection includes support for extracting tables and checkboxes.
@@ -1778,8 +1822,6 @@ paths:
                   type: boolean
                   description: <span class="badge">Enterprise</span> Enable this and `enable_multilanguage_support` if the conversation contains documents in an [advanced non-Latin language](/overview/languages#advanced-non-latin-language-set), including Greek, Hebrew, Thai, and others.
                   default: false
-              required:
-                - files
       responses:
         '201':
           description: Conversation created successfully.
@@ -2166,6 +2208,7 @@ paths:
                 mode:
                   type: string
                   enum: [default, advanced]
+                  default: default
                   description: |
                     The model to use to answer the question. Supports the standard (`default`) and advanced (`advanced`) models. See [Choosing a model](/overview/models/) for details about each model.
                     <Note>The multistep model and research mode are not supported. To use the multistep model or research mode in a query, use the [Run query](/api-sdk/api-reference/queries/run-query) endpoint.</Note>
@@ -2548,10 +2591,11 @@ paths:
                       default: CHATBOT
                     id:
                       type: string
+                      format: UUID
                       description: |
                         The ID of the source app to query. You can query any AI Hub source app to which you have access.
 
-                        <Tip>You can find the source app ID in its AI Hub URL. For example, for chatbots: <span>http</span>s://aihub.instabase.com/hub/apps/**788eba40-5a1f-45f4-ad56-57fb1abe62c7**. Similarly, for conversations: <span>http</span>s://aihub.instabase.com/converse/**01930a30-f278-7dc1-be96-9abc5c0530b5**.</Tip>
+                        <Tip>You can find the source app ID in its AI Hub URL.<br/><br/>For chatbots: <span>http</span>s://aihub.instabase.com/hub/apps/**788eba40-5a1f-45f4-ad56-57fb1abe62c7**. <br/><br/>For conversations: <span>http</span>s://aihub.instabase.com/converse/**01930a30-f278-7dc1-be96-9abc5c0530b5**.</Tip>
 
                         <Note>Chatbot IDs change with [every version update](/chat/creating-chatbots#updating-chatbots). For convenience, when making a request to a given version of a chatbot, the query is automatically directed to the latest version of the chatbot.</Note>
                   required:
@@ -2679,7 +2723,12 @@ paths:
                         {
                           "page_number": 1,
                           "bboxes": [
-
+                            {
+                              "start_x": 134.93,
+                              "start_y": 132.91,
+                              "end_y": 648.57,
+                              "end_x": 872.95
+                            }
                           ]
                         }
                       ]
@@ -2934,7 +2983,7 @@ paths:
           required: true
           schema:
             type: string
-          description: Full path to the file.
+          description: Full path to the file on the AI Hub filesystem.
         - $ref: '#/components/parameters/ib_context'
       requestBody:
         required: true
@@ -3028,7 +3077,7 @@ paths:
           required: true
           schema:
             type: string
-          description: Full path to the file or folder.
+          description: Full path to the file or folder on the AI Hub filesystem.
         - $ref: '#/components/parameters/ib_context'
         - in: header
           name: IB-Retry-Config
@@ -3218,6 +3267,8 @@ paths:
             application/json:
               schema:
                 type: object
+                required:
+                  - secrets
                 properties:
                   secrets:
                     type: array
@@ -3645,30 +3696,45 @@ paths:
             application/json:
               schema:
                 type: object
+                required:
+                  - status
+                  - data
                 properties:
                   status:
                     type: string
                     example: "OK"
                   data:
                     type: object
+                    required:
+                      - results
                     properties:
                       results:
                         type: array
                         items:
                           type: object
+                          required:
+                            - timestamp_millis
+                            - email
+                            - user_ip
+                            - log_type
                           properties:
                             timestamp_millis:
-                              type: string
-                              description: Timestamp in epoch milliseconds
+                              type: integer
+                              format: int64
+                              description: Unix time in milliseconds
+                              example: 1749139277810
                             email:
                               type: string
                               description: User email associated with the log entry
+                              example: john.doe_acme-anvils.com
                             user_ip:
                               type: string
                               description: IP address of the user
+                              example: 1.2.3.4
                             log_type:
                               type: string
                               description: Type of the audit log
+                              example: account_v2
                           additionalProperties: true
         default:
           description: Error response
@@ -3747,6 +3813,7 @@ components:
       required: true
       schema:
         type: string
+        format: uuid
       description: The run ID.
     conversation_id:
       in: path
@@ -3754,6 +3821,7 @@ components:
       required: true
       schema:
         type: string
+        format: uuid
       description: |
         The conversation ID.
 
@@ -3772,6 +3840,7 @@ components:
         id:
           type: integer
           description: Unique identifier for the batch.
+          example: 346526
       required:
         - id
     batchInfo:
@@ -3780,35 +3849,51 @@ components:
         id:
           type: integer
           description: The batch ID.
+          example: 346526
         name:
           type: string
           description: The batch name.
+          example: "Bank Statements 32"
         workspace:
           type: string
           description: The name of the workspace in which the batch exists.
+          example: "Banking"
         mount_point:
           type: string
           description: The name of the connected drive in which the batch is stored.
+          example: "Instabase Drive"
         repo_owner:
           type: string
           description: The owner of the workspace (also known as the repo) in which the batch exists.
+          example: "acme-anvils"
         batch_owner:
           type: string
           description: Username of the user that created the batch.
+          example: "john.doe_acme_anvils.com"
         created_at_ms:
           type: integer
           format: int64
           description: When the batch was created, in Unix time milliseconds.
+          example: 1756160271000
         updated_at_ms:
           type: integer
           format: int64
           description: When the batch was last updated, in Unix time milliseconds.
+          example: 1756160993000
         path_suffix:
           type: string
           description: Batch path suffix from the mount point.
+          example: "file-batches/d34e6677-6382-4158-9824-949ce98bd2b4"
       required:
         - id
         - name
+        - workspace
+        - mount_point
+        - repo_owner
+        - batch_owner
+        - created_at_ms
+        - updated_at_ms
+        - path_suffix
     listBatchFilesResponse:
       type: object
       properties:
@@ -3827,13 +3912,21 @@ components:
                 properties:
                   node_type:
                     type: string
-                    description: Type of the node (e.g., 'file').
+                    description: Type of the node.
+                    example: file
                   size:
                     type: integer
                     description: Size of the file in bytes.
+                    example: 66120
                   modified_timestamp:
                     type: integer
+                    format: int64
                     description: Last modification timestamp of the file, in Unix time seconds.
+                    example: 1647532800
+                required:
+                  - node_type
+                  - size
+                  - modified_timestamp
               perms:
                 type: object
                 description: Permission settings for the file.
@@ -3841,27 +3934,48 @@ components:
                   can_read:
                     type: boolean
                     description: Whether the user has read permission.
+                    example: true
                   can_write:
                     type: boolean
                     description: Whether the user has write permission.
+                    example: true
                   can_delete:
                     type: boolean
                     description: Whether the user has delete permission.
+                    example: true
+                required:
+                  - can_read
+                  - can_write
+                  - can_delete
               name:
                 type: string
                 description: Name of the file, including optional extension.
+                example: receipt2.jpg
+            required:
+              - full_path
+              - metadata
+              - perms
+              - name
         next_page_token:
           type: string
           description: Token for retrieving the next page of results.
+          example: eyJwYWdlIjogMn0=
         has_more:
           type: boolean
-          description: Indicates whether there are more files to be retrieved.
+          description: Whether there are more retrievable files.
+          example: false
+      required:
+        - nodes
+        - next_page_token
+        - has_more
     batchDeletionJobResponse:
       type: object
       properties:
         job_id:
           type: string
+          format: uuid
           description: The job ID of the operation. Use the job ID with the [Poll batches job endpoint](/api-sdk/api-reference/batches/poll-batches-job) to check batch deletion status.
+          example: f2e798f7-5e11-4cb3-85e3-d4bee5cad9d0
       required:
         - job_id
     jobStatusResponse:
@@ -3876,17 +3990,31 @@ components:
             - CANCELLED
             - RUNNING
             - PENDING
+          example: COMPLETE
         message:
           type: string
           description: Job status message.
+          example: OK
+      required:
+        - state
+        - message
     run:
       type: object
+      required:
+        - id
+        - status
+        - start_timestamp
+        - finish_timestamp
+        - msg
       properties:
         id:
           type: string
+          format: uuid
+          example: 0284af3a-18f8-465c-9f16-58ad7377a904
           description: Run ID of the run.
         status:
           type: string
+          example: RUNNING
           description: |
             Status of the run. Possible values and meanings:
             - `CANCELLED` -- A user cancelled the run
@@ -3905,130 +4033,233 @@ components:
         start_timestamp:
           type: integer
           format: int64
+          example: 1755734837610282851
           description: When the run started, in Unix time nanoseconds.
         finish_timestamp:
           type: integer
           format: int64
+          example: null
           description: When the run finished, in Unix time nanoseconds. `null` if run is still in progress.
           nullable: true
         msg:
           type: string
           description: Message about the run.
-          nullable: true
+          example: ""
     conversationResponse:
       type: object
       properties:
         id:
           type: string
+          format: uuid
           description: Unique identifier for the conversation.
+          example: 0199115e-f147-7846-ac8a-f827e38985c2
         name:
           type: string
           description: Name of the conversation.
+          example: Airplane specs
         upload_status:
           type: object
-          description: |
-            Status of file uploads. This field is omitted if no files are provided.
+          description: Status of file uploads. This field is omitted if no files are provided.
+          required:
+            - success
+            - failure
           properties:
             success:
               type: array
               items:
                 type: object
+                required:
+                  - name
                 properties:
                   name:
                     type: string
                     description: Name of the successfully uploaded file.
+                    example: A330_specs.pdf
             failure:
               type: array
               items:
                 type: object
+                required:
+                  - name
                 properties:
                   name:
                     type: string
                     description: Name of the file that failed to upload.
+                    example: A350_specs.pdf
       required:
         - id
         - name
     promptResponse:
       type: object
+      required:
+        - prompt_id
+        - answer
       properties:
         prompt_id:
           type: string
+          format: uuid
           description: The ID of the prompt.
+          example: afa318d01b494befa293a5191f3947d7
         answer:
           type: string
           description: The answer to the question asked.
+          example: "The main topic of the document is the passage of time."
     conversation:
       type: object
+      required:
+        - id
+        - name
+        - description
+        - created_at_ms
+        - updated_at_ms
+        - owner
+        - documents
+        - state
+        - status
+        - drive_state
+        - migration_required
+        - schema_version
       properties:
         id:
           type: string
           description: Unique identifier for the conversation.
+          example: 01992ae9-2207-722f-9809-40ef67ff9005
         name:
           type: string
           description: Name of the conversation.
+          example: Airplane specs
         description:
           type: string
           description: Description of the conversation.
-        state:
+          example: Conversation about Airbus airplanes
+        created_at_ms:
+          type: integer
+          format: int64
+          description: When the conversation was created in Unix time milliseconds.
+          example: 1757361631000
+        updated_at_ms:
+          type: integer
+          format: int64
+          description: When the conversation was updated in Unix time milliseconds.
+          example: 1757361824000
+        owner:
           type: string
-          description: |
-            The current state of the conversation.
-
-              - `COMPLETE`: Ready to start a conversation.
-              - `FAILED`: Not able process any of the uploaded files.
-              - `RUNNING`: Still processing the uploaded files.
+          description: The username who created the conversation.
+          example: john.doe_acme-anvils.com
         documents:
           type: array
           description: A list of all uploaded and processed documents in the conversation.
           items:
             $ref: '#/components/schemas/documentDetails'
+        state:
+          type: string
+          description: |
+            The state of the conversation.
+
+              - `COMPLETE` - Ready to start a conversation.
+              - `FAILED` - Not able process any of the uploaded files.
+              - `RUNNING` - Still processing the uploaded files.
+          enum:
+            - COMPLETE
+            - FAILED
+            - RUNNING
+        status:
+          type: string
+          description: TODO
+          example: "Documents Processed!"
+        drive_state:
+          type: string
+          description: TODO
+          example: "ACTIVE"
+        migration_required:
+          type: boolean
+          description: TODO
+          example: false
+        schema_version:
+          type: integer
+          description: TODO
+          example: 2
+    documentDetails:
+      type: object
       required:
         - id
         - name
-        - state
-    documentDetails:
-      type: object
       properties:
         id:
           type: integer
           description: Unique identifier for the document.
+          example: 3229
         name:
           type: string
           description: Name of the document.
+          example: receipt1.jpg
         state:
           type: string
           description: |
             The processing state of the document.
 
+            - `FAILED`: Document processing failed.
             - `PROCESSED`: Document is processed.
             - `PROCESSING`: Document processing in progress.
-            - `FAILED`: Document processing failed.
+          enum:
+            - FAILED
+            - PROCESSED
+            - PROCESSING
         uploadTimestamp:
           type: string
           format: date-time
-          description: The timestamp when the document was uploaded.
+          description: The timestamp when the document was uploaded in Unix time milliseconds.
+          example: 1757361631000
     conversationSummary:
       type: object
       properties:
         id:
           type: string
           description: Unique identifier for the conversation.
+          example: 01992ae9-2207-722f-9809-40ef67ff9005
         name:
           type: string
           description: Name of the conversation.
+          example: Airplane specs
         description:
           type: string
           description: A brief description of the conversation.
+          example: Conversation about Airbus airplanes
+        created_at_ms:
+          type: integer
+          format: int64
+          description: When the conversation was created in Unix time milliseconds.
+          example: 1757350799000
+        updated_at_ms:
+          type: integer
+          format: int64
+          description: When the conversation was last updated in Unix time milliseconds.
+          example: 1757361546000
+        owner:
+          type: string
+          description: Username who created the conversation
+          example: john.doe_acme-anvils.com
       required:
         - id
         - name
+        - description
+        - created_at_ms
+        - updated_at_ms
+        - owner
     error:
       type: object
+      required:
+        - message
       properties:
         message:
           type: string
+          example: "<ERROR MESSAGE>"
     resultsResponse:
       type: object
+      required:
+        - has_more
+        - files
+        - keys
       properties:
         batch_id:
           type: string
@@ -4039,6 +4270,8 @@ components:
             $ref: '#/components/schemas/fileWithDocuments'
         keys:
           type: object
+          required:
+            - custom
           properties:
             custom:
               type: object
@@ -4066,8 +4299,16 @@ components:
           description: An array containing each document within the file.
           items:
             $ref: '#/components/schemas/document'
+      required:
+        - original_file_name
+        - input_file_path
+        - documents
     document:
       type: object
+      required:
+        - fields
+        - class_name
+        - page_numbers
       properties:
         fields:
           type: array
@@ -4091,9 +4332,11 @@ components:
           description: An array of strings, each representing a path to post-processed documents.
           items:
             type: string
+            nullable: true
         post_processed_pdf_path:
           type: string
           description: Path to post-processed PDF.
+          nullable: true
         class_edit_history:
           type: array
           description: An array containing the history of edits to the document class.
@@ -4101,6 +4344,8 @@ components:
             $ref: '#/components/schemas/modificationObject'
         validations:
           type: object
+          required:
+            - final_result_pass
           properties:
             final_result_pass:
               type: boolean
@@ -4115,6 +4360,10 @@ components:
               description: Classification confidence. Indicates the model's certainty in predicting the class of a document.
     documentField:
       type: object
+      required:
+        - field_name
+        - value
+        - type
       properties:
         field_name:
           type: string
@@ -4152,6 +4401,9 @@ components:
               description: OCR confidence. Indicates the OCR processor's certainty in digitization accuracy.
         validations:
           type: object
+          required:
+            - valid
+            - alerts
           properties:
             valid:
               type: boolean
@@ -4161,6 +4413,12 @@ components:
               description: Alerts for field-level validation rules. Populated only if the `validations/valid` value is `false`.
               items:
                 type: object
+                required:
+                  - alert_level
+                  - msg
+                  - blocked
+                  - type
+                  - locations
                 properties:
                   alert_level:
                     type: string
@@ -4176,8 +4434,15 @@ components:
                     description: Type of validation alert.
                   locations:
                     type: object
+                    # TODO: can we describe this further or list its properties?
     fieldSourceCoordinates:
       type: object
+      required:
+        - top_x
+        - top_y
+        - bottom_x
+        - bottom_y
+        - page_number
       properties:
         top_x:
           type: number
@@ -4205,6 +4470,10 @@ components:
           description: Zero-indexed page number of the bounding box.
     modificationObject:
       type: object
+      required:
+        - timestamp
+        - user_id
+        - modifications
       properties:
         timestamp:
           type: string
@@ -4223,47 +4492,65 @@ components:
                 description: Message associated with the edit history modification.
             required:
               - message
-      required:
-        - timestamp
-        - user_id
     documentUploadResponse:
       type: object
+      required:
+        - upload_status
       properties:
         upload_status:
           type: object
+          required:
+            - success
+            - failure
           properties:
             success:
               type: array
               items:
                 type: object
+                required:
+                  - name
                 properties:
                   name:
                     type: string
                     description: Name of the successfully uploaded document.
+                    example: receipt1.pdf
             failure:
               type: array
               items:
                 type: object
+                required:
+                  - name
+                  - reason
                 properties:
                   name:
                     type: string
                     description: Name of the document that failed to upload.
+                    example: receipt2.pdf
                   reason:
                     type: string
                     description: Error message for upload failure.
+                    example: Failed to add file. File with a same name already exists.
           description: Summary of the upload status for uploaded files, divided into `success` and `failure`.
     documentMetadataResponse:
       type: object
+      required:
+        - id
+        - ibdoc_path
+        - name
+        - metadata
       properties:
         id:
           type: integer
           description: The document ID.
+          example: 12
         ibdoc_path:
           type: string
           description: Path to the document's internal representation.
+          example: acme-anvils/docs-1385/fs/Instabase Drive/aihub/01992f7c-c8cb-72c3-ad85-8f8c33ff1ff4/documents/out/test1_eJwrSS0uMdQrqSgBABGPA4A=.txt.ibdoc
         name:
           type: string
           description: The name of the document.
+          example: receipt1.jpg
         metadata:
           type: array
           items:
@@ -4275,7 +4562,9 @@ components:
       properties:
         query_id:
           type: string
+          format: uuid
           description: The unique identifier of the query.
+          example: 019930a5-b74c-72c3-920f-6671aa3e9f74
       required:
         - query_id
     queryStatusResponse:
@@ -4284,6 +4573,7 @@ components:
         query_id:
           type: string
           description: The unique identifier of the query.
+          example: 019930a5-b74c-72c3-920f-6671aa3e9f74
         status:
           type: string
           description: Status of the query.
@@ -4291,6 +4581,7 @@ components:
             - RUNNING
             - COMPLETE
             - FAILED
+          example: COMPLETE
         results:
           type: array
           description: The query response. Returned only if the query status is `COMPLETE`.
@@ -4374,13 +4665,24 @@ components:
         - bottom_y
     secret:
       type: object
+      required:
+        - alias
+        - org
+        - allowed_workspaces_type
+        - created_at
+        - created_by
+        - last_updated_by
+        - updated_at
+        - description
       properties:
         alias:
           type: string
           description: Name of the secret.
+          example: password
         description:
           type: string
           description: Description of the secret.
+          example: the secret password
         allowed_workspaces_type:
           type: string
           description: Which workspaces in this organization are allowed to use this secret in custom functions.
@@ -4388,27 +4690,35 @@ components:
             - ALL
             - SOME
             - NONE
+          example: SOME
         allowed_workspaces:
           type: array
           description: Which workspaces are allowed to use this secret, if only some are allowed.
+          example: [workspace1, workspace2]
           items:
             type: string
         org:
           type: string
           description: The organization name in which this secret was created.
+          example: acme-anvils
         created_at:
-          type: number
+          type: integer
+          format: int64
           description: When the secret was created in Unix time milliseconds.
+          example: 1757545681000
         created_by:
           type: string
           description: The user ID of the user who created the secret.
+          example: john.doe_acme-anvils.com
         updated_at:
-          type: number
+          type: integer
+          format: int64
           description: When the secret was last updated in Unix time milliseconds.
+          example: 1757545681000
         last_updated_by:
           type: string
           description: The user ID of the user who last edited the secret.
-
+          example: john.doe_acme-anvils.com
     caseInfo:
       type: object
       properties:

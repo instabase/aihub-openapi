@@ -586,7 +586,7 @@ paths:
                   type: string
                   description: A file name for the uploaded file on the AI Hub filesystem, including the file extension. Maximum of 255 characters.
                 file_size:
-                  type: string
+                  type: integer
                   description: The file size, in bytes, as a string.
               required:
                 - batch_id
@@ -623,7 +623,7 @@ paths:
                     -d '{
                           "batch_id": <BATCH-ID>,
                           "filename": "large-file.pdf",
-                          "file_size": "15728640"
+                          "file_size": 15728640
                         }'
             - sdk: python
               name: with SDK
@@ -673,7 +673,7 @@ paths:
                 # create the request payload
                 data = { "batch_id": 123456,
                          "filename": filename,
-                         "file_size": str(size) }
+                         "file_size": size }
                 
                 # make the POST request
                 response = requests.post(url,

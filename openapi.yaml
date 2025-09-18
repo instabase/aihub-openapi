@@ -941,7 +941,7 @@ paths:
                                          headers=headers,
                                          json=data)
                 
-                if response.status_code == 204:
+                if response.status_code == 201:
                     print("Multipart upload completed successfully")
                 else:
                     print(f"Error: {response.status_code} - {response.text}")
@@ -4931,6 +4931,7 @@ components:
           description: The number of bytes each part should be when uploading to the session. Each part should match the part_size, except for the final part, which can be smaller than the part_size.
       required:
         - part_size
+        - session_id
 
     multipartUploadPartResponse:
       type: object

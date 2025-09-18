@@ -848,7 +848,7 @@ paths:
                 action:
                   type: string
                   enum: [commit, abort]
-                  description: `commit` to finalize the upload or `abort` to cancel it.
+                  description: Set to `commit` to finalize the upload or `abort` to cancel it.
                 parts:
                   type: array
                   description: Required when action is `commit`. List of all uploaded parts in order.

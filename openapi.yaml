@@ -584,7 +584,7 @@ paths:
                   description: The batch ID to upload the file to.
                 filename:
                   type: string
-                  description: A file name for the uploaded file, including the file extension. Maximum of 255 characters.
+                  description: A file name for the uploaded file on the AI Hub filesystem, including the file extension. Maximum of 255 characters.
                 file_size:
                   type: string
                   description: The file size, in bytes, as a string.
@@ -599,7 +599,7 @@ paths:
             Location:
               schema:
                 type: string
-              description: The session endpoint URL to use in subsequent multipart upload requests, in the form API_ROOT/v2/batches/multipart-upload/sessions/<SESSION_ID>.
+              description: The session endpoint URL to use in subsequent multipart upload requests, in the form `<API-ROOT>/v2/batches/multipart-upload/sessions/<SESSION-ID>`.
           content:
             application/json:
               schema:
@@ -636,12 +636,13 @@ paths:
                                  api_key="<API-TOKEN>",
                                  ib_context="<IB-CONTEXT>")
 
-                  # Get file size
-                  local_filepath = 'large-file.pdf'
                   filename = 'large-file.pdf'
+                  
+                  # get file size
+                  local_filepath = 'large-file.pdf'
                   file_size = os.path.getsize(local_filepath)
 
-                  # Create multipart upload session
+                  # create multipart upload session
                   session_response = client.batches.create_multipart_upload_session(
                       batch_id=123456,
                       filename=filename,
@@ -655,18 +656,18 @@ paths:
             - sdk: python
               name: without SDK
               code: |
-                import requests
-                import json
                 import os
+                import requests
                 
-                # Get file size
-                local_filepath = 'large-file.pdf'
                 filename = 'large-file.pdf'
+
+                # get file size
+                local_filepath = 'large-file.pdf'
                 size = os.path.getsize(local_filepath)
                 
                 url = "https://aihub.instabase.com/api/v2/batches/multipart-upload"
                 headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                            "IB-Context": 'john.doe_acme.com',
+                            "IB-Context": "john.doe_acme.com",
                             "Content-Type": "application/json" }
                 
                 # create the request payload
@@ -697,7 +698,7 @@ paths:
         - batches
       summary: Upload part to multipart session
       description: |
-        Upload part of a file to the multipart upload session. Each part's size should match the `part_size` returned by the [Start multipart upload session](/api-sdk/api-reference/batches/create-multipart-upload-session) call, except for the final part, which can be smaller.
+        Upload part of a file to the multipart upload session. The size of each part must match the `part_size` returned by the [Start multipart upload session](/api-sdk/api-reference/batches/create-multipart-upload-session) call, except for the final part, which can be smaller.
         
         Parts must be uploaded with consecutive part numbers starting at 1.
       parameters:
@@ -755,7 +756,7 @@ paths:
                                  ib_context="<IB-CONTEXT>")
 
                   # Assuming session_id and part_size from previous step
-                  session_id = "<SESSION_ID>"
+                  session_id = “<SESSION-ID>"
                   part_size = 5242880  # 5MB
                   
                   parts = []
@@ -764,7 +765,7 @@ paths:
                   with open('large-file.pdf', 'rb') as input_file:
                       part_data = input_file.read(part_size)
                       while part_data:
-                          # Upload this part using SDK
+                          # upload this part using SDK
                           part_response = client.batches.upload_multipart_part(
                               session_id=session_id,
                               part_num=part_num,
@@ -777,7 +778,7 @@ paths:
                           })
                           print(f"Uploaded part {part_num}")
                           
-                          # Read next part
+                          # read next part
                           part_data = input_file.read(part_size)
                           part_num += 1
             - sdk: python
@@ -785,13 +786,13 @@ paths:
               code: |
                 import requests
                 
-                # Assuming session_id and part_size from previous step
-                session_id = "<SESSION_ID>"
+                # assuming session_id and part_size from previous step
+                session_id = “<SESSION-ID>"
                 part_size = 5242880  # 5MB
                 session_endpoint = f"https://aihub.instabase.com/api/v2/batches/multipart-upload/sessions/{session_id}"
                 
                 headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                            "IB-Context": 'john.doe_acme.com' }
+                            "IB-Context": “john.doe_acme.com" }
                 
                 parts = []
                 part_num = 1
@@ -799,7 +800,7 @@ paths:
                 with open('large-file.pdf', 'rb') as input_file:
                     part = input_file.read(part_size)
                     while part:
-                        # Upload this part
+                        # upload this part
                         part_url = f'{session_endpoint}/parts/{part_num}'
                         part_resp = requests.put(part_url, headers=headers, data=part)
                         
@@ -813,7 +814,7 @@ paths:
                             print(f"Error uploading part {part_num}: {part_resp.status_code}")
                             break
                         
-                        # Read next part
+                        # read next part
                         part = input_file.read(part_size)
                         part_num += 1
 
@@ -826,7 +827,7 @@ paths:
         - batches
       summary: Commit or abort multipart session
       description: |
-        After uploading all parts to a multipart upload session, use this endpoint to commit and close the session, or to abort the session.
+        After uploading all parts to a multipart upload session, use this endpoint to commit and close the session, or abort the session.
         
         When committing, provide all the uploaded parts in the correct order. When aborting, the session and all uploaded parts are discarded.
       parameters:
@@ -847,10 +848,10 @@ paths:
                 action:
                   type: string
                   enum: [commit, abort]
-                  description: Action to perform - either "commit" to finalize the upload or "abort" to cancel it.
+                  description: `commit` to finalize the upload or `abort` to cancel it.
                 parts:
                   type: array
-                  description: Required when action is "commit". List of all uploaded parts in order.
+                  description: Required when action is `commit`. List of all uploaded parts in order.
                   items:
                     type: object
                     properties:
@@ -878,7 +879,7 @@ paths:
         - code-samples:
             - sdk: curl
               code: |
-                  curl -X POST "${API_ROOT}/v2/batches/multipart-upload/sessions/<SESSION_ID>" \
+                  curl -X POST "${API_ROOT}/v2/batches/multipart-upload/sessions/<SESSION-ID>" \
                     -H "Authorization: Bearer ${API_TOKEN}" \
                     -H "IB-Context: ${IB_CONTEXT}" \
                     -H "Content-Type: application/json" \
@@ -901,14 +902,14 @@ paths:
                                  ib_context="<IB-CONTEXT>")
 
                   # Assuming session_id and parts from previous steps
-                  session_id = "<SESSION_ID>"
+                  session_id = “<SESSION-ID>"
                   parts = [
                       {"part_num": 1, "part_id": "12345"},
                       {"part_num": 2, "part_id": "12346"},
                       {"part_num": 3, "part_id": "12347"}
                   ]
 
-                  # Commit the session
+                  # commit the session
                   client.batches.commit_multipart_upload_session(
                       session_id=session_id,
                       action="commit",
@@ -922,7 +923,7 @@ paths:
                 import json
                 
                 # Assuming session_id and parts from previous steps
-                session_id = "<SESSION_ID>"
+                session_id = “<SESSION-ID>"
                 session_endpoint = f"https://aihub.instabase.com/api/v2/batches/multipart-upload/sessions/{session_id}"
                 parts = [
                     {"part_num": 1, "part_id": "12345"},
@@ -931,10 +932,10 @@ paths:
                 ]
                 
                 headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                            "IB-Context": 'john.doe_acme.com',
+                            "IB-Context": "john.doe_acme.com",
                             "Content-Type": "application/json" }
                 
-                # Commit the session
+                # commit the session
                 data = { "action": "commit", "parts": parts }
                 
                 response = requests.post(session_endpoint,

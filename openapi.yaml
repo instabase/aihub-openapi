@@ -569,7 +569,7 @@ paths:
         The multipart upload process consists of three steps:
         1. Create a multipart upload session (this endpoint)
         2. [Upload file parts](/api-sdk/api-reference/batches/upload-multipart-part) to the session
-        3. [Commit the session](/api-sdk/api-reference/batches/commit-multipart-session) to finalize the upload
+        3. [Commit the session](/api-sdk/api-reference/batches/commit-multipart-upload-session) to finalize the upload
       parameters:
         - $ref: '#/components/parameters/ib_context'
       requestBody:
@@ -648,8 +648,8 @@ paths:
                       file_size=file_size
                   )
 
-                  session_id = session_response['session_id']
-                  part_size = session_response['part_size']
+                  session_id = session_response.session_id
+                  part_size = session_response.part_size
                   print(f"Session ID: {session_id}")
                   print(f"Part size: {part_size}")
             - sdk: python
@@ -706,7 +706,7 @@ paths:
           required: true
           schema:
             type: string
-          description: The session ID obtained from the Location header of the Start multipart upload session response.
+          description: The session ID obtained from the Start multipart upload session response.
         - name: part_num
           in: path
           required: true
@@ -773,7 +773,7 @@ paths:
                           
                           parts.append({
                               'part_num': part_num,
-                              'part_id': part_response['part_id']
+                              'part_id': part_response.part_id
                           })
                           print(f"Uploaded part {part_num}")
                           
@@ -835,7 +835,7 @@ paths:
           required: true
           schema:
             type: string
-          description: The session ID obtained from the Location header of the Start multipart upload session response.
+          description: The session ID obtained from the Start multipart upload session response.
         - $ref: '#/components/parameters/ib_context'
       requestBody:
         required: true
@@ -979,8 +979,8 @@ paths:
                       file_size=file_size
                   )
 
-                  session_id = session_response['session_id']
-                  part_size = session_response['part_size']
+                  session_id = session_response.session_id
+                  part_size = session_response.part_size
 
                   # Step 2: Upload parts
                   parts = []
@@ -1000,7 +1000,7 @@ paths:
 
                           parts.append({
                               'part_num': part_num,
-                              'part_id': part_response['part_id']
+                              'part_id': part_response.part_id
                           })
                           part_num += 1
 

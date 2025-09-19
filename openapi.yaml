@@ -555,6 +555,464 @@ paths:
                 else:
                     print(f"Error: {response.status_code} - {response.text}")
 
+  /v2/batches/multipart-upload:
+    post:
+      operationId: createMultipartUploadSession
+      x-fern-audiences:
+        - public
+      tags:
+        - batches
+      summary: Start multipart upload session
+      description: |
+        Start a multipart upload session. Use this endpoint when you need to upload a file larger than 10 MB to a batch.
+        
+        The multipart upload process consists of three steps:
+        1. Create a multipart upload session (this endpoint)
+        2. [Upload file parts](/api-sdk/api-reference/batches/upload-multipart-part) to the session
+        3. [Commit the session](/api-sdk/api-reference/batches/commit-multipart-upload-session) to finalize the upload
+      parameters:
+        - $ref: '#/components/parameters/ib_context'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                batch_id:
+                  type: integer
+                  description: The batch ID to upload the file to.
+                filename:
+                  type: string
+                  description: A file name for the uploaded file on the AI Hub filesystem, including the file extension. Maximum of 255 characters.
+                file_size:
+                  type: integer
+                  description: The file size, in bytes, as a string.
+              required:
+                - batch_id
+                - filename
+                - file_size
+      responses:
+        '201':
+          description: The multipart upload session was initiated.
+          headers:
+            Location:
+              schema:
+                type: string
+              description: The session endpoint URL to use in subsequent multipart upload requests, in the form `<API-ROOT>/v2/batches/multipart-upload/sessions/<SESSION-ID>`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/multipartUploadSessionResponse'
+        '404':
+          description: Batch with the specified ID doesn't exist.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: Error response.
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl "${API_ROOT}/v2/batches/multipart-upload" \
+                    -H "Authorization: Bearer ${API_TOKEN}" \
+                    -H "IB-Context: ${IB_CONTEXT}" \
+                    -H "Content-Type: application/json" \
+                    -d '{
+                          "batch_id": <BATCH-ID>,
+                          "filename": "large-file.pdf",
+                          "file_size": 15728640
+                        }'
+            - sdk: python
+              name: with SDK
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+                  import os
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+
+                  filename = 'large-file.pdf'
+                  
+                  # get file size
+                  local_filepath = 'large-file.pdf'
+                  file_size = os.path.getsize(local_filepath)
+
+                  # create multipart upload session
+                  session_response = client.batches.create_multipart_upload_session(
+                      batch_id=123456,
+                      filename=filename,
+                      file_size=file_size
+                  )
+
+                  session_id = session_response.session_id
+                  part_size = session_response.part_size
+                  print(f"Session ID: {session_id}")
+                  print(f"Part size: {part_size}")
+            - sdk: python
+              name: without SDK
+              code: |
+                import os
+                import requests
+                
+                filename = 'large-file.pdf'
+
+                # get file size
+                local_filepath = 'large-file.pdf'
+                size = os.path.getsize(local_filepath)
+                
+                url = "https://aihub.instabase.com/api/v2/batches/multipart-upload"
+                headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                            "IB-Context": "john.doe_acme.com",
+                            "Content-Type": "application/json" }
+                
+                # create the request payload
+                data = { "batch_id": 123456,
+                         "filename": filename,
+                         "file_size": size }
+                
+                # make the POST request
+                response = requests.post(url,
+                                         headers=headers,
+                                         json=data)
+                
+                # handle the response
+                if response.status_code == 201:
+                    part_size = response.json()['part_size']
+                    session_id = response.json()['session_id']
+                    print(f"Session ID: {session_id}")
+                    print(f"Part size: {part_size}")
+                else:
+                    print(f"Error: {response.status_code} - {response.text}")
+
+  /v2/batches/multipart-upload/sessions/{session_id}/parts/{part_num}:
+    put:
+      operationId: uploadMultipartPart
+      x-fern-audiences:
+        - public
+      tags:
+        - batches
+      summary: Upload part to multipart session
+      description: |
+        Upload part of a file to the multipart upload session. The size of each part must match the `part_size` returned by the [Start multipart upload session](/api-sdk/api-reference/batches/create-multipart-upload-session) call, except for the final part, which can be smaller.
+        
+        Parts must be uploaded with consecutive part numbers starting at 1.
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The session ID obtained from the Start multipart upload session response.
+        - name: part_num
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The part number, starting at 1 and increasing consecutively for each part.
+        - $ref: '#/components/parameters/ib_context'
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+              description: Raw content of the part to be uploaded.
+      responses:
+        '201':
+          description: The part was successfully uploaded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/multipartUploadPartResponse'
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: Error response.
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl -X PUT "${API_ROOT}/v2/batches/multipart-upload/sessions/<SESSION_ID>/parts/1" \
+                    -H "Authorization: Bearer ${API_TOKEN}" \
+                    -H "IB-Context: ${IB_CONTEXT}" \
+                    -H "Content-Type: application/octet-stream" \
+                    --data-binary "@part1.bin"
+            - sdk: python
+              name: with SDK
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+
+                  # Assuming session_id and part_size from previous step
+                  session_id = “<SESSION-ID>"
+                  part_size = 5242880  # 5MB
+                  
+                  parts = []
+                  part_num = 1
+                  
+                  with open('large-file.pdf', 'rb') as input_file:
+                      part_data = input_file.read(part_size)
+                      while part_data:
+                          # upload this part using SDK
+                          part_response = client.batches.upload_multipart_part(
+                              session_id=session_id,
+                              part_num=part_num,
+                              part_data=part_data
+                          )
+                          
+                          parts.append({
+                              'part_num': part_num,
+                              'part_id': part_response.part_id
+                          })
+                          print(f"Uploaded part {part_num}")
+                          
+                          # read next part
+                          part_data = input_file.read(part_size)
+                          part_num += 1
+            - sdk: python
+              name: without SDK
+              code: |
+                import requests
+                
+                # assuming session_id and part_size from previous step
+                session_id = “<SESSION-ID>"
+                part_size = 5242880  # 5MB
+                session_endpoint = f"https://aihub.instabase.com/api/v2/batches/multipart-upload/sessions/{session_id}"
+                
+                headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                            "IB-Context": “john.doe_acme.com" }
+                
+                parts = []
+                part_num = 1
+                
+                with open('large-file.pdf', 'rb') as input_file:
+                    part = input_file.read(part_size)
+                    while part:
+                        # upload this part
+                        part_url = f'{session_endpoint}/parts/{part_num}'
+                        part_resp = requests.put(part_url, headers=headers, data=part)
+                        
+                        if part_resp.status_code == 201:
+                            parts.append({
+                                'part_num': part_num,
+                                'part_id': part_resp.json()['part_id']
+                            })
+                            print(f"Uploaded part {part_num}")
+                        else:
+                            print(f"Error uploading part {part_num}: {part_resp.status_code}")
+                            break
+                        
+                        # read next part
+                        part = input_file.read(part_size)
+                        part_num += 1
+
+  /v2/batches/multipart-upload/sessions/{session_id}:
+    post:
+      operationId: commitMultipartUploadSession
+      x-fern-audiences:
+        - public
+      tags:
+        - batches
+      summary: Commit or abort multipart session
+      description: |
+        After uploading all parts to a multipart upload session, use this endpoint to commit and close the session, or abort the session.
+        
+        When committing, provide all the uploaded parts in the correct order. When aborting, the session and all uploaded parts are discarded.
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The session ID obtained from the Start multipart upload session response.
+        - $ref: '#/components/parameters/ib_context'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum: [commit, abort]
+                  description: Set to `commit` to finalize the upload or `abort` to cancel it.
+                parts:
+                  type: array
+                  description: Required when action is `commit`. List of all uploaded parts in order.
+                  items:
+                    type: object
+                    properties:
+                      part_num:
+                        type: integer
+                        description: The part number of the uploaded part.
+                      part_id:
+                        type: string
+                        description: The part ID returned when the part was uploaded.
+                    required:
+                      - part_num
+                      - part_id
+              required:
+                - action
+      responses:
+        '201':
+          description: The multipart upload session was successfully committed or aborted.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: Error response.
+      x-fern-examples:
+        - code-samples:
+            - sdk: curl
+              code: |
+                  curl -X POST "${API_ROOT}/v2/batches/multipart-upload/sessions/<SESSION-ID>" \
+                    -H "Authorization: Bearer ${API_TOKEN}" \
+                    -H "IB-Context: ${IB_CONTEXT}" \
+                    -H "Content-Type: application/json" \
+                    -d '{
+                          "action": "commit",
+                          "parts": [
+                            {"part_num": 1, "part_id": "12345"},
+                            {"part_num": 2, "part_id": "12346"},
+                            {"part_num": 3, "part_id": "12347"}
+                          ]
+                        }'
+            - sdk: python
+              name: with SDK
+              code: |
+                  # AI Hub Python SDK example
+                  from aihub import AIHub
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+
+                  # Assuming session_id and parts from previous steps
+                  session_id = “<SESSION-ID>"
+                  parts = [
+                      {"part_num": 1, "part_id": "12345"},
+                      {"part_num": 2, "part_id": "12346"},
+                      {"part_num": 3, "part_id": "12347"}
+                  ]
+
+                  # commit the session
+                  client.batches.commit_multipart_upload_session(
+                      session_id=session_id,
+                      action="commit",
+                      parts=parts
+                  )
+                  print("Multipart upload completed successfully")
+            - sdk: python
+              name: without SDK
+              code: |
+                import requests
+                import json
+                
+                # Assuming session_id and parts from previous steps
+                session_id = “<SESSION-ID>"
+                session_endpoint = f"https://aihub.instabase.com/api/v2/batches/multipart-upload/sessions/{session_id}"
+                parts = [
+                    {"part_num": 1, "part_id": "12345"},
+                    {"part_num": 2, "part_id": "12346"},
+                    {"part_num": 3, "part_id": "12347"}
+                ]
+                
+                headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                            "IB-Context": "john.doe_acme.com",
+                            "Content-Type": "application/json" }
+                
+                # commit the session
+                data = { "action": "commit", "parts": parts }
+                
+                response = requests.post(session_endpoint,
+                                         headers=headers,
+                                         json=data)
+                
+                if response.status_code == 201:
+                    print("Multipart upload completed successfully")
+                else:
+                    print(f"Error: {response.status_code} - {response.text}")
+            - sdk: python
+              name: with SDK - Complete Workflow
+              code: |
+                  # AI Hub Python SDK example - Complete multipart upload workflow
+                  from aihub import AIHub
+                  import os
+
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
+
+                  # Option 1: Use the convenience method (recommended)
+                  batch_id = 123456
+                  filename = "large-file.pdf"
+                  local_file_path = "/path/to/large-file.pdf"
+
+                  # This handles the entire multipart upload process automatically
+                  client.batches.add_large_file(
+                      batch_id=batch_id,
+                      filename=filename,
+                      file_path_or_data=local_file_path
+                  )
+                  print("Large file uploaded successfully using convenience method")
+
+                  # Option 2: Manual step-by-step process for fine-grained control
+                  file_size = os.path.getsize(local_file_path)
+
+                  # Step 1: Create session
+                  session_response = client.batches.create_multipart_upload_session(
+                      batch_id=batch_id,
+                      filename="manual-upload.pdf",
+                      file_size=file_size
+                  )
+
+                  session_id = session_response.session_id
+                  part_size = session_response.part_size
+
+                  # Step 2: Upload parts
+                  parts = []
+                  part_num = 1
+
+                  with open(local_file_path, 'rb') as file:
+                      while True:
+                          part_data = file.read(part_size)
+                          if not part_data:
+                              break
+
+                          part_response = client.batches.upload_multipart_part(
+                              session_id=session_id,
+                              part_num=part_num,
+                              part_data=part_data
+                          )
+
+                          parts.append({
+                              'part_num': part_num,
+                              'part_id': part_response.part_id
+                          })
+                          part_num += 1
+
+                  # Step 3: Commit session
+                  client.batches.commit_multipart_upload_session(
+                      session_id=session_id,
+                      action="commit",
+                      parts=parts
+                  )
+                  print("Manual multipart upload completed successfully")
+
   /v2/batches/jobs/{job_id}:
     get:
       operationId: pollBatchesJob
@@ -4462,3 +4920,29 @@ components:
         refined_phrase_name:
           type: string
           description: Refined phrase name of the input option.
+
+    multipartUploadSessionResponse:
+      type: object
+      properties:
+        session_id:
+          type: string
+          description: ID of the multipart upload session.
+        part_size:
+          type: integer
+          description: The number of bytes each part should be when uploading to the session. Each part should match the part_size, except for the final part, which can be smaller than the part_size.
+      required:
+        - part_size
+        - session_id
+
+    multipartUploadPartResponse:
+      type: object
+      properties:
+        part_id:
+          type: string
+          description: ID of the uploaded part.
+        part_num:
+          type: integer
+          description: The part number of the uploaded part, indicating upload order. Identical to the part number in the request URL.
+      required:
+        - part_id
+        - part_num

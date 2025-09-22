@@ -21,7 +21,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - batches
+        - Batches
       summary: Create batch
       description: |
         Create a new batch.
@@ -111,7 +111,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - batches
+        - Batches
       summary: List batches
       description: Return a list of batches. Use query parameters to filter results.
       parameters:
@@ -201,7 +201,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - batches
+        - Batches
       summary: Get batch information
       description: Retrieve information about a batch.
       parameters:
@@ -258,7 +258,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - batches
+        - Batches
       summary: Delete batch
       description: Delete a batch and all its files. This is an asynchronous operation that must be [checked for completion](/api-sdk/api-reference/batches/poll-batches-job).
       parameters:
@@ -324,7 +324,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - batches
+        - Batches
       summary: List files in a batch
       description: Return a list of files in a batch.
       parameters:
@@ -416,7 +416,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - batches
+        - Batches
       summary: Upload file to batch
       description: |
         Upload a file to a batch or update the contents of a previously uploaded file in a batch.
@@ -501,7 +501,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - batches
+        - Batches
       summary: Delete file from batch
       description: Delete a file from a batch.
       parameters:
@@ -561,7 +561,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - batches
+        - Batches
       summary: Start multipart upload session
       description: |
         Start a multipart upload session. Use this endpoint when you need to upload a file larger than 10 MB to a batch.
@@ -695,7 +695,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - batches
+        - Batches
       summary: Upload part to multipart session
       description: |
         Upload part of a file to the multipart upload session. The size of each part must match the `part_size` returned by the [Start multipart upload session](/api-sdk/api-reference/batches/create-multipart-upload-session) call, except for the final part, which can be smaller.
@@ -824,7 +824,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - batches
+        - Batches
       summary: Commit or abort multipart session
       description: |
         After uploading all parts to a multipart upload session, use this endpoint to commit and close the session, or abort the session.
@@ -1019,7 +1019,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - batches
+        - Batches
       summary: Poll batches job
       description: Poll the asynchronous job created when deleting a batch or deleting a file from a batch.
       parameters:
@@ -1080,7 +1080,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - runs
+        - Runs
       summary: Run app
       description: |
         Run an automation app by its name or app ID. The input for the run can be a batch ID or an input file path.
@@ -1304,7 +1304,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - runs
+        - Runs
       summary: List runs
       description: Return a list of runs. Use query parameters to filter results.
       parameters:
@@ -1445,7 +1445,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - runs
+        - Runs
       summary: Run deployment
       description: |
         <span class="badge">Commercial & Enterprise</span>
@@ -1595,7 +1595,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - runs
+        - Runs
       summary: Get run status
       description: Get the status of a run.
       parameters:
@@ -1657,7 +1657,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - runs
+        - Runs
       summary: Delete run
       description: |
         Deletes a specified automation app run and optionally its associated database data, input files, output files, and logs. This is an asynchronous operation that must be [checked for completion](/api-sdk/api-reference/jobs/job-status).
@@ -1775,7 +1775,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - runs
+        - Runs
       summary: Get run results
       description: |
         Get the results of a completed automation app run.
@@ -2169,7 +2169,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - conversations
+        - Conversations
       summary: Create conversation and upload files
       description: |
          Create a new conversation and upload files to it.
@@ -2335,7 +2335,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - conversations
+        - Conversations
       summary: List conversations
       description: |
         List all conversations you have created.
@@ -2405,7 +2405,7 @@ paths:
         - public
       description: Retrieve information about a conversation, such as its state and a list of documents in the conversation.
       tags:
-        - conversations
+        - Conversations
       summary: Get conversation information
       parameters:
         - $ref: '#/components/parameters/conversation_id'
@@ -2465,7 +2465,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - conversations
+        - Conversations
       summary: Update conversation information
       description: Update an existing conversation's name and description.
       parameters:
@@ -2539,7 +2539,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - conversations
+        - Conversations
       summary: Delete conversation
       description: Delete a conversation.
       parameters:
@@ -2597,7 +2597,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - conversations
+        - Conversations
       summary: Converse with a document
       description:  |
         Converse with a document in a conversation.
@@ -2706,7 +2706,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - conversations
+        - Conversations
       summary: Add documents to a conversation
       description: |
         Upload documents to a specified conversation.
@@ -2798,7 +2798,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - conversations
+        - Conversations
       summary: Delete documents
       description: |
         Deletes documents from the conversation. Also suitable for database and filesystem cleanup.
@@ -2876,7 +2876,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - conversations
+        - Conversations
       summary: Get document metadata
       description: Retrieve metadata for a specified document within a conversation.
       parameters:
@@ -2948,7 +2948,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - queries
+        - Queries
       summary: Run query
       description: |
         Send an asynchronous query to the source app. Use this operation to query chatbots or query multiple documents in a conversation. Each request returns a `query_id` used to [check the query status and get the response](/api-sdk/api-reference/queries/get-query-status/).
@@ -3101,7 +3101,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - queries
+        - Queries
       summary: Get query status
       description: Get the status of an asynchronous query. If the status is `COMPLETE`, this request also returns the query response.
       parameters:
@@ -3187,7 +3187,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - jobs
+        - Jobs
       summary: Poll file operation job status
       description: Poll the asynchronous job created during a file operation request such as deleting a batch or file.
       parameters:
@@ -3248,7 +3248,7 @@ paths:
       x-fern-audiences:
         - hidden
       tags:
-        - files
+        - Files
       summary: Read file
       description: |
         Read contents from a file.
@@ -3379,7 +3379,7 @@ paths:
       x-fern-audiences:
         - hidden
       tags:
-        - files
+        - Files
       summary: Create or overwrite file
       description: |
         Create a non-empty file or overwrite a file.
@@ -3473,7 +3473,7 @@ paths:
       x-fern-audiences:
         - hidden
       tags:
-        - files
+        - Files
       summary: Read file or folder metadata
       description: |
         Read metadata of a file or folder at the target path.
@@ -3569,7 +3569,7 @@ paths:
       x-fern-audiences:
         - hidden
       tags:
-        - files
+        - Files
       summary: Delete a file or folder
       description: |
         Delete a single file or folder.
@@ -3644,7 +3644,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - secrets
+        - Secrets
       summary: List secrets
 
       description: |
@@ -3733,7 +3733,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - secrets
+        - Secrets
       summary: Create secret
       description: |
         <span class="badge">Commercial & Enterprise</span>
@@ -3849,7 +3849,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - secrets
+        - Secrets
       summary: Update secret
       description: |
         <span class="badge">Commercial & Enterprise</span>
@@ -3957,7 +3957,7 @@ paths:
       x-fern-audiences:
         - public
       tags:
-        - secrets
+        - Secrets
       summary: Delete secret
       description: |
         <span class="badge">Commercial & Enterprise</span>
@@ -4039,8 +4039,10 @@ paths:
   /v1/auditlogs:
     post:
       operationId: getAuditLogs
+      x-fern-audiences:
+        - public
       tags:
-        - audit
+        - Audit
       summary: Get audit logs
       description: |
         Retrieve audit logs based on specified filters. Returns a paginated list of audit log entries.

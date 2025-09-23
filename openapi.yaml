@@ -3246,7 +3246,7 @@ paths:
     get:
       operationId: readFile
       x-fern-audiences:
-        - hidden
+        - public
       tags:
         - Files
       summary: Read file
@@ -3377,7 +3377,7 @@ paths:
     put:
       operationId: writeFile
       x-fern-audiences:
-        - hidden
+        - public
       tags:
         - Files
       summary: Create or overwrite file
@@ -3471,7 +3471,7 @@ paths:
     head:
       operationId: getFileMetadata
       x-fern-audiences:
-        - hidden
+        - public
       tags:
         - Files
       summary: Read file or folder metadata
@@ -3567,10 +3567,10 @@ paths:
     delete:
       operationId: deleteFileOrFolder
       x-fern-audiences:
-        - hidden
+        - public
       tags:
         - Files
-      summary: Delete a file or folder
+      summary: Delete file or folder
       description: |
         Delete a single file or folder.
         <Note>Ensure the path is accessible within the context defined by the `IB-Context` header.</Note>

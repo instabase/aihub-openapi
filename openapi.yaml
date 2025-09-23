@@ -422,6 +422,8 @@ paths:
         Upload a file to a batch or update the contents of a previously uploaded file in a batch.
 
         <Info>Files can be uploaded one at a time and the suggested max size for each file is 10 MB. For larger files, see [Multipart file upload](/api-sdk/multipart-upload/).</Info>
+        
+        <Note>If you upload a password-protected PDF, provide the password when you process the PDF with an AI Hub app. See instructions for configuring the `settings.runtime_config.instabase.pdf.passwords` property for the [Run deployment](/api-sdk/api-reference/runs/run-deployment#request.body.settings.runtime_config.instabase.pdf.passwords) or [Run app](/api-sdk/api-reference/runs/run-app#request.body.settings.runtime_config.instabase.pdf.passwords) operations.</Note>
       parameters:
         - $ref: '#/components/parameters/batch_id'
         - name: filename
@@ -1174,6 +1176,20 @@ paths:
                                Set to `true` to generate a retrievable PDF for each document the app processes, including separate PDFs for each document created by split classification.
 
                                <Note>When getting run results, use the [`include_source_info` query parameter](/api-sdk/api-reference/runs/get-run-results#request.query.include_source_info.include_source_info) to return the file path for any generated PDFs in your results. File paths are returned under `files/documents/post_processed_pdf_path`.</Note>
+                         instabase:
+                            type: object
+                            description: A dictionary supporting select runtime configurations.
+                            properties:
+                                pdf:
+                                  type: object
+                                  description: A dictionary supporting select runtime configurations dealing with PDF input documents.
+                                  properties:
+                                      passwords:
+                                        type: object
+                                        description: A dictionary with titles of encrypted PDF documents as keys and passwords for those documents as values.
+                                        additionalProperties:
+                                          type: string
+
       responses:
         '200':
           content:
@@ -1206,9 +1222,9 @@ paths:
                   # AI Hub Python SDK example
                   from aihub import AIHub
 
-                  client = AIHub(api_root="<API-ROOT>",
-                                 api_key="<API-TOKEN>",
-                                 ib_context="<IB-CONTEXT>")
+                  client = AIHub(api_root='<API-ROOT>',
+                                 api_key='<API-TOKEN>',
+                                 ib_context='<IB-CONTEXT>')
 
                   result = client.apps.runs.create(app_name='<APP-NAME>',
                                                    batch_id=<BATCH-ID>)
@@ -1217,14 +1233,14 @@ paths:
               code: |
                 import requests
                 
-                url = "https://aihub.instabase.com/api/v2/apps/runs"
-                headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                            "IB-Context": 'john.doe_acme.com',
-                            "Content-Type": "application/json" }
+                url = 'https://aihub.instabase.com/api/v2/apps/runs'
+                headers = { 'Authorization': 'Bearer abcdefghijklmnopqrst1234567890',
+                            'IB-Context': 'john.doe_acme.com',
+                            'Content-Type': 'application/json' }
                 
                 # create the request payload
-                data = { "batch_id": "123456",
-                         "app_name": "My App" }
+                data = { 'batch_id': '123456',
+                         'app_name': 'My App' }
                 
                 # make the POST request
                 response = requests.post(url,
@@ -1236,9 +1252,10 @@ paths:
                     run = response.json()
                     print(f"Run started with ID: {run['id']}")
                 else:
-                    print(f"Error: {response.status_code} - {response.text}")
+                    print(f'Error: {response.status_code} - {response.text}')
+
             - sdk: curl
-              name: Post-processed-pdf generation
+              name: Complex request
               code: |
                   curl "${API_ROOT}/v2/apps/runs" \
                     -H "Authorization: Bearer ${API_TOKEN}" \
@@ -1249,40 +1266,63 @@ paths:
                           "app_name": "<APP-NAME>",
                           "settings": {
                             "runtime_config": {
-                                "generate_post_process_pdf": true
-                            }
+                                "generate_post_process_pdf": true,
+                                "instabase": {
+                                    "pdf": {
+                                        "passwords: {
+                                            "test1.pdf": "abc123",
+                                            "scott.pdf": "tiger"
+                            },
                           }
                         }'
             - sdk: python
-              name: Post-processed-pdf generation with SDK
+              name: Complex request with SDK
               code: |
                   # AI Hub Python SDK example
                   from aihub import AIHub
 
-                  client = AIHub(api_root="<API-ROOT>",
-                                 api_key="<API-TOKEN>",
-                                 ib_context="<IB-CONTEXT>")
+                  client = AIHub(api_root='<API-ROOT>',
+                                 api_key='<API-TOKEN>',
+                                 ib_context='<IB-CONTEXT>')
 
                   result = client.apps.runs.create(app_name='<APP-NAME>',
                                                    batch_id='<BATCH-ID>',
-                                                   settings={"runtime_config":{"generate_post_process_pdf": true}})
+                                                   settings={'runtime_config': {
+                                                                 'generate_post_process_pdf': True,
+                                                                 'instabase': {
+                                                                     'pdf': {
+                                                                         'passwords': {
+                                                                             'test1.pdf': 'abc123',
+                                                                             'scott.pdf': 'tiger'
+                                                                        }
+                                                                     }
+                                                                 }
+                                                            })
             - sdk: python
-              name: Post-processed-pdf generation without SDK
+              name: Complex request without SDK
               code: |
                   import requests
 
-                  url = "https://aihub.instabase.com/api/v2/apps/runs"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": 'john.doe_acme.com',
-                              "Content-Type": "application/json" }
+                  url = 'https://aihub.instabase.com/api/v2/apps/runs'
+                  headers = { 'Authorization': 'Bearer abcdefghijklmnopqrst1234567890',
+                              'IB-Context': 'john.doe_acme.com',
+                              'Content-Type': 'application/json' }
 
                   # create the request payload
                   data = {
-                      "batch_id": "123456",
-                      "app_name": "My App",
-                      "settings": {
-                          "runtime_config": {
-                              "generate_post_process_pdf": True
+                      'batch_id': '123456',
+                      'app_name': 'My App',
+                      'settings': {
+                          'runtime_config': {
+                              'generate_post_process_pdf': True,
+                              'instabase': {
+                                  'pdf': {
+                                      'passwords': {
+                                          'test1.pdf': 'abc123',
+                                          'scott.pdf': 'tiger'
+                                      }
+                                  }
+                              }
                           }
                       }
                   }
@@ -1297,7 +1337,7 @@ paths:
                       run = response.json()
                       print(f"Run started with ID: {run['id']}")
                   else:
-                      print(f"Error: {response.status_code} - {response.text}")
+                      print(f'Error: {response.status_code} - {response.text}')
 
     get:
       operationId: listRuns
@@ -1529,6 +1569,20 @@ paths:
                                Set to `true` to generate a retrievable PDF for each document the app processes, including separate PDFs for each document created by split classification.
 
                                <Note>When getting run results, use the [`include_source_info` query parameter](/api-sdk/api-reference/runs/get-run-results#request.query.include_source_info.include_source_info) to return the file path for any generated PDFs in your results. File paths are returned under `files/documents/post_processed_pdf_path`.</Note>
+                         instabase:
+                           type: object
+                           description: A dictionary supporting select runtime configurations.
+                           properties:
+                             pdf:
+                               type: object
+                               description: A dictionary supporting select runtime configurations dealing with PDF input documents.
+                               properties:
+                                 passwords:
+                                   type: object
+                                   description: A dictionary with titles of encrypted PDF documents as keys and passwords for those documents as values.
+                                   additionalProperties:
+                                     type: string
+
       responses:
         '202':
           content:
@@ -1559,9 +1613,9 @@ paths:
                   # AI Hub Python SDK example
                   from aihub import AIHub
 
-                  client = AIHub(api_root="<API-ROOT>",
-                                 api_key="<API-TOKEN>",
-                                 ib_context="<IB-CONTEXT>")
+                  client = AIHub(api_root='<API-ROOT>',
+                                 api_key='<API-TOKEN>',
+                                 ib_context='<IB-CONTEXT>')
 
                   result = client.apps.deployments.runs.create(deployment_id='<DEPLOYMENT-ID>', batch_id=<BATCH-ID>)
             - sdk: python
@@ -1569,25 +1623,25 @@ paths:
               code: |
                 import requests
                 
-                url = "https://aihub.instabase.com/api/v2/apps/deployments/12345678-abcde-1234-abcd-123456789012/runs"
-                headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                            "IB-Context": 'john.doe_acme.com',
-                            "Content-Type": "application/json" }
+                url = 'https://aihub.instabase.com/api/v2/apps/deployments/12345678-abcde-1234-abcd-123456789012/runs'
+                headers = { 'Authorization': 'Bearer abcdefghijklmnopqrst1234567890',
+                            'IB-Context': 'john.doe_acme.com',
+                            'Content-Type': 'application/json' }
                 
                 # create the request payload
-                data = { "batch_id": "123456" }
+                data = { 'batch_id': '123456' }
                 
                 # make the POST request
                 response = requests.post(url,
-                                        headers=headers,
-                                        json=data)
+                                         headers=headers,
+                                         json=data)
                 
                 # handle the response
                 if response.status_code == 202:
                     run = response.json()
                     print(f"Deployment run started with ID: {run['id']}")
                 else:
-                    print(f"Error: {response.status_code} - {response.text}")
+                    print(f'Error: {response.status_code} - {response.text}')
 
   /v2/apps/runs/{run_id}:
     get:
@@ -2319,9 +2373,9 @@ paths:
                 
                 # make the POST request
                 response = requests.post(url,
-                                        headers=headers,
-                                        files=files,
-                                        data=data)
+                                         headers=headers,
+                                         files=files,
+                                         data=data)
                 
                 # handle the response
                 if response.status_code == 201:

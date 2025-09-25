@@ -1632,8 +1632,8 @@ paths:
                 
                 # make the POST request
                 response = requests.post(url,
-                                         headers=headers,
-                                         json=data)
+                                        headers=headers,
+                                        json=data)
                 
                 # handle the response
                 if response.status_code == 202:
@@ -2372,9 +2372,9 @@ paths:
                 
                 # make the POST request
                 response = requests.post(url,
-                                         headers=headers,
-                                         files=files,
-                                         data=data)
+                                        headers=headers,
+                                        files=files,
+                                        data=data)
                 
                 # handle the response
                 if response.status_code == 201:

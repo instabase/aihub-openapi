@@ -1222,9 +1222,9 @@ paths:
                   # AI Hub Python SDK example
                   from aihub import AIHub
 
-                  client = AIHub(api_root='<API-ROOT>',
-                                 api_key='<API-TOKEN>',
-                                 ib_context='<IB-CONTEXT>')
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
 
                   result = client.apps.runs.create(app_name='<APP-NAME>',
                                                    batch_id=<BATCH-ID>)
@@ -1233,14 +1233,14 @@ paths:
               code: |
                 import requests
                 
-                url = 'https://aihub.instabase.com/api/v2/apps/runs'
-                headers = { 'Authorization': 'Bearer abcdefghijklmnopqrst1234567890',
-                            'IB-Context': 'john.doe_acme.com',
-                            'Content-Type': 'application/json' }
+                url = "https://aihub.instabase.com/api/v2/apps/runs"
+                headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                            "IB-Context": 'john.doe_acme.com',
+                            "Content-Type": "application/json" }
                 
                 # create the request payload
-                data = { 'batch_id': '123456',
-                         'app_name': 'My App' }
+                data = { "batch_id": "123456",
+                         "app_name": "My App" }
                 
                 # make the POST request
                 response = requests.post(url,
@@ -1252,8 +1252,7 @@ paths:
                     run = response.json()
                     print(f"Run started with ID: {run['id']}")
                 else:
-                    print(f'Error: {response.status_code} - {response.text}')
-
+                    print(f"Error: {response.status_code} - {response.text}")
             - sdk: curl
               name: Complex request
               code: |
@@ -1281,19 +1280,19 @@ paths:
                   # AI Hub Python SDK example
                   from aihub import AIHub
 
-                  client = AIHub(api_root='<API-ROOT>',
-                                 api_key='<API-TOKEN>',
-                                 ib_context='<IB-CONTEXT>')
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
 
-                  result = client.apps.runs.create(app_name='<APP-NAME>',
-                                                   batch_id='<BATCH-ID>',
-                                                   settings={'runtime_config': {
-                                                                 'generate_post_process_pdf': True,
-                                                                 'instabase': {
-                                                                     'pdf': {
-                                                                         'passwords': {
-                                                                             'test1.pdf': 'abc123',
-                                                                             'scott.pdf': 'tiger'
+                  result = client.apps.runs.create(app_name="<APP-NAME>",
+                                                   batch_id="<BATCH-ID>",
+                                                   settings={"runtime_config": {
+                                                                 "generate_post_process_pdf": True,
+                                                                 "instabase": {
+                                                                     "pdf": {
+                                                                         "passwords": {
+                                                                             "test1.pdf": "abc123",
+                                                                             "scott.pdf": "tiger"
                                                                         }
                                                                      }
                                                                  }
@@ -1303,23 +1302,23 @@ paths:
               code: |
                   import requests
 
-                  url = 'https://aihub.instabase.com/api/v2/apps/runs'
-                  headers = { 'Authorization': 'Bearer abcdefghijklmnopqrst1234567890',
-                              'IB-Context': 'john.doe_acme.com',
-                              'Content-Type': 'application/json' }
+                  url = "https://aihub.instabase.com/api/v2/apps/runs"
+                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                              "IB-Context": 'john.doe_acme.com',
+                              "Content-Type": "application/json" }
 
                   # create the request payload
                   data = {
-                      'batch_id': '123456',
-                      'app_name': 'My App',
-                      'settings': {
-                          'runtime_config': {
-                              'generate_post_process_pdf': True,
-                              'instabase': {
-                                  'pdf': {
+                      "batch_id": "123456",
+                      "app_name": "My App",
+                      "settings": {
+                          "runtime_config": {
+                              "generate_post_process_pdf": True,
+                              "instabase": {
+                                  "pdf": {
                                       'passwords': {
-                                          'test1.pdf': 'abc123',
-                                          'scott.pdf': 'tiger'
+                                          "test1.pdf": "abc123",
+                                          "scott.pdf": "tiger"
                                       }
                                   }
                               }
@@ -1337,7 +1336,7 @@ paths:
                       run = response.json()
                       print(f"Run started with ID: {run['id']}")
                   else:
-                      print(f'Error: {response.status_code} - {response.text}')
+                      print(f"Error: {response.status_code} - {response.text}")
 
     get:
       operationId: listRuns
@@ -1613,9 +1612,9 @@ paths:
                   # AI Hub Python SDK example
                   from aihub import AIHub
 
-                  client = AIHub(api_root='<API-ROOT>',
-                                 api_key='<API-TOKEN>',
-                                 ib_context='<IB-CONTEXT>')
+                  client = AIHub(api_root="<API-ROOT>",
+                                 api_key="<API-TOKEN>",
+                                 ib_context="<IB-CONTEXT>")
 
                   result = client.apps.deployments.runs.create(deployment_id='<DEPLOYMENT-ID>', batch_id=<BATCH-ID>)
             - sdk: python
@@ -1623,13 +1622,13 @@ paths:
               code: |
                 import requests
                 
-                url = 'https://aihub.instabase.com/api/v2/apps/deployments/12345678-abcde-1234-abcd-123456789012/runs'
-                headers = { 'Authorization': 'Bearer abcdefghijklmnopqrst1234567890',
-                            'IB-Context': 'john.doe_acme.com',
-                            'Content-Type': 'application/json' }
+                url = "https://aihub.instabase.com/api/v2/apps/deployments/12345678-abcde-1234-abcd-123456789012/runs"
+                headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                            "IB-Context": 'john.doe_acme.com',
+                            "Content-Type": "application/json" }
                 
                 # create the request payload
-                data = { 'batch_id': '123456' }
+                data = { "batch_id": "123456" }
                 
                 # make the POST request
                 response = requests.post(url,
@@ -1641,7 +1640,7 @@ paths:
                     run = response.json()
                     print(f"Deployment run started with ID: {run['id']}")
                 else:
-                    print(f'Error: {response.status_code} - {response.text}')
+                    print(f"Error: {response.status_code} - {response.text}")
 
   /v2/apps/runs/{run_id}:
     get:

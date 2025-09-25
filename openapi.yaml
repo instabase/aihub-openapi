@@ -587,7 +587,7 @@ paths:
                   description: A file name for the uploaded file on the AI Hub filesystem, including the file extension. Maximum of 255 characters.
                 file_size:
                   type: integer
-                  description: The file size, in bytes, as a string.
+                  description: The file size, in bytes. Can be an integer or a string.
               required:
                 - batch_id
                 - filename
@@ -4929,9 +4929,11 @@ components:
         session_id:
           type: string
           description: ID of the multipart upload session.
+          example: yGLRzUtS2vHm9IdxMrsKaMEOXG7hGBU7KEuvm2JujgBuO9ZAwtqTYmAYauf1RHI8bgEq7qm_UnCE5YNdMg7.1Lv_lrKRVPQ4fZpNVgF3wD5dbvz_bgbmx50a2.kcDZN7XjOI1z.NQ8_9JfOLhtYIgA6xMGLv5U0p6FitSDtFgW4-
         part_size:
           type: integer
           description: The number of bytes each part should be when uploading to the session. Each part should match the part_size, except for the final part, which can be smaller than the part_size.
+          example: 10485760
       required:
         - part_size
         - session_id

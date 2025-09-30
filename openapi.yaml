@@ -1095,7 +1095,7 @@ paths:
 
         Deployments offer additional features including upstream and downstream integrations, deployment metrics, human review workflows, and secret and configuration management.
 
-        Learn more about [deployments](/apps/run-and-deploy#creating-deployments) to decide if you'd rather use the [Run deployment](/api-sdk/api-reference/runs/run-deployment) API operation.
+        Learn more about [deployments](/automate/deployments) to decide if you'd rather use the [Run deployment](/api-sdk/api-reference/runs/run-deployment) API operation.
 
         </Tip>
 

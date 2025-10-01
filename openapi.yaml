@@ -2263,7 +2263,7 @@ paths:
                     When making this call from a service account, you must specify a workspace.
                 enable_object_detection:
                   type: boolean
-                  description: Defines whether to enable [object detection](/chat/converse#digitization-and-object-detection) for the processed file. Object detection includes support for extracting tables and checkboxes.
+                  description: Defines whether to enable [object detection](/chat/converse#file-digitization) for the processed file. Object detection includes support for extracting tables and checkboxes.
                   default: false
                 enable_entity_detection:
                   type: boolean

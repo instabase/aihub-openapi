@@ -74,6 +74,7 @@ paths:
 
             - sdk: python
               name: with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
                 
@@ -87,6 +88,7 @@ paths:
 
             - sdk: python
               name: without SDK
+              # cwc tested
               code: |
                   import requests
   
@@ -96,8 +98,9 @@ paths:
                               "Content-Type": "application/json" }
   
                   # create the request payload
-                  data = { "name": "my batch" }
-  
+                  data = { "name": "MyBatch",
+                           "workspace": "MyWorkspace" }
+
                   # make the POST request
                   resp = requests.post(url, headers=headers, json=data)
   
@@ -164,6 +167,7 @@ paths:
 
             - sdk: python
               name: with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
                 
@@ -175,12 +179,13 @@ paths:
                                              username="john.doe_acme.com",
                                              limit=3,
                                              offset=6)
-                  for batch in resp:
-                      print(f"id: {batch.id")
-                      print(f"name: {batch.name")
-                
+                  for batch in resp.batches:
+                      print(f"id: {batch.id}")
+                      print(f"name: {batch.name}")
+
             - sdk: python
               name: without SDK
+              # cwc tested
               code: |
                   import requests
   
@@ -189,9 +194,10 @@ paths:
                               "IB-Context": "john.doe_acme.com" }
   
                   # create query parameters
-                  params = { "workspace": "Development-Workspace",
-                             "limit": 100 }
-  
+                  params = { "workspace": "MyWorkspace",
+                             "limit": 3,
+                             "offset": 6 }
+
                   # make the GET request
                   resp = requests.get(url, headers=headers, params=params)
   
@@ -233,6 +239,7 @@ paths:
 
             - sdk: python
               name: with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
                 
@@ -241,11 +248,12 @@ paths:
                                  ib_context="john.doe_acme.com")
 
                   batch_info = client.batches.get(batch_id=123456)
-                  print(f"id: {batch_info.id")
-                  print(f"name: {batch_info.name")
+                  print(f"id: {batch_info.id}")
+                  print(f"name: {batch_info.name}")
 
             - sdk: python
               name: without SDK
+              # cwc tested
               code: |
                 import requests
 
@@ -259,7 +267,8 @@ paths:
                 # handle the response
                 if resp.status_code == 200:
                     batch = resp.json()
-                    print(f"Batch: {batch['name']}")
+                    print(f"id: {batch['id']}")
+                    print(f"name: {batch['name']}")
                 else:
                     print(f"Error: {resp.status_code} - {resp.text}")
 
@@ -293,6 +302,7 @@ paths:
 
             - sdk: python
               name: with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
                   import time
@@ -301,7 +311,6 @@ paths:
                                  api_key="abcdefghijklmnopqrst1234567890",
                                  ib_context="john.doe_acme.com")
 
-                  # returns instance of BatchDeletionJobResponse model
                   delete_resp = client.batches.delete(batch_id=123456)
 
                   # check delete job status until done
@@ -313,6 +322,7 @@ paths:
 
             - sdk: python
               name: without SDK
+              # cwc tested
               code: |
                   import requests
   
@@ -329,6 +339,9 @@ paths:
                       print(f"Batch deletion job started with ID: {resp['job_id']}")
                   else:
                       print(f"Error: {resp.status_code} - {resp.text}")
+
+                  # not included here: check status of deletion job until it's done
+
 
   /v2/batches/{batch_id}/files:
     get:
@@ -395,6 +408,7 @@ paths:
 
             - sdk: python
               name: with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
                   
@@ -405,16 +419,22 @@ paths:
                   resp = client.batches.list_files(batch_id=123456,
                                                    page_size=2,
                                                    start_token="1Cv...<snip>...TI=")
-                  print(f"has more files? {resp.has_more}")
+                  print(f"Has more files? {resp.has_more}")
                   for node in resp.nodes:
-                      print(f"file name: {node.name}")
+                      print(f"File name: {node.name}")
 
             - sdk: python
               name: without SDK
+              # cwc tested
               code: |
+                  import base64
                   import requests
-                  
-                  url = "https://aihub.instabase.com/api/v2/batches/123456/files"
+
+                  start_token="abcd...<snip>...1234"  # not URL-safe
+                  url_safe_start_token =
+                      base64.urlsafe_b64encode(base64.b64decode(start_token)).decode('ascii')
+
+                  url = f"https://aihub.instabase.com/api/v2/batches/123456/files?page_size=2&start_token={url_safe_start_token}"
                   headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
                               "IB-Context": "john.doe_acme.com" }
                   
@@ -423,8 +443,9 @@ paths:
                   
                   # handle the response
                   if resp.status_code == 200:
-                      files = resp.json()
-                      print(f"Retrieved {len(files['nodes'])} files")
+                      print(f"Has more files? {resp.json()['has_more']}")
+                      for node in resp.json()['nodes']:
+                          print(f"File name: {node['name']}")
                   else:
                       print(f"Error: {resp.status_code} - {resp.text}")
 
@@ -482,6 +503,7 @@ paths:
 
             - sdk: python
               name: with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
                 
@@ -496,6 +518,7 @@ paths:
 
             - sdk: python
               name: without SDK
+              # cwc tested
               code: |
                   import requests
                   
@@ -549,6 +572,7 @@ paths:
 
             - sdk: python
               name: with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
                 
@@ -562,6 +586,7 @@ paths:
 
             - sdk: python
               name: without SDK
+              # cwc tested
               code: |
                   import requests
                   
@@ -1034,7 +1059,7 @@ paths:
         - Batches
       summary: Poll batches job
       description: |
-        Poll the asynchronous job created when deleting a batch or deleting a file from a batch.
+        Poll the asynchronous job created when deleting a batch.
 
         <Info>This API operation and SDK method are maintained for backward compatibility, but the functionally identical API operation [poll file operation job status](/api-sdk/api-reference/jobs/job-status) and its corresponding SDK method [client.jobs.status()](/api-sdk/api-reference/jobs/job-status) are preferred.</Info>
       parameters:
@@ -1043,7 +1068,7 @@ paths:
           required: true
           schema:
             type: string
-          description: The job ID returned by a [Delete batch](/api-sdk/api-reference/batches/delete-batch) request or the `Location` header value returned by a [Delete file from a batch](/api-sdk/api-reference/batches/delete-file-from-batch) request.
+          description: The job ID returned by a [Delete batch](/api-sdk/api-reference/batches/delete-batch) request.
         - $ref: '#/components/parameters/ib_context'
       responses:
         '200':
@@ -1062,6 +1087,7 @@ paths:
 
             - sdk: python
               name: with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
                   import time
@@ -1080,6 +1106,7 @@ paths:
 
             - sdk: python
               name: without SDK
+              # cwc tested
               code: |
                   import requests
                   
@@ -3325,7 +3352,6 @@ paths:
 
                   # are the query's responses ready yet?
                   while True:
-                      # returns instance of QueryStatusResponse model
                       resp = client.queries.status(
                                  query_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890")
                       if resp.status == "COMPLETE":

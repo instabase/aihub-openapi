@@ -4677,7 +4677,7 @@ components:
                 properties:
                   alert_level:
                     type: string
-                    description: Alert level of the validation failure.
+                    description: Alert level of the validation failure. Always set to `FAILURE`.
                   msg:
                     type: string
                     description: Description of alert.

@@ -1267,6 +1267,7 @@ paths:
 
             - sdk: python
               name: Simple request with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
 
@@ -1277,12 +1278,10 @@ paths:
                   run = client.apps.runs.create(app_name="MyApp",
                                                 batch_id=123456)
                   print(f"Run ID: {run.id}")
-                
-                  run = client.apps.runs.create(app_name="MyApp",
-                                              batch_id=123456)
 
             - sdk: python
               name: Simple request without SDK
+              # cwc tested
               code: |
                   import requests
                   
@@ -1329,6 +1328,7 @@ paths:
 
             - sdk: python
               name: Complex request with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
                 
@@ -1348,22 +1348,22 @@ paths:
                                                                      }
                                                                   }
                                                               }
-                                                         })
+                                                         }})
                   print(f"Run ID: {run.id}")
 
             - sdk: python
               name: Complex request without SDK
+              # cwc tested
               code: |
                   import requests
 
                   url = "https://aihub.instabase.com/api/v2/apps/runs"
                   headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com",
-                              "Content-Type": "application/json" }
+                              "IB-Context": "john.doe_acme.com" }
 
                   # create the request payload
                   data = {
-                      "batch_id": "123456",
+                      "batch_id": 123456,
                       "app_name": "My App",
                       "settings": {
                           "runtime_config": {
@@ -1503,6 +1503,7 @@ paths:
 
             - sdk: python
               name: with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
                   
@@ -1511,10 +1512,11 @@ paths:
                                  ib_context="john.doe_acme.com")
   
                   resp = client.apps.runs.list()
-                  print(f"third run ID: {resp[2].id}"
+                  print(f"third run ID: {resp.runs[2].id}")  # 0-based indexing
 
             - sdk: python
               name: without SDK
+              # cwc tested
               code: |
                   import requests
                   
@@ -1527,8 +1529,7 @@ paths:
                   
                   # handle the response
                   if resp.status_code == 200:
-                      runs = resp.json()
-                      print(f"Retrieved {len(runs['runs'])} runs")
+                      print(f"third run ID: {resp.json()['runs'][2]['id']}")
                   else:
                       print(f"Error: {resp.status_code} - {resp.text}")
 
@@ -1663,6 +1664,7 @@ paths:
 
             - sdk: python
               name: Use batch ID with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
   
@@ -1677,16 +1679,16 @@ paths:
 
             - sdk: python
               name: Use batch ID without SDK
+              # cwc tested
               code: |
                   import requests
                   
                   url = "https://aihub.instabase.com/api/v2/apps/deployments/12345678-abcde-1234-abcd-123456789012/runs"
                   headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com",
-                              "Content-Type": "application/json" }
+                              "IB-Context": "john.doe_acme.com"}
                   
                   # create the request payload
-                  data = { "batch_id": "123456" }
+                  data = { "batch_id": 123456 }
                   
                   # make the POST request
                   resp = requests.post(url, headers=headers, json=data)
@@ -1700,6 +1702,7 @@ paths:
 
             - sdk: python
               name: Use input dir with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
   
@@ -1720,13 +1723,13 @@ paths:
 
             - sdk: python
               name: Use input dir without SDK
+              # cwc tested
               code: |
                   import requests
                   
                   url = "https://aihub.instabase.com/api/v2/apps/deployments/12345678-abcde-1234-abcd-123456789012/runs"
                   headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com",
-                              "Content-Type": "application/json" }
+                              "IB-Context": "john.doe_acme.com" }
                   
                   organization_id = "acme"
                   workspace = "MyWorkspace"
@@ -1782,6 +1785,7 @@ paths:
 
             - sdk: python
               name: with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
 
@@ -1794,6 +1798,7 @@ paths:
 
             - sdk: python
               name: without SDK
+              # cwc tested
               code: |
                   import requests
   
@@ -1885,8 +1890,10 @@ paths:
 
             - sdk: python
               name: with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
+                  import time
                 
                   client = AIHub(api_root="https://aihub.instabase.com/api",
                                  api_key="abcdefghijklmnopqrst1234567890",

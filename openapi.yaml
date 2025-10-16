@@ -1918,22 +1918,26 @@ paths:
 
             - sdk: python
               name: without SDK
+              # cwc tested
               code: |
-                  import requests
-                  
-                  url = "https://aihub.instabase.com/api/v2/apps/runs/a1b2c3d4-e5f6-7890-abcd-ef1234567890"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
-                  
-                  # make the DELETE request
-                  resp = requests.delete(url, headers=headers)
-                  
-                  # handle the response
-                  if resp.status_code == 202:
-                      job_resp = resp.json()
-                      print("Run deletion request accepted")
-                  else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                import requests
+                
+                url = "https://aihub.instabase.com/api/v2/apps/runs/a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                            "IB-Context": 'john.doe_acme.com' }
+                
+                # make the DELETE request
+                response = requests.delete(url, headers=headers)
+                
+                # handle the response
+                if resp.status_code == 202:
+                    job_resp = resp.json()
+                    print("Run deletion request accepted")
+                    print(f"Delete input dir job ID: {job_resp['delete_input_dir_job_id']}")
+                    print(f"Delete output dir job ID: {job_resp['delete_output_dir_job_id']}")
+                    print(f"Delete log dir job ID: {job_resp['delete_log_dir_job_id']}")
+                else:
+                    print(f"Error: {resp.status_code} - {resp.text}")
 
   /v2/apps/runs/{run_id}/results:
     get:
@@ -2160,6 +2164,7 @@ paths:
 
             - sdk: python
               name: Simple request with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
   
@@ -2167,12 +2172,12 @@ paths:
                                  api_key="abcdefghijklmnopqrst1234567890",
                                  ib_context="john.doe_acme.com")
   
-                  resp = client.apps.runs.results(
-                             run_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890")
-                  print(f"Run review completed: {resp.review_completed}")
+                  results = client.apps.runs.results(run_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890")
+                  print(f"Retrieved results from {len(results.files)} files")
 
             - sdk: python
               name: Simple request without SDK
+              # cwc tested
               code: |
                   import requests
                   
@@ -2186,7 +2191,7 @@ paths:
                   # handle the response
                   if resp.status_code == 200:
                       results = resp.json()
-                      print(f"Retrieved results for {len(results['files'])} files")
+                      print(f"Retrieved results from {len(results['files'])} files")
                   else:
                       print(f"Error: {resp.status_code} - {resp.text}")
 
@@ -2266,17 +2271,21 @@ paths:
 
             - sdk: python
               name: Using query parameters with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
   
                   client = AIHub(api_root="https://aihub.instabase.com/api",
                                  api_key="abcdefghijklmnopqrst1234567890",
                                  ib_context="john.doe_acme.com")
-                  results = client.apps.runs.results("<RUN-ID>",
+                  results = client.apps.runs.results(run_id="<RUN-ID>",
                                                      include_confidence_score=True,
                                                      include_source_info=True)
+                  print(f"Retrieved results from {len(results.files)} files")
+
             - sdk: python
               name: Using query parameters without SDK
+              # cwc tested
               code: |
                   import requests
                   
@@ -2298,6 +2307,7 @@ paths:
 
             - sdk: python
               name: Retrieving paginated results with SDK
+              # cwc tested
               code: |
                   # The results from this endpoint are paginated.
                   # The `has_more` field in the response indicates whether there are more results to fetch,
@@ -2315,8 +2325,7 @@ paths:
                   
                   while True:
                       # fetch results with the current offset
-                      resp = client.apps.runs.results(run_id=run_id,
-                                                      file_offset=current_offset)
+                      resp = client.apps.runs.results(run_id=run_id, file_offset=current_offset)
                   
                       # extend the list with the files from the current response
                       all_files_results.extend(resp.files)
@@ -2328,7 +2337,42 @@ paths:
                       # increment the offset by the number of files received in the current response
                       current_offset += len(resp.files)
                   
-                  print(f"Fetched {len(all_files_results)} files")
+                  print(f"Retrieved results from {len(all_files_results)} files")
+
+            - sdk: python
+              name: Retrieving paginated results without SDK
+              # cwc tested
+              code: |
+                # The results from this endpoint are paginated.
+                # The `has_more` field in the response indicates whether there are more results to fetch,
+                # and `file_offset` specifies the starting point for the next set of results.
+                # This example retrieves all results.
+                import requests
+                
+                headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                            "IB-Context": "john.doe_acme.com" }
+
+                current_offset = 0
+                all_files_results = []
+                while True:
+                    url = ("https://aihub.instabase.com/api/v2/apps/runs/a1b2c3d4-e5f6-7890-abcd-ef1234567890/results"
+                          f"?file_offset={current_offset}")
+              
+                    # make the GET request
+                    resp = requests.get(url, headers=headers)
+                
+                    # handle the response
+                    if resp.status_code == 200:
+                        results = resp.json()
+                        print(f"Retrieved results for {len(results['files'])} files")
+                        all_files_results.extend(results['files'])
+                        if results['has_more']:
+                          current_offset += len(results['files'])
+                        else:
+                            break
+                    else:
+                        print(f"Error: {resp.status_code} - {resp.text}")
+                print(f"Retrieved results for {len(all_files_results)} files")
 
   /v2/conversations:
     post:
@@ -2440,6 +2484,7 @@ paths:
 
             - sdk: python
               name: with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
                 
@@ -2452,18 +2497,19 @@ paths:
                       description="sample conversation",
                       org="my-organization-id",  # optional for community accounts
                       workspace="MyWorkspace",  # optional for community accounts
-                      enable_object_detection=False, # Optional
-                      enable_entity_detection=True, # Optional
-                      write_converted_image=True, # Optional
-                      write_thumbnail=True, # Optional
-                      enable_multilanguage_support=False, # Optional
-                      enable_multilanguage_advanced_mode=False, # Optional
-                      files=["test.pdf", "test2.pdf"])
+                      enable_object_detection=False, # optional
+                      enable_entity_detection=True, # optional
+                      write_converted_image=True, # optional
+                      write_thumbnail=True, # optional
+                      enable_multilanguage_support=False, # optional
+                      enable_multilanguage_advanced_mode=False, # optional
+                      files=["/local/path/to/test1.pdf", "/local/path/to/test2.pdf"])
                   
                   print(f"Conversation ID: {resp.id}")
 
             - sdk: python
               name: without SDK
+              # cwc tested
               code: |
                   import requests
                   
@@ -2472,14 +2518,14 @@ paths:
                               "IB-Context": "john.doe_acme.com" }
                   
                   files = [
-                      ("files", ("test1.pdf", open("test1.pdf", "rb"), "application/pdf")),
-                      ("files", ("test2.pdf", open("test2.pdf", "rb"), "application/pdf"))
+                      ("files", ("test1.pdf", open("/local/path/to/test1.pdf", "rb"), "application/pdf")),
+                      ("files", ("test2.pdf", open("/local/path/to/test2.pdf", "rb"), "application/pdf"))
                   ]
                   
                   data = { "name": "MyConversation",
                            "description": "sample conversation",
                            "org": "my-organization-id",
-                           "workspace": "Development-Workspace",
+                           "workspace": "MyWorkspace",
                            "enable_object_detection": "false",
                            "enable_entity_detection": "true",
                            "write_converted_image": "true",
@@ -2538,6 +2584,7 @@ paths:
 
             - sdk: python
               name: with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
                 
@@ -2551,6 +2598,7 @@ paths:
 
             - sdk: python
               name: without SDK
+              # cwc tested
               code: |
                   import requests
                   
@@ -2563,8 +2611,9 @@ paths:
                   
                   # handle the response
                   if resp.status_code == 200:
-                      conversations = resp.json()
-                      print(f"Retrieved {len(conversations['conversations'])} conversations")
+                      results = resp.json()
+                      for conversation in results['conversations']:
+                          print(f"Conversation ID: {conversation['id']}")
                   else:
                       print(f"Error: {resp.status_code} - {resp.text}")
 
@@ -2603,6 +2652,7 @@ paths:
 
             - sdk: python
               name: with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
   
@@ -2616,20 +2666,21 @@ paths:
 
             - sdk: python
               name: without SDK
+              # cwc tested
               code: |
                   import requests
-                  
+
                   url = "https://aihub.instabase.com/api/v2/conversations/a1b2c3d4-e5f6-7890-abcd-ef1234567890"
                   headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
                               "IB-Context": "john.doe_acme.com" }
-                  
+
                   # make the GET request
                   resp = requests.get(url, headers=headers)
-                  
+
                   # handle the response
                   if resp.status_code == 200:
                       conversation = resp.json()
-                      print(f"Conversation: {conversation['name']}")
+                      print(f"Conversation name: {conversation['name']}")
                   else:
                       print(f"Error: {resp.status_code} - {resp.text}")
 
@@ -2674,6 +2725,7 @@ paths:
 
             - sdk: python
               name: with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
                 
@@ -2689,6 +2741,7 @@ paths:
 
             - sdk: python
               name: without SDK
+              # cwc tested
               code: |
                   import requests
                   
@@ -2740,6 +2793,7 @@ paths:
 
             - sdk: python
               name: with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
                   
@@ -2753,6 +2807,7 @@ paths:
 
             - sdk: python
               name: without SDK
+              # cwc tested
               code: |
                   import requests
                   
@@ -2842,6 +2897,7 @@ paths:
 
             - sdk: python
               name: with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
 
@@ -2857,26 +2913,25 @@ paths:
 
             - sdk: python
               name: without SDK
+              # cwc tested
               code: |
                   import requests
                   
                   url = "https://aihub.instabase.com/api/v2/conversations/a1b2c3d4-e5f6-7890-abcd-ef1234567890/prompts"
                   headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com",
-                              "Content-Type": "application/json" }
+                              "IB-Context": "john.doe_acme.com" }
                   
                   # create the request payload
                   data = { "question": "What is the main topic of the document?",
-                           "document_ids": [123456],
-                           "mode": "default" }
+                           "document_ids": [123456] }
                   
                   # make the POST request
                   resp = requests.post(url, headers=headers, json=data)
                   
                   # handle the response
                   if resp.status_code == 200:
-                      answer = resp.json()
-                      print(f"Answer: {answer['answer']}")
+                      results = resp.json()
+                      print(f"Prompt response: {results['answer']}")
                   else:
                       print(f"Error: {resp.status_code} - {resp.text}")
 
@@ -2939,6 +2994,7 @@ paths:
 
             - sdk: python
               name: with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
 
@@ -2946,18 +3002,18 @@ paths:
                                  api_key="abcdefghijklmnopqrst1234567890",
                                  ib_context="john.doe_acme.com")
                 
-                  # returns an instance of DocumentUploadResponse model
                   resp = client.conversations.add_documents(
                              conversation_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-                             files=["test.pdf", "test2.pdf"])
+                             files=["/local/path/to/test1.pdf", "/local/path/to/test2.txt"])
 
                   for failed in resp.upload_status.failure:
-                    print(f"Failed upload: {failed.name}, {failed.reason}")
+                      print(f"Failed upload: {failed.name}, {failed.reason}")
                   for successful in resp.upload_status.success:
-                    print(f"Successful upload: {successful.name}")
+                      print(f"Successful upload: {successful.name}")
 
             - sdk: python
               name: without SDK
+              # cwc tested
               code: |
                   import requests
                   
@@ -2966,8 +3022,8 @@ paths:
                               "IB-Context": "john.doe_acme.com" }
                   
                   files = [
-                      ("files", ("test1.pdf", open("test1.pdf", "rb"), "application/pdf")),
-                      ("files", ("test2.pdf", open("test2.pdf", "rb"), "application/pdf"))
+                      ("files", ("test1.pdf", open("/local/path/to/test1.pdf", "rb"))),
+                      ("files", ("test2.txt", open("/local/path/to/test2.txt", "r")))
                   ]
                   
                   # make the POST request
@@ -3025,6 +3081,7 @@ paths:
 
             - sdk: python
               name: with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
   
@@ -3041,6 +3098,7 @@ paths:
 
             - sdk: python
               name: without SDK
+              # cwc tested
               code: |
                   import requests
                   
@@ -3105,6 +3163,7 @@ paths:
 
             - sdk: python
               name: with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
                 
@@ -3112,7 +3171,6 @@ paths:
                                  api_key="abcdefghijklmnopqrst1234567890",
                                  ib_context="john.doe_acme.com")
                   
-                  # returns an instance of DocumentMetadataResponse model
                   resp = client.conversations.get_document_metadata(
                          conversation_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890",
                          document_id=123456)
@@ -3120,6 +3178,7 @@ paths:
 
             - sdk: python
               name: without SDK
+              # cwc tested
               code: |
                   import requests
                   
@@ -3133,7 +3192,7 @@ paths:
                   # handle the response
                   if resp.status_code == 200:
                       document = resp.json()
-                      print(f"Document: {document['name']}")
+                      print(f"Document name: {document['name']}")
                   else:
                       print(f"Error: {resp.status_code} - {resp.text}")
 
@@ -3246,6 +3305,7 @@ paths:
                         }'
             - sdk: python
               name: with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
                 
@@ -3257,13 +3317,12 @@ paths:
                                  "type": "CHATBOT" }
 
                   query_resp = client.queries.run(query="When was the mail sent out?",
-                                                  source_app=source_app,
-                                                  model_name="multistep",
-                                                  include_source_info=True)
+                                                  source_app=source_app)
                   print(f"Query ID: {query_resp.query_id}")
 
             - sdk: python
               name: without SDK
+              # cwc tested
               code: |
                   import requests
                   
@@ -3275,10 +3334,7 @@ paths:
                   # create the request payload
                   data = { "query": "When was the mail sent out?",
                            "source_app": { "type": "CHATBOT",
-                                           "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890" },
-                           "model_name": "multistep",
-                           "include_source_info": True
-                         }
+                                           "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890" } }
                   
                   # make the POST request
                   resp = requests.post(url, headers=headers, json=data)
@@ -3349,6 +3405,7 @@ paths:
 
             - sdk: python
               name: with SDK
+              # cwc tested
               code: |
                   import time
                   from aihub import AIHub

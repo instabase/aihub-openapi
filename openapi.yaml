@@ -74,7 +74,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
                 
@@ -88,7 +87,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                   import requests
   
@@ -167,7 +165,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
                 
@@ -185,7 +182,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                   import requests
   
@@ -239,7 +235,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
                 
@@ -253,7 +248,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                 import requests
 
@@ -302,7 +296,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
                   import time
@@ -322,7 +315,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                   import requests
   
@@ -408,7 +400,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
                   
@@ -425,7 +416,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                   import base64
                   import requests
@@ -503,7 +493,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
                 
@@ -518,7 +507,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                   import requests
                   
@@ -572,7 +560,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
                 
@@ -586,7 +573,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                   import requests
                   
@@ -1087,7 +1073,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
                   import time
@@ -1106,7 +1091,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                   import requests
                   
@@ -1267,7 +1251,6 @@ paths:
 
             - sdk: python
               name: Simple request with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
 
@@ -1281,7 +1264,6 @@ paths:
 
             - sdk: python
               name: Simple request without SDK
-              # cwc tested
               code: |
                   import requests
                   
@@ -1328,7 +1310,6 @@ paths:
 
             - sdk: python
               name: Complex request with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
                 
@@ -1353,7 +1334,6 @@ paths:
 
             - sdk: python
               name: Complex request without SDK
-              # cwc tested
               code: |
                   import requests
 
@@ -1503,7 +1483,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
                   
@@ -1516,7 +1495,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                   import requests
                   
@@ -1664,7 +1642,6 @@ paths:
 
             - sdk: python
               name: Use batch ID with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
   
@@ -1679,7 +1656,6 @@ paths:
 
             - sdk: python
               name: Use batch ID without SDK
-              # cwc tested
               code: |
                   import requests
                   
@@ -1702,7 +1678,6 @@ paths:
 
             - sdk: python
               name: Use input dir with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
   
@@ -1723,7 +1698,6 @@ paths:
 
             - sdk: python
               name: Use input dir without SDK
-              # cwc tested
               code: |
                   import requests
                   
@@ -1785,7 +1759,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
 
@@ -1798,7 +1771,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                   import requests
   
@@ -1890,7 +1862,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
                   import time
@@ -1918,7 +1889,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                 import requests
                 
@@ -2164,7 +2134,6 @@ paths:
 
             - sdk: python
               name: Simple request with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
   
@@ -2177,7 +2146,6 @@ paths:
 
             - sdk: python
               name: Simple request without SDK
-              # cwc tested
               code: |
                   import requests
                   
@@ -2271,7 +2239,6 @@ paths:
 
             - sdk: python
               name: Using query parameters with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
   
@@ -2285,7 +2252,6 @@ paths:
 
             - sdk: python
               name: Using query parameters without SDK
-              # cwc tested
               code: |
                   import requests
                   
@@ -2307,7 +2273,6 @@ paths:
 
             - sdk: python
               name: Retrieving paginated results with SDK
-              # cwc tested
               code: |
                   # The results from this endpoint are paginated.
                   # The `has_more` field in the response indicates whether there are more results to fetch,
@@ -2341,7 +2306,6 @@ paths:
 
             - sdk: python
               name: Retrieving paginated results without SDK
-              # cwc tested
               code: |
                 # The results from this endpoint are paginated.
                 # The `has_more` field in the response indicates whether there are more results to fetch,
@@ -2484,7 +2448,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
                 
@@ -2509,7 +2472,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                   import requests
                   
@@ -2584,7 +2546,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
                 
@@ -2598,7 +2559,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                   import requests
                   
@@ -2652,7 +2612,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
   
@@ -2666,7 +2625,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                   import requests
 
@@ -2725,7 +2683,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
                 
@@ -2741,7 +2698,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                   import requests
                   
@@ -2793,7 +2749,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
                   
@@ -2807,7 +2762,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                   import requests
                   
@@ -2897,7 +2851,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
 
@@ -2913,7 +2866,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                   import requests
                   
@@ -2994,7 +2946,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
 
@@ -3013,7 +2964,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                   import requests
                   
@@ -3081,7 +3031,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
   
@@ -3098,7 +3047,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                   import requests
                   
@@ -3163,7 +3111,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
                 
@@ -3178,7 +3125,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                   import requests
                   
@@ -3305,7 +3251,6 @@ paths:
                         }'
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
                 
@@ -3322,7 +3267,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                   import requests
                   
@@ -3405,7 +3349,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   import time
                   from aihub import AIHub
@@ -3428,7 +3371,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                   import requests
   
@@ -3480,7 +3422,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   import time
                   from aihub import AIHub
@@ -3501,7 +3442,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                   import requests
                 
@@ -3620,7 +3560,6 @@ paths:
 
             - sdk: python
               name: Simple request with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
                   
@@ -3641,7 +3580,6 @@ paths:
 
             - sdk: python
               name: Simple request without SDK
-              # cwc tested
               code: |
                   import requests
   
@@ -3671,7 +3609,6 @@ paths:
 
             - sdk: python
               name: Complex request with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
                   
@@ -3697,7 +3634,6 @@ paths:
 
             - sdk: python
               name: Complex request without SDK
-              # cwc tested
               code: |
                   import requests
   
@@ -3805,7 +3741,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
   
@@ -3918,7 +3853,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
   
@@ -3948,7 +3882,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                   import requests
                   
@@ -4037,7 +3970,6 @@ paths:
                     -H "IB-Context: ${IB_CONTEXT}"
             - sdk: python
               name: Delete file with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
   
@@ -4100,7 +4032,6 @@ paths:
 
             - sdk: python
               name: Delete folder without SDK
-              # cwc tested
               code: |
                   import requests
                   
@@ -4290,7 +4221,6 @@ paths:
                         }'
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
   
@@ -4308,7 +4238,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                   import requests
                   
@@ -4403,7 +4332,6 @@ paths:
 
             - sdk: python
               name: Simple request with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
                 
@@ -4416,7 +4344,6 @@ paths:
 
             - sdk: python
               name: Simple request without SDK
-              # cwc tested
               code: |
                   import requests
                   
@@ -4440,7 +4367,6 @@ paths:
 
             - sdk: python
               name: Advanced request with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
                   
@@ -4457,7 +4383,6 @@ paths:
 
             - sdk: python
               name: Advanced request without SDK
-              # cwc tested
               code: |
                   import requests
                   
@@ -4531,7 +4456,6 @@ paths:
 
             - sdk: python
               name: with SDK
-              # cwc tested
               code: |
                   from aihub import AIHub
 
@@ -4544,7 +4468,6 @@ paths:
 
             - sdk: python
               name: without SDK
-              # cwc tested
               code: |
                   import requests
                   

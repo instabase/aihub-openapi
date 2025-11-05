@@ -4531,6 +4531,7 @@ paths:
 
             - sdk: python
               name: with SDK
+              # cwc tested
               code: |
                   from aihub import AIHub
 
@@ -4543,6 +4544,7 @@ paths:
 
             - sdk: python
               name: without SDK
+              # cwc tested
               code: |
                   import requests
                   
@@ -4679,6 +4681,7 @@ paths:
 
             - sdk: python
               name: without SDK
+              # cwc can't test b/c of permissions, but the call does go through and returns 200 (with error message) on failure
               code: |
                   # SDK does not support this operation, so you
                   # must make REST calls using "requests" module

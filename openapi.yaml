@@ -81,9 +81,9 @@ paths:
                                  api_key="abcdefghijklmnopqrst1234567890",
                                  ib_context="john.doe_acme.com")
 
-                  resp = client.batches.create(name="MyBatch",
-                                               workspace="MyWorkspace")
-                  print(f"batch_id: {resp.id}")
+                  response = client.batches.create(name="MyBatch",
+                                                   workspace="MyWorkspace")
+                  print(f"batch_id: {response.id}")
 
             - sdk: python
               name: without SDK
@@ -100,14 +100,13 @@ paths:
                            "workspace": "MyWorkspace" }
 
                   # make the POST request
-                  resp = requests.post(url, headers=headers, json=data)
+                  response = requests.post(url, headers=headers, json=data)
   
                   # handle the response
-                  if resp.status_code == 200:
-                      batch = resp.json()
-                      print(f"Batch created with ID: {batch['id']}")
+                  if response.status_code == 200:
+                      print(f"Batch created with ID: {response.json()['id']}")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
     get:
       operationId: listBatches
@@ -172,11 +171,11 @@ paths:
                                  api_key="abcdefghijklmnopqrst1234567890",
                                  ib_context="john.doe_acme.com")
 
-                  resp = client.batches.list(workspace="MyWorkspace",
-                                             username="john.doe_acme.com",
-                                             limit=3,
-                                             offset=6)
-                  for batch in resp.batches:
+                  response = client.batches.list(workspace="MyWorkspace",
+                                                 username="john.doe_acme.com",
+                                                 limit=3,
+                                                 offset=6)
+                  for batch in response.batches:
                       print(f"id: {batch.id}")
                       print(f"name: {batch.name}")
 
@@ -195,14 +194,13 @@ paths:
                              "offset": 6 }
 
                   # make the GET request
-                  resp = requests.get(url, headers=headers, params=params)
+                  response = requests.get(url, headers=headers, params=params)
   
                   # handle the response
-                  if resp.status_code == 200:
-                      batches = resp.json()
-                      print(f"Retrieved {len(batches['batches'])} batches")
+                  if response.status_code == 200:
+                      print(f"Retrieved {len(response.json()['batches'])} batches")
                   else:
-                      print(f"Error: { resp.status_code } - { resp.text }")
+                      print(f"Error: { response.status_code } - { response.text }")
 
   /v2/batches/{batch_id}:
     get:
@@ -256,15 +254,14 @@ paths:
                                              "IB-Context": "john.doe_acme.com" }
 
                 # make the GET request
-                resp = requests.get(url, headers=headers)
+                response = requests.get(url, headers=headers)
 
                 # handle the response
-                if resp.status_code == 200:
-                    batch = resp.json()
-                    print(f"id: {batch['id']}")
+                if response.status_code == 200:
+                    print(f"id: {response.json()['id']}")
                     print(f"name: {batch['name']}")
                 else:
-                    print(f"Error: {resp.status_code} - {resp.text}")
+                    print(f"Error: {response.status_code} - {response.text}")
 
     delete:
       operationId: deleteBatch
@@ -304,12 +301,13 @@ paths:
                                  api_key="abcdefghijklmnopqrst1234567890",
                                  ib_context="john.doe_acme.com")
 
-                  delete_resp = client.batches.delete(batch_id=123456)
+                  delete_response = client.batches.delete(batch_id=123456)
 
                   # check delete job status until done
                   while True:
-                      poll_resp = client.batches.poll_job(job_id=delete_resp.job_id)
-                      if poll_resp.state not in ["PENDING", "RUNNING"]:
+                      poll_response = client.batches.poll_job(
+                                          job_id=delete_response.job_id)
+                      if poll_response.state not in ["PENDING", "RUNNING"]:
                           break
                       time.sleep(3)  # pause before polling the status again
 
@@ -323,14 +321,14 @@ paths:
                                                "IB-Context": "john.doe_acme.com" }
   
                   # make the DELETE request
-                  resp = requests.delete(url, headers=headers)
+                  response = requests.delete(url, headers=headers)
   
                   # handle the response
-                  if resp.status_code == 202:
-                      resp = resp.json()
-                      print(f"Batch deletion job started with ID: {resp['job_id']}")
+                  if response.status_code == 202:
+                      print("Batch deletion job started with ID: "
+                            f"{response.json()['job_id']}")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
                   # not included here: check status of deletion job until it's done
 
@@ -407,11 +405,11 @@ paths:
                                  api_key="abcdefghijklmnopqrst1234567890",
                                  ib_context="john.doe_acme.com")
   
-                  resp = client.batches.list_files(batch_id=123456,
-                                                   page_size=2,
-                                                   start_token="1Cv...<snip>...TI=")
-                  print(f"Has more files? {resp.has_more}")
-                  for node in resp.nodes:
+                  response = client.batches.list_files(batch_id=123456,
+                                                       page_size=2,
+                                                       start_token="1Cv...<snip>...TI=")
+                  print(f"Has more files? {response.has_more}")
+                  for node in response.nodes:
                       print(f"File name: {node.name}")
 
             - sdk: python
@@ -429,15 +427,15 @@ paths:
                               "IB-Context": "john.doe_acme.com" }
                   
                   # make the GET request
-                  resp = requests.get(url, headers=headers)
+                  response = requests.get(url, headers=headers)
                   
                   # handle the response
-                  if resp.status_code == 200:
-                      print(f"Has more files? {resp.json()['has_more']}")
-                      for node in resp.json()['nodes']:
+                  if response.status_code == 200:
+                      print(f"Has more files? {response.json()['has_more']}")
+                      for node in response.json()['nodes']:
                           print(f"File name: {node['name']}")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
   /v2/batches/{batch_id}/files/{filename}:
     put:
@@ -520,13 +518,13 @@ paths:
                       file_content = file.read()
                   
                   # make the PUT request
-                  resp = requests.put(url, headers=headers, data=file_content)
+                  response = requests.put(url, headers=headers, data=file_content)
                   
                   # handle the response
-                  if resp.status_code == 204:
+                  if response.status_code == 204:
                       print("File uploaded successfully")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
     delete:
       operationId: deleteFileFromBatch
@@ -581,13 +579,13 @@ paths:
                               "IB-Context": "john.doe_acme.com" }
                   
                   # make the DELETE request
-                  resp = requests.delete(url, headers=headers)
+                  response = requests.delete(url, headers=headers)
   
                   # handle the response
-                  if resp.status_code == 202:
+                  if response.status_code == 202:
                       print("File deletion request accepted")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
   /v2/batches/multipart-upload:
     post:
@@ -677,16 +675,13 @@ paths:
                   file_size = os.path.getsize(local_filepath)
                   
                   # create multipart upload session
-                  resp = client.batches.create_multipart_upload_session(
+                  response = client.batches.create_multipart_upload_session(
                       batch_id=123456,
                       filename=filename,
-                      file_size=file_size
-                  )
+                      file_size=file_size)
                   
-                  session_id = resp.session_id
-                  part_size = resp.part_size
-                  print(f"Session ID: {session_id}")
-                  print(f"Part size: {part_size}")
+                  print(f"Session ID: {response.session_id}")
+                  print(f"Part size: {response.part_size}")
 
             - sdk: python
               name: without SDK
@@ -711,18 +706,14 @@ paths:
                            "file_size": size }
                   
                   # make the POST request
-                  resp = requests.post(url,
-                                       headers=headers,
-                                       json=data)
+                  response = requests.post(url, headers=headers, json=data)
                   
                   # handle the response
-                  if resp.status_code == 201:
-                      part_size = resp.json()["part_size"]
-                      session_id = resp.json()["session_id"]
-                      print(f"Session ID: {session_id}")
-                      print(f"Part size: {part_size}")
+                  if response.status_code == 201:
+                      print(f"Session ID: {response.json()["session_id"]}")
+                      print(f"Part size: {response.json()["part_size"]}")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
   /v2/batches/multipart-upload/sessions/{session_id}/parts/{part_num}:
     put:
@@ -801,14 +792,13 @@ paths:
                       part_data = input_file.read(part_size)
                       while part_data:
                           # upload this part using SDK
-                          resp = client.batches.upload_multipart_part(
+                          response = client.batches.upload_multipart_part(
                               session_id=session_id,
                               part_num=part_num,
-                              part_data=part_data
-                          )
+                              part_data=part_data)
                   
                           parts.append({ "part_num": part_num,
-                                         "part_id": resp.part_id })
+                                         "part_id": response.part_id })
                           print(f"Uploaded part {part_num}")
                   
                           # read next part
@@ -836,16 +826,16 @@ paths:
                       while part:
                           # upload this part
                           part_url = f"{session_endpoint}/parts/{part_num}"
-                          part_resp = requests.put(part_url, headers=headers, data=part)
+                          part_response = requests.put(part_url, headers=headers, data=part)
                   
-                          if part_resp.status_code == 201:
+                          if part_response.status_code == 201:
                               parts.append({
                                   "part_num": part_num,
-                                  "part_id": part_resp.json()["part_id"]
+                                  "part_id": part_response.json()["part_id"]
                               })
                               print(f"Uploaded part {part_num}")
                           else:
-                              print(f"Error uploading part {part_num}: {part_resp.status_code}")
+                              print(f"Error uploading part {part_num}: {part_response.status_code}")
                               break
                   
                           # read next part
@@ -973,12 +963,12 @@ paths:
                   # commit the session
                   data = { "action": "commit", "parts": parts }
                   
-                  resp = requests.post(session_endpoint, headers=headers, json=data)
+                  response = requests.post(session_endpoint, headers=headers, json=data)
                   
-                  if resp.status_code == 201:
+                  if response.status_code == 201:
                       print("Multipart upload completed successfully")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
             - sdk: python
               name: with SDK - Complete Workflow
@@ -997,14 +987,13 @@ paths:
                   file_size = os.path.getsize(local_file_path)
                   
                   # Step 1: Create session
-                  resp = client.batches.create_multipart_upload_session(
+                  response = client.batches.create_multipart_upload_session(
                       batch_id=batch_id,
                       filename="upload.pdf",
-                      file_size=file_size
-                  )
+                      file_size=file_size)
                   
-                  session_id = resp.session_id
-                  part_size = resp.part_size
+                  session_id = response.session_id
+                  part_size = response.part_size
                   
                   # Step 2: Upload parts
                   parts = []
@@ -1016,15 +1005,14 @@ paths:
                           if not part_data:
                               break
                   
-                          resp = client.batches.upload_multipart_part(
+                          response = client.batches.upload_multipart_part(
                               session_id=session_id,
                               part_num=part_num,
-                              part_data=part_data
-                          )
+                              part_data=part_data)
                   
                           parts.append({
                               "part_num": part_num,
-                              "part_id": resp.part_id
+                              "part_id": response.part_id
                           })
                           part_num += 1
                   
@@ -1083,9 +1071,9 @@ paths:
 
                   # poll the status of a job until it's done
                   while True:
-                      poll_resp = client.batches.poll_job(
-                                      job_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890")
-                      if poll_resp.state not in ["PENDING", "RUNNING"]:
+                      response = client.batches.poll_job(
+                                     job_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890")
+                      if response.state not in ["PENDING", "RUNNING"]:
                           break
                       time.sleep(3)  # pause before polling the status again
 
@@ -1099,14 +1087,13 @@ paths:
                               "IB-Context": 'john.doe_acme.com' }
                   
                   # make the GET request
-                  resp = requests.get(url, headers=headers)
+                  response = requests.get(url, headers=headers)
                   
                   # handle the response
-                  if resp.status_code == 200:
-                      job_status = resp.json()
-                      print(f"Job status: {job_status['state']}")
+                  if response.status_code == 200:
+                      print(f"Job status: {response.json()['state']}")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
   /v2/apps/runs:
     post:
@@ -1277,14 +1264,13 @@ paths:
                            "app_name": "My App" }
                   
                   # make the POST request
-                  resp = requests.post(url, headers=headers, json=data)
+                  response = requests.post(url, headers=headers, json=data)
                   
                   # handle the response
-                  if resp.status_code == 200:
-                      run = resp.json()
-                      print(f"Run started with ID: {run['id']}")
+                  if response.status_code == 200:
+                      print(f"Run started with ID: {response.json()['id']}")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
             - sdk: curl
               name: Complex request
@@ -1361,14 +1347,13 @@ paths:
                   }
 
                   # make the POST request
-                  resp = requests.post(url, headers=headers, json=data)
+                  response = requests.post(url, headers=headers, json=data)
 
                   # handle the response
-                  if resp.status_code == 200:
-                      run = resp.json()
-                      print(f"Run started with ID: {run['id']}")
+                  if response.status_code == 200:
+                      print(f"Run started with ID: {response.json()['id']}")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
     get:
       operationId: listRuns
@@ -1490,8 +1475,8 @@ paths:
                                  api_key="abcdefghijklmnopqrst1234567890",
                                  ib_context="john.doe_acme.com")
   
-                  resp = client.apps.runs.list()
-                  print(f"third run ID: {resp.runs[2].id}")  # 0-based indexing
+                  response = client.apps.runs.list()
+                  print(f"third run ID: {response.runs[2].id}")  # 0-based indexing
 
             - sdk: python
               name: without SDK
@@ -1503,13 +1488,13 @@ paths:
                               "IB-Context": "john.doe_acme.com" }
                   
                   # make the GET request
-                  resp = requests.get(url, headers=headers)
+                  response = requests.get(url, headers=headers)
                   
                   # handle the response
-                  if resp.status_code == 200:
-                      print(f"third run ID: {resp.json()['runs'][2]['id']}")
+                  if response.status_code == 200:
+                      print(f"third run ID: {response.json()['runs'][2]['id']}")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
   /v2/apps/deployments/{deployment-id}/runs:
     post:
@@ -1667,14 +1652,13 @@ paths:
                   data = { "batch_id": 123456 }
                   
                   # make the POST request
-                  resp = requests.post(url, headers=headers, json=data)
+                  response = requests.post(url, headers=headers, json=data)
                   
                   # handle the response
-                  if resp.status_code == 202:
-                      run = resp.json()
-                      print(f"Deployment run started with ID: {run['id']}")
+                  if response.status_code == 202:
+                      print(f"Deployment run started with ID: {response.json()['id']}")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
             - sdk: python
               name: Use input dir with SDK
@@ -1715,14 +1699,13 @@ paths:
                   data = { "input_dir": input_dir }
                   
                   # make the POST request
-                  resp = requests.post(url, headers=headers, json=data)
+                  response = requests.post(url, headers=headers, json=data)
                   
                   # handle the response
-                  if resp.status_code == 202:
-                      run = resp.json()
-                      print(f"Deployment run started with ID: {run['id']}")
+                  if response.status_code == 202:
+                      print(f"Deployment run started with ID: {response.json()['id']}")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
   /v2/apps/runs/{run_id}:
     get:
@@ -1766,8 +1749,9 @@ paths:
                                  api_key="abcdefghijklmnopqrst1234567890",
                                  ib_context="john.doe_acme.com")
 
-                  resp = client.apps.runs.status(run_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890")
-                  print(f"Run status: {resp.status}")
+                  response = client.apps.runs.status(
+                                 run_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890")
+                  print(f"Run status: {response.status}")
 
             - sdk: python
               name: without SDK
@@ -1779,14 +1763,13 @@ paths:
                               "IB-Context": "john.doe_acme.com" }
   
                   # make the GET request
-                  resp = requests.get(url, headers=headers)
+                  response = requests.get(url, headers=headers)
                   
                   # handle the response
-                  if resp.status_code == 200:
-                      run = resp.json()
-                      print(f"Run status: {run['status']}")
+                  if response.status_code == 200:
+                      print(f"Run status: {response.json()['status']}")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
     delete:
       operationId: deleteRun
@@ -1870,11 +1853,11 @@ paths:
                                  api_key="abcdefghijklmnopqrst1234567890",
                                  ib_context="john.doe_acme.com")
 
-                  resp = client.apps.runs.delete(
-                             run_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890")
-                  job_ids = [resp.delete_input_dir_job_id,
-                             resp.delete_output_dir_job_id,
-                             resp.delete_log_dir_job_id]
+                  response = client.apps.runs.delete(
+                                 run_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890")
+                  job_ids = [response.delete_input_dir_job_id,
+                             response.delete_output_dir_job_id,
+                             response.delete_log_dir_job_id]
 
                   # remove empty job IDs
                   job_ids = [job_id for job_id in job_ids if job_id]
@@ -1900,14 +1883,13 @@ paths:
                 response = requests.delete(url, headers=headers)
                 
                 # handle the response
-                if resp.status_code == 202:
-                    job_resp = resp.json()
+                if response.status_code == 202:
                     print("Run deletion request accepted")
-                    print(f"Delete input dir job ID: {job_resp['delete_input_dir_job_id']}")
-                    print(f"Delete output dir job ID: {job_resp['delete_output_dir_job_id']}")
-                    print(f"Delete log dir job ID: {job_resp['delete_log_dir_job_id']}")
+                    print(f"Delete input dir job ID: {response.json()['delete_input_dir_job_id']}")
+                    print(f"Delete output dir job ID: {response.json()['delete_output_dir_job_id']}")
+                    print(f"Delete log dir job ID: {response.json()['delete_log_dir_job_id']}")
                 else:
-                    print(f"Error: {resp.status_code} - {resp.text}")
+                    print(f"Error: {response.status_code} - {response.text}")
 
   /v2/apps/runs/{run_id}/results:
     get:
@@ -2141,7 +2123,8 @@ paths:
                                  api_key="abcdefghijklmnopqrst1234567890",
                                  ib_context="john.doe_acme.com")
   
-                  results = client.apps.runs.results(run_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890")
+                  results = client.apps.runs.results(
+                                run_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890")
                   print(f"Retrieved results from {len(results.files)} files")
 
             - sdk: python
@@ -2154,14 +2137,13 @@ paths:
                               "IB-Context": 'john.doe_acme.com' }
                   
                   # make the GET request
-                  resp = requests.get(url, headers=headers)
+                  response = requests.get(url, headers=headers)
                   
                   # handle the response
-                  if resp.status_code == 200:
-                      results = resp.json()
-                      print(f"Retrieved results from {len(results['files'])} files")
+                  if response.status_code == 200:
+                      print(f"Retrieved results from {len(response.json()['files'])} files")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
         - path-parameters:
             run_id: 1234-1235
@@ -2262,14 +2244,13 @@ paths:
                               "IB-Context": "john.doe_acme.com" }
                   
                   # make the GET request
-                  resp = requests.get(url, headers=headers)
+                  response = requests.get(url, headers=headers)
                   
                   # handle the response
-                  if resp.status_code == 200:
-                      results = resp.json()
-                      print(f"Retrieved results for {len(results['files'])} files")
+                  if response.status_code == 200:
+                      print(f"Retrieved results for {len(response.json()['files'])} files")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
             - sdk: python
               name: Retrieving paginated results with SDK
@@ -2290,17 +2271,18 @@ paths:
                   
                   while True:
                       # fetch results with the current offset
-                      resp = client.apps.runs.results(run_id=run_id, file_offset=current_offset)
+                      response = client.apps.runs.results(run_id=run_id, 
+                                                          file_offset=current_offset)
                   
                       # extend the list with the files from the current response
-                      all_files_results.extend(resp.files)
+                      all_files_results.extend(response.files)
                   
                       # check if there are more results to fetch
-                      if not resp.has_more:
+                      if not response.has_more:
                           break
                   
                       # increment the offset by the number of files received in the current response
-                      current_offset += len(resp.files)
+                      current_offset += len(response.files)
                   
                   print(f"Retrieved results from {len(all_files_results)} files")
 
@@ -2323,19 +2305,18 @@ paths:
                           f"?file_offset={current_offset}")
               
                     # make the GET request
-                    resp = requests.get(url, headers=headers)
+                    response = requests.get(url, headers=headers)
                 
                     # handle the response
-                    if resp.status_code == 200:
-                        results = resp.json()
-                        print(f"Retrieved results for {len(results['files'])} files")
+                    if response.status_code == 200:
+                        print(f"Retrieved results for {len(response.json()['files'])} files")
                         all_files_results.extend(results['files'])
                         if results['has_more']:
                           current_offset += len(results['files'])
                         else:
                             break
                     else:
-                        print(f"Error: {resp.status_code} - {resp.text}")
+                        print(f"Error: {response.status_code} - {response.text}")
                 print(f"Retrieved results for {len(all_files_results)} files")
 
   /v2/conversations:
@@ -2455,7 +2436,7 @@ paths:
                                  api_key="abcdefghijklmnopqrst1234567890",
                                  ib_context="john.doe_acme.com")
   
-                  resp = client.conversations.create(
+                  response = client.conversations.create(
                       name="MyConversation",
                       description="sample conversation",
                       org="my-organization-id",  # optional for community accounts
@@ -2468,7 +2449,7 @@ paths:
                       enable_multilanguage_advanced_mode=False, # optional
                       files=["/local/path/to/test1.pdf", "/local/path/to/test2.pdf"])
                   
-                  print(f"Conversation ID: {resp.id}")
+                  print(f"Conversation ID: {response.id}")
 
             - sdk: python
               name: without SDK
@@ -2496,14 +2477,13 @@ paths:
                            "enable_multilanguage_advanced_mode": "false" }
                   
                   # make the POST request
-                  resp = requests.post(url, headers=headers, files=files, data=data)
+                  response = requests.post(url, headers=headers, files=files, data=data)
                   
                   # handle the response
-                  if resp.status_code == 201:
-                      conversation = resp.json()
-                      print(f"Conversation created with ID: {conversation['id']}")
+                  if response.status_code == 201:
+                      print(f"Conversation created with ID: {response.json()['id']}")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
     get:
       operationId: listConversations
@@ -2553,8 +2533,8 @@ paths:
                                  api_key="abcdefghijklmnopqrst1234567890",
                                  ib_context="john.doe_acme.com")
                   
-                  resp = client.conversations.list()
-                  for conversation in resp.conversations:
+                  response = client.conversations.list()
+                  for conversation in response.conversations:
                       print(f"Conversation ID: {conversation.id}")
 
             - sdk: python
@@ -2567,15 +2547,14 @@ paths:
                               "IB-Context": "john.doe_acme.com" }
                   
                   # make the GET request
-                  resp = requests.get(url, headers=headers)
+                  response = requests.get(url, headers=headers)
                   
                   # handle the response
-                  if resp.status_code == 200:
-                      results = resp.json()
-                      for conversation in results['conversations']:
+                  if response.status_code == 200:
+                      for conversation in response.json()['conversations']:
                           print(f"Conversation ID: {conversation['id']}")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
   /v2/conversations/{conversation_id}:
     get:
@@ -2619,9 +2598,9 @@ paths:
                                  api_key="abcdefghijklmnopqrst1234567890",
                                  ib_context="john.doe_acme.com")
   
-                  resp = client.conversations.status(
-                             conversation_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890")
-                  print(f"Conversation name: {resp.name}")
+                  response = client.conversations.status(
+                                 conversation_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890")
+                  print(f"Conversation name: {response.name}")
 
             - sdk: python
               name: without SDK
@@ -2633,14 +2612,13 @@ paths:
                               "IB-Context": "john.doe_acme.com" }
 
                   # make the GET request
-                  resp = requests.get(url, headers=headers)
+                  response = requests.get(url, headers=headers)
 
                   # handle the response
-                  if resp.status_code == 200:
-                      conversation = resp.json()
-                      print(f"Conversation name: {conversation['name']}")
+                  if response.status_code == 200:
+                      print(f"Conversation name: {response.json()['name']}")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
     put:
       operationId: updateConversation
@@ -2710,13 +2688,13 @@ paths:
                              "description": "new conversation description" }
                   
                   # make the PUT request
-                  resp = requests.put(url, headers=headers, params=params)
+                  response = requests.put(url, headers=headers, params=params)
                   
                   # handle the response
-                  if resp.status_code == 204:
+                  if response.status_code == 204:
                       print("Conversation updated successfully")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
     delete:
       operationId: deleteConversation
@@ -2770,13 +2748,13 @@ paths:
                                                "IB-Context": "john.doe_acme.com" }
                   
                   # make the DELETE request
-                  resp = requests.delete(url, headers=headers)
+                  response = requests.delete(url, headers=headers)
                   
                   # handle the response
-                  if resp.status_code == 204:
+                  if response.status_code == 204:
                       print("Conversation deleted successfully")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
 
   /v2/conversations/{conversation_id}/prompts:
@@ -2858,11 +2836,11 @@ paths:
                                api_key="abcdefghijklmnopqrst1234567890",
                                ib_context="john.doe_acme.com")
 
-                  resp = client.conversations.converse(
+                  response = client.conversations.converse(
                       conversation_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890",
                       question="What is the main topic of these documents?",
                       document_ids=[12345])
-                  print(f"Prompt response: {resp.answer}")
+                  print(f"Prompt response: {response.answer}")
 
             - sdk: python
               name: without SDK
@@ -2878,14 +2856,13 @@ paths:
                            "document_ids": [123456] }
                   
                   # make the POST request
-                  resp = requests.post(url, headers=headers, json=data)
+                  response = requests.post(url, headers=headers, json=data)
                   
                   # handle the response
-                  if resp.status_code == 200:
-                      results = resp.json()
-                      print(f"Prompt response: {results['answer']}")
+                  if response.status_code == 200:
+                      print(f"Prompt response: {response.json()['answer']}")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
   /v2/conversations/{conversation_id}/documents:
     post:
@@ -2953,13 +2930,13 @@ paths:
                                  api_key="abcdefghijklmnopqrst1234567890",
                                  ib_context="john.doe_acme.com")
                 
-                  resp = client.conversations.add_documents(
-                             conversation_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-                             files=["/local/path/to/test1.pdf", "/local/path/to/test2.txt"])
+                  response = client.conversations.add_documents(
+                                 conversation_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                                 files=["/local/path/to/test1.pdf", "/local/path/to/test2.txt"])
 
-                  for failed in resp.upload_status.failure:
+                  for failed in response.upload_status.failure:
                       print(f"Failed upload: {failed.name}, {failed.reason}")
-                  for successful in resp.upload_status.success:
+                  for successful in response.upload_status.success:
                       print(f"Successful upload: {successful.name}")
 
             - sdk: python
@@ -2977,14 +2954,13 @@ paths:
                   ]
                   
                   # make the POST request
-                  resp = requests.post(url, headers=headers, files=files)
+                  response = requests.post(url, headers=headers, files=files)
                   
                   # handle the response
-                  if resp.status_code == 201:
-                      upload_resp = resp.json()
+                  if response.status_code == 201:
                       print("Documents uploaded successfully")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
     delete:
       operationId: deleteDocumentsFromConversation
@@ -3059,13 +3035,13 @@ paths:
                   data = { "ids": ["12345"] }
                   
                   # make the DELETE request
-                  resp = requests.delete(url, headers=headers, json=data)
+                  response = requests.delete(url, headers=headers, json=data)
                   
                   # handle the response
-                  if resp.status_code == 204:
+                  if response.status_code == 204:
                       print("Documents deleted successfully")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
   /v2/conversations/{conversation_id}/documents/{document_id}:
     get:
@@ -3118,10 +3094,10 @@ paths:
                                  api_key="abcdefghijklmnopqrst1234567890",
                                  ib_context="john.doe_acme.com")
                   
-                  resp = client.conversations.get_document_metadata(
-                         conversation_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-                         document_id=123456)
-                  print(f"Document name: {resp.name}")
+                  response = client.conversations.get_document_metadata(
+                                 conversation_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                                 document_id=123456)
+                  print(f"Document name: {response.name}")
 
             - sdk: python
               name: without SDK
@@ -3133,14 +3109,13 @@ paths:
                               "IB-Context": "john.doe_acme.com" }
                   
                   # make the GET request
-                  resp = requests.get(url, headers=headers)
+                  response = requests.get(url, headers=headers)
                   
                   # handle the response
-                  if resp.status_code == 200:
-                      document = resp.json()
-                      print(f"Document name: {document['name']}")
+                  if response.status_code == 200:
+                      print(f"Document name: {response.json()['name']}")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
   /v2/queries:
     post:
@@ -3261,9 +3236,9 @@ paths:
                   source_app = { "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
                                  "type": "CHATBOT" }
 
-                  query_resp = client.queries.run(query="When was the mail sent out?",
-                                                  source_app=source_app)
-                  print(f"Query ID: {query_resp.query_id}")
+                  response = client.queries.run(query="When was the mail sent out?",
+                                                source_app=source_app)
+                  print(f"Query ID: {response.query_id}")
 
             - sdk: python
               name: without SDK
@@ -3281,14 +3256,13 @@ paths:
                                            "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890" } }
                   
                   # make the POST request
-                  resp = requests.post(url, headers=headers, json=data)
+                  response = requests.post(url, headers=headers, json=data)
                   
                   # handle the response
-                  if resp.status_code == 202:
-                      query_resp = resp.json()
-                      print(f"Query started with ID: {query_resp['query_id']}")
+                  if response.status_code == 202:
+                      print(f"Query started with ID: {response.json()['query_id']}")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
   /v2/queries/{query_id}:
     get:
@@ -3359,14 +3333,14 @@ paths:
 
                   # are the query's responses ready yet?
                   while True:
-                      resp = client.queries.status(
-                                 query_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890")
-                      if resp.status == "COMPLETE":
+                      response = client.queries.status(
+                                     query_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890")
+                      if response.status == "COMPLETE":
                           break
                       time.sleep(3)  # pause, then poll again
 
                   # print the responses
-                  for query_result in resp.results:
+                  for query_result in response.results:
                       print(query_result.response)
 
             - sdk: python
@@ -3379,14 +3353,13 @@ paths:
                               "IB-Context": "john.doe_acme.com" }
                   
                   # make the GET request
-                  resp = requests.get(url, headers=headers)
+                  response = requests.get(url, headers=headers)
                   
                   # handle the response
-                  if resp.status_code == 200:
-                      query_status = resp.json()
-                      print(f"Query status: {query_status['status']}")
+                  if response.status_code == 200:
+                      print(f"Query status: {response.json()['status']}")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
   /v2/jobs/{job_id}:
     get:
@@ -3431,12 +3404,12 @@ paths:
                                  ib_context="john.doe_acme.com")
 
                   # start asynchronous job whose status we'll check
-                  delete_resp = client.batches.delete(batch_id=123456)
+                  delete_response = client.batches.delete(batch_id=123456)
 
                   # poll job status until done
                   while True:
-                      status_resp = client.jobs.status(job_id=delete_resp.job_id)
-                      if status_resp.state not in ["PENDING", "RUNNING"]:
+                      status_response = client.jobs.status(job_id=delete_response.job_id)
+                      if status_response.state not in ["PENDING", "RUNNING"]:
                           break
                       time.sleep(3)  # pause before polling status again
 
@@ -3450,19 +3423,18 @@ paths:
 
                   # start asynchronous job whose status we'll check
                   url = f"https://aihub.instabase.com/api/v2/batches/12345"
-                  delete_resp = requests.delete(url, headers=headers)
+                  delete_response = requests.delete(url, headers=headers)
                   
-                  url = f"https://aihub.instabase.com/api/v2/jobs/{delete_resp.json()['job_id']}"
+                  url = f"https://aihub.instabase.com/api/v2/jobs/{delete_response.json()['job_id']}"
                   
                   # make the GET request
-                  resp = requests.get(url, headers=headers)
+                  status_response = requests.get(url, headers=headers)
                   
                   # handle the response
-                  if resp.status_code == 200:
-                      job_status = resp.json()
-                      print(f"Job status: {job_status['state']}")
+                  if status_response.status_code == 200:
+                      print(f"Job status: {status_response.json()['state']}")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {status_response.status_code} - {status_response.text}")
 
   /v2/files/{path}:
     get:
@@ -3598,14 +3570,13 @@ paths:
                   params = { "expect-node-type": "file" }
   
                   # make the GET request
-                  resp = requests.get(url, headers=headers, params=params)
+                  response = requests.get(url, headers=headers, params=params)
   
                   # handle the response
-                  if resp.status_code == 200:
-                      file_contents = resp.content
-                      print(f"Contents: {file_contents.decode("utf-8")}")
+                  if response.status_code == 200:
+                      print(f"Contents: {response.content.decode("utf-8")}")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
             - sdk: python
               name: Complex request with SDK
@@ -3658,16 +3629,15 @@ paths:
                   url = f"https://aihub.instabase.com/api/v2/files/{file_path}"
 
                   # make the GET request
-                  resp = requests.get(url, headers=headers, params=params)
+                  response = requests.get(url, headers=headers, params=params)
   
                   # handle the response
                   # 200 means whole content is returned
                   # 206 means partial content is returned, due to "Range" parameter
-                  if resp.status_code in [200, 206]:
-                      file_contents = resp.content
-                      print(f"Contents: {file_contents.decode("utf-8")}")
+                  if response.status_code in [200, 206]:
+                      print(f"Contents: {response.content.decode("utf-8")}")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
     put:
       operationId: writeFile
@@ -3779,13 +3749,13 @@ paths:
                               "Content-Type": "application/octet-stream" }
                   
                   # make the PUT request
-                  resp = requests.put(url, headers=headers, data=file_contents)
+                  response = requests.put(url, headers=headers, data=file_contents)
                   
                   # handle the response
-                  if resp.status_code in [201, 204]:
+                  if response.status_code in [201, 204]:
                       print("File written successfully")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
     head:
       operationId: getFileMetadata
@@ -3868,14 +3838,14 @@ paths:
                   node_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{node}"
   
                   # returns an object with status code and headers
-                  resp = client.files.get_file_metadata(path=node_path)
+                  response = client.files.get_file_metadata(path=node_path)
                   
-                  is_file = (resp.headers["Content-Type"] == "application/octet-stream")
-                  is_folder = (resp.headers["Content-Type"] == "application/json")
+                  is_file = (response.headers["Content-Type"] == "application/octet-stream")
+                  is_folder = (response.headers["Content-Type"] == "application/json")
 
                   if is_file:
-                      file_length = resp.headers["Content-Length"]
-                      last_modified = resp.headers["last-modified"]
+                      file_length = response.headers["Content-Length"]
+                      last_modified = response.headers["last-modified"]
                       print(f"Node is a file with length {file_length} and modification date {last_modified}")
                   else:
                       print("Node is a folder")
@@ -3897,21 +3867,21 @@ paths:
                               "IB-Context": "john.doe_acme.com" }
                   
                   # make the HEAD request
-                  resp = requests.head(url, headers=headers)
+                  response = requests.head(url, headers=headers)
                   
                   # handle the response
-                  if resp.status_code == 200:
-                      is_file = (resp.headers["Content-Type"] == "application/octet-stream")
-                      is_folder = (resp.headers["Content-Type"] == "application/json")
+                  if response.status_code == 200:
+                      is_file = (response.headers["Content-Type"] == "application/octet-stream")
+                      is_folder = (response.headers["Content-Type"] == "application/json")
   
                       if is_file:
-                          file_length = resp.headers["Content-Length"]
-                          last_modified = resp.headers["last-modified"]
+                          file_length = response.headers["Content-Length"]
+                          last_modified = response.headers["last-modified"]
                           print(f"Node is a file with length {file_length} and modification date {last_modified}")
                       else:
                           print("Node is a folder")
                   else:
-                    print(f"Error: {resp.status_code} - {resp.text}")
+                    print(f"Error: {response.status_code} - {response.text}")
 
     delete:
       operationId: deleteFileOrFolder
@@ -4004,13 +3974,13 @@ paths:
                               "IB-Context": "john.doe_acme.com" }
                   
                   # make the DELETE request
-                  resp = requests.delete(url, headers=headers)
+                  response = requests.delete(url, headers=headers)
                   
                   # handle the response
-                  if resp.status_code == 202:
+                  if response.status_code == 202:
                       print("File deletion request accepted")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
             - sdk: python
               name: Delete folder with SDK
@@ -4046,13 +4016,13 @@ paths:
                               "IB-Context": "john.doe_acme.com" }
                   
                   # make the DELETE request
-                  resp = requests.delete(url, headers=headers)
+                  response = requests.delete(url, headers=headers)
                   
                   # handle the response
-                  if resp.status_code == 202:
+                  if response.status_code == 202:
                       print("Folder deletion request accepted")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
   /v2/aihub/secrets:
     get:
@@ -4121,8 +4091,8 @@ paths:
                                api_key="abcdefghijklmnopqrst1234567890",
                                ib_context="john.doe_acme.com")
                 
-                resp = client.secrets.list(workspace="MyWorkspace")
-                for secret in resp.secrets:
+                response = client.secrets.list(workspace="MyWorkspace")
+                for secret in response.secrets:
                     print(f"Secret description: {secret.description}")
 
           - sdk: python
@@ -4139,14 +4109,14 @@ paths:
                 params = { "workspace": "MyWorkspace" }
                 
                 # make the GET request
-                resp = requests.get(url, headers=headers, params=params)
+                response = requests.get(url, headers=headers, params=params)
                 
                 # handle the response
-                if resp.status_code == 200:
-                    for secret in resp.json()['secrets']:
+                if response.status_code == 200:
+                    for secret in response.json()['secrets']:
                         print(f"Secret description: {secret['description']}")
                 else:
-                    print(f"Error: {resp.status_code} - {resp.text}")
+                    print(f"Error: {response.status_code} - {response.text}")
 
     post:
       operationId: createSecret
@@ -4254,13 +4224,13 @@ paths:
                            "allowed_workspaces": ["workspace1", "workspace2"] }
                   
                   # make the POST request
-                  resp = requests.post(url, headers=headers, json=data)
+                  response = requests.post(url, headers=headers, json=data)
                   
                   # handle the response
-                  if resp.status_code == 200:
+                  if response.status_code == 200:
                       print("Secret created successfully")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
     patch:
       operationId: updateSecret
@@ -4357,13 +4327,13 @@ paths:
                            "value": "abc123" }
                   
                   # make the PATCH request
-                  resp = requests.patch(url, headers=headers, json=data)
+                  response = requests.patch(url, headers=headers, json=data)
                   
                   # handle the response
-                  if resp.status_code == 200:
+                  if response.status_code == 200:
                       print("Secret updated successfully")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
             - sdk: python
               name: Advanced request with SDK
@@ -4398,13 +4368,13 @@ paths:
                            "allowed_workspaces": ["WorkspaceA", "WorkspaceB"] }
   
                   # make the PATCH request
-                  resp = requests.patch(url, headers=headers, json=data)
+                  response = requests.patch(url, headers=headers, json=data)
                   
                   # handle the response
-                  if resp.status_code == 200:
+                  if response.status_code == 200:
                       print("Secret updated successfully")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
     delete:
       operationId: deleteSecret
@@ -4480,13 +4450,13 @@ paths:
                   data = { "alias": "password" }
                   
                   # make the DELETE request
-                  resp = requests.delete(url, headers=headers, json=data)
+                  response = requests.delete(url, headers=headers, json=data)
                   
                   # handle the response
-                  if resp.status_code == 200:
+                  if response.status_code == 200:
                       print("Secret deleted successfully")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
   /v1/auditlogs:
     post:
@@ -4621,14 +4591,14 @@ paths:
                            "start": 200 }
                   
                   # make the POST request
-                  resp = requests.post(url, headers=headers, json=data)
+                  response = requests.post(url, headers=headers, json=data)
                   
                   # handle the response
-                  if resp.status_code == 200:
-                      audit_logs = resp.json()
+                  if response.status_code == 200:
+                      audit_logs = response.json()
                       print(f"Retrieved {len(audit_logs['data']['results'])} audit logs")
                   else:
-                      print(f"Error: {resp.status_code} - {resp.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
 components:
   securitySchemes:

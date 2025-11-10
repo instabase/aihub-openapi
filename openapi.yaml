@@ -1950,6 +1950,8 @@ paths:
                A `post_processed_pdf_path` is populated when `settings/runtime_config/generate_post_process_pdf=true`. Paths to PDFs are generated from each document, with separate PDF paths for documents split during classification.
                </Note>
 
+            - `page_layouts`
+
             The following values are returned at the field level (`files/documents/fields/...`):
 
             - `source_coordinates/top_x`
@@ -1992,6 +1994,7 @@ paths:
           response:
             body:
               batch_id: '1235'
+              run_id: "1234-1235"
               has_more: false
               files:
                 - original_file_name: "test.png"
@@ -2079,10 +2082,15 @@ paths:
             body:
               has_more: false
               batch_id: "9706"
+              run_id: "1234-1235"
               files:
                 - original_file_name: "test.png"
                   documents:
                     - class_name: "Wage And Tax Statement"
+                      page_layouts:
+                        - page_number: 0
+                          width: 1012.0
+                          height: 639.0
                       fields:
                         - value: "123 STREET RD ANYWHERE, USA,12345"
                           type: "TEXT"
@@ -2106,6 +2114,10 @@ paths:
                 - original_file_name: "test2.png"
                   documents:
                     - class_name: "Driver License"
+                      page_layouts:
+                        - page_number: 0
+                          width: 1012.0
+                          height: 639.0
                       fields:
                         - value: "Male"
                           type: "TEXT"

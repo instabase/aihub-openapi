@@ -4546,6 +4546,9 @@ components:
         batch_id:
           type: string
           description: The batch ID used as input for this run, if run using a batch.
+        run_id:
+          type: string
+          description: The run ID of the automation app run.
         files:
           type: array
           items:
@@ -4599,6 +4602,11 @@ components:
           description: An array of the document's page numbers.
           items:
             type: integer
+        page_layouts:
+          type: array
+          description: An array with one entry per page, containing page layout information including page number, width, and height.
+          items:
+            $ref: '#/components/schemas/pageLayout'
         post_processed_paths:
           type: array
           description: An array of strings, each representing a path to post-processed documents.
@@ -4716,6 +4724,27 @@ components:
           type: integer
           nullable: false
           description: Zero-indexed page number of the bounding box.
+    pageLayout:
+      type: object
+      properties:
+        page_number:
+          type: integer
+          nullable: false
+          description: Zero-indexed page number.
+        width:
+          type: number
+          format: float
+          nullable: false
+          description: Width of the page.
+        height:
+          type: number
+          format: float
+          nullable: false
+          description: Height of the page.
+      required:
+        - page_number
+        - width
+        - height
     modificationObject:
       type: object
       properties:

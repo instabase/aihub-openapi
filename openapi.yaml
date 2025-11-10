@@ -68,7 +68,7 @@ paths:
               code: |
                   curl "${API_ROOT}/v2/batches" \
                     -H "Authorization: Bearer ${API_TOKEN}" \
-                    -H "IB-Context: ${IB_CONTEXT}"\
+                    -H "IB-Context: ${IB_CONTEXT}" \
                     -H "Content-Type: application/json" \
                     -d '{"name": "test"}'
 
@@ -157,7 +157,7 @@ paths:
               code: |
                   curl "${API_ROOT}/v2/batches" \
                     -H "Authorization: Bearer ${API_TOKEN}" \
-                    -H "IB-Context: ${IB_CONTEXT}"\
+                    -H "IB-Context: ${IB_CONTEXT}" \
                     -G \
                     --data-urlencode "workspace=my-workspace" \
                     --data-urlencode "limit=100"
@@ -228,7 +228,7 @@ paths:
             - sdk: curl
               code: |
                   curl "${API_ROOT}/v2/batches/<BATCH-ID>" \
-                    -H "Authorization: Bearer ${API_TOKEN}"\
+                    -H "Authorization: Bearer ${API_TOKEN}" \
                     -H "IB-Context: ${IB_CONTEXT}"
 
             - sdk: python
@@ -259,7 +259,7 @@ paths:
                 # handle the response
                 if response.status_code == 200:
                     print(f"id: {response.json()['id']}")
-                    print(f"name: {batch['name']}")
+                    print(f"name: {response.json()['name']}")
                 else:
                     print(f"Error: {response.status_code} - {response.text}")
 
@@ -288,7 +288,7 @@ paths:
             - sdk: curl
               code: |
                   curl -X DELETE "${API_ROOT}/v2/batches/<BATCH-ID>" \
-                    -H "Authorization: Bearer ${API_TOKEN}"\
+                    -H "Authorization: Bearer ${API_TOKEN}" \
                     -H "IB-Context: ${IB_CONTEXT}"
 
             - sdk: python
@@ -393,7 +393,7 @@ paths:
             - sdk: curl
               code: |
                   curl "${API_ROOT}/v2/batches/<BATCH-ID>/files" \
-                    -H "Authorization: Bearer ${API_TOKEN}"\
+                    -H "Authorization: Bearer ${API_TOKEN}" \
                     -H "IB-Context: ${IB_CONTEXT}"
 
             - sdk: python
@@ -419,8 +419,8 @@ paths:
                   import requests
 
                   start_token="abcd...<snip>...1234"  # not URL-safe
-                  url_safe_start_token =
-                      base64.urlsafe_b64encode(base64.b64decode(start_token)).decode('ascii')
+                  url_safe_start_token = base64.urlsafe_b64encode(
+                      base64.b64decode(start_token)).decode('ascii')
 
                   url = f"https://aihub.instabase.com/api/v2/batches/123456/files?page_size=2&start_token={url_safe_start_token}"
                   headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
@@ -553,7 +553,7 @@ paths:
             - sdk: curl
               code: |
                   curl -X DELETE "${API_ROOT}/v2/batches/<BATCH-ID>/files/<FILENAME>" \
-                    -H "Authorization: Bearer ${API_TOKEN}"\
+                    -H "Authorization: Bearer ${API_TOKEN}" \
                     -H "IB-Context: ${IB_CONTEXT}"
 
             - sdk: python
@@ -710,8 +710,8 @@ paths:
                   
                   # handle the response
                   if response.status_code == 201:
-                      print(f"Session ID: {response.json()["session_id"]}")
-                      print(f"Part size: {response.json()["part_size"]}")
+                      print(f"Session ID: {response.json()['session_id']}")
+                      print(f"Part size: {response.json()['part_size']}")
                   else:
                       print(f"Error: {response.status_code} - {response.text}")
 
@@ -782,8 +782,8 @@ paths:
                                  ib_context="john.doe_acme.com")
                   
                   # Assuming session_id and part_size from previous step
-                  session_id = "<SESSION-ID>"
-                  part_size = 5242880  # 5MB
+                  session_id = "abc...<snip>...123"
+                  part_size = 5242880
                   
                   parts = []
                   part_num = 1
@@ -811,12 +811,12 @@ paths:
                   import requests
                   
                   # assuming session_id and part_size from previous step
-                  session_id = "<SESSION-ID>"
+                  session_id = "abc...<snip>...123"
                   part_size = 5242880  # 5MB
                   session_endpoint = f"https://aihub.instabase.com/api/v2/batches/multipart-upload/sessions/{session_id}"
                   
                   headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": “john.doe_acme.com" }
+                              "IB-Context": "john.doe_acme.com" }
                   
                   parts = []
                   part_num = 1
@@ -1056,7 +1056,7 @@ paths:
             - sdk: curl
               code: |
                   curl "${API_ROOT}/v2/batches/jobs/<JOB-ID>" \
-                    -H "Authorization: Bearer ${API_TOKEN}"\
+                    -H "Authorization: Bearer ${API_TOKEN}" \
                     -H "IB-Context: ${IB_CONTEXT}"
 
             - sdk: python
@@ -1084,7 +1084,7 @@ paths:
                   
                   url = "https://aihub.instabase.com/api/v2/batches/jobs/a1b2c3d4-e5f6-7890-abcd-ef1234567890"
                   headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": 'john.doe_acme.com' }
+                              "IB-Context": "john.doe_acme.com" }
                   
                   # make the GET request
                   response = requests.get(url, headers=headers)
@@ -1229,7 +1229,7 @@ paths:
               code: |
                   curl "${API_ROOT}/v2/apps/runs" \
                     -H "Authorization: Bearer ${API_TOKEN}" \
-                    -H "IB-Context: ${IB_CONTEXT}"\
+                    -H "IB-Context: ${IB_CONTEXT}" \
                     -H "Content-Type: application/json" \
                     -d '{
                           "batch_id": <BATCH-ID>,
@@ -1260,7 +1260,7 @@ paths:
                               "Content-Type": "application/json" }
                   
                   # create the request payload
-                  data = { "batch_id": "123456",
+                  data = { "batch_id": 123456,
                            "app_name": "My App" }
                   
                   # make the POST request
@@ -1277,20 +1277,23 @@ paths:
               code: |
                   curl "${API_ROOT}/v2/apps/runs" \
                     -H "Authorization: Bearer ${API_TOKEN}" \
-                    -H "IB-Context: ${IB_CONTEXT}"\
+                    -H "IB-Context: ${IB_CONTEXT}" \
                     -H "Content-Type: application/json" \
                     -d '{
                           "batch_id": "<BATCH-ID>",
                           "app_name": "<APP-NAME>",
                           "settings": {
                             "runtime_config": {
-                                "generate_post_process_pdf": true,
-                                "instabase": {
-                                    "pdf": {
-                                        "passwords: {
-                                            "test1.pdf": "abc123",
-                                            "scott.pdf": "tiger"
-                            },
+                              "generate_post_process_pdf": true,
+                              "instabase": {
+                                "pdf": {
+                                  "passwords": {
+                                    "test1.pdf": "abc123",
+                                    "scott.pdf": "tiger"
+                                  }
+                                }
+                              }
+                            }
                           }
                         }'
 
@@ -1303,19 +1306,23 @@ paths:
                                  api_key="abcdefghijklmnopqrst1234567890",
                                  ib_context="john.doe_acme.com")
 
-                  run = client.apps.runs.create(app_name="MyApp",
-                                                batch_id=123456,
-                                                settings={"runtime_config": {
-                                                              "generate_post_process_pdf": True,
-                                                              "instabase": {
-                                                                  "pdf": {
-                                                                      "passwords": {
-                                                                          "test1.pdf": "abc123",
-                                                                          "scott.pdf": "tiger"
-                                                                     }
-                                                                  }
-                                                              }
-                                                         }})
+                  run = client.apps.runs.create(
+                      app_name="MyApp",
+                      batch_id=123456,
+                      settings={
+                          "runtime_config": {
+                              "generate_post_process_pdf": True,
+                              "instabase": {
+                                  "pdf": {
+                                      "passwords": {
+                                          "test1.pdf": "abc123",
+                                          "scott.pdf": "tiger"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  )
                   print(f"Run ID: {run.id}")
 
             - sdk: python
@@ -1463,7 +1470,7 @@ paths:
             - sdk: curl
               code: |
                   curl "${API_ROOT}/v2/apps/runs" \
-                    -H "Authorization: Bearer ${API_TOKEN}"`
+                    -H "Authorization: Bearer ${API_TOKEN}"
                     -H "IB-Context: ${IB_CONTEXT}"
 
             - sdk: python
@@ -1619,7 +1626,7 @@ paths:
               code: |
                   curl "${API_ROOT}/v2/apps/deployments/<DEPLOYMENT-ID>/runs" \
                     -H "Authorization: Bearer ${API_TOKEN}" \
-                    -H "IB-Context: ${IB_CONTEXT}"\
+                    -H "IB-Context: ${IB_CONTEXT}" \
                     -H "Content-Type: application/json" \
                     -d '{
                           "batch_id": <BATCH-ID>,
@@ -1737,7 +1744,7 @@ paths:
             - sdk: curl
               code: |
                   curl "${API_ROOT}/v2/apps/runs/<RUN-ID>" \
-                    -H "Authorization: Bearer ${API_TOKEN}"\
+                    -H "Authorization: Bearer ${API_TOKEN}" \
                     -H "IB-Context: ${IB_CONTEXT}"
 
             - sdk: python
@@ -1840,8 +1847,8 @@ paths:
             - sdk: curl
               code: |
                   curl -X DELETE "${API_ROOT}/v2/apps/runs/<RUN-ID>" \
-                    -H "Authorization: Bearer ${API_TOKEN}"\
-                    -H "IB-Context: ${IB-CONTEXT}"
+                    -H "Authorization: Bearer ${API_TOKEN}" \
+                    -H "IB-Context: ${IB_CONTEXT}"
 
             - sdk: python
               name: with SDK
@@ -1877,7 +1884,7 @@ paths:
                 
                 url = "https://aihub.instabase.com/api/v2/apps/runs/a1b2c3d4-e5f6-7890-abcd-ef1234567890"
                 headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                            "IB-Context": 'john.doe_acme.com' }
+                            "IB-Context": "john.doe_acme.com" }
                 
                 # make the DELETE request
                 response = requests.delete(url, headers=headers)
@@ -2111,7 +2118,7 @@ paths:
               name: Simple request
               code: |
                   curl "${API_ROOT}/v2/apps/runs/<RUN-ID>/results" \
-                  -H "Authorization: Bearer ${API_TOKEN}"`
+                  -H "Authorization: Bearer ${API_TOKEN}"
                   -H "IB-Context: ${IB_CONTEXT}"
 
             - sdk: python
@@ -2134,7 +2141,7 @@ paths:
                   
                   url = "https://aihub.instabase.com/api/v2/apps/runs/a1b2c3d4-e5f6-7890-abcd-ef1234567890/results"
                   headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": 'john.doe_acme.com' }
+                              "IB-Context": "john.doe_acme.com" }
                   
                   # make the GET request
                   response = requests.get(url, headers=headers)
@@ -2217,7 +2224,7 @@ paths:
               name: Using query parameters with SDK
               code: |
                   curl "${API_ROOT}/v2/apps/runs/<RUN-ID>/results?include_confidence_scores=true&include_source_info=true" \
-                    -H "Authorization: Bearer ${API_TOKEN}"`
+                    -H "Authorization: Bearer ${API_TOKEN}"
 
             - sdk: python
               name: Using query parameters with SDK
@@ -2284,7 +2291,7 @@ paths:
                       # increment the offset by the number of files received in the current response
                       current_offset += len(response.files)
                   
-                  print(f"Retrieved results from {len(all_files_results)} files")
+                  print(f"Retrieved results from all {len(all_files_results)} files")
 
             - sdk: python
               name: Retrieving paginated results without SDK
@@ -2310,14 +2317,14 @@ paths:
                     # handle the response
                     if response.status_code == 200:
                         print(f"Retrieved results for {len(response.json()['files'])} files")
-                        all_files_results.extend(results['files'])
-                        if results['has_more']:
-                          current_offset += len(results['files'])
+                        all_files_results.extend(response.json()['files'])
+                        if response.json()['has_more']:
+                          current_offset += len(response.json()['files'])
                         else:
                             break
                     else:
                         print(f"Error: {response.status_code} - {response.text}")
-                print(f"Retrieved results for {len(all_files_results)} files")
+                print(f"Retrieved results from all {len(all_files_results)} files")
 
   /v2/conversations:
     post:
@@ -2413,7 +2420,7 @@ paths:
               code: |
                   curl "${API_ROOT}/v2/conversations" \
                     -H "Authorization: Bearer ${API_TOKEN}" \
-                    -H "IB-Context: ${IB_CONTEXT}"\
+                    -H "IB-Context: ${IB_CONTEXT}" \
                     -F name="Sample Conversation Name" \
                     -F description="Sample Conversation Description" \
                     -F org="<ORGANIZATION-ID>" \ # Optional for community accounts
@@ -2521,7 +2528,7 @@ paths:
             - sdk: curl
               code: |
                   curl "${API_ROOT}/v2/conversations" \
-                    -H "Authorization: Bearer ${API_TOKEN}"\
+                    -H "Authorization: Bearer ${API_TOKEN}" \
                     -H "IB-Context: ${IB_CONTEXT}"
 
             - sdk: python
@@ -2586,7 +2593,7 @@ paths:
             - sdk: curl
               code: |
                   curl "${API_ROOT}/v2/conversations/<CONVERSATION-ID>" \
-                    -H "Authorization: Bearer ${API_TOKEN}"\
+                    -H "Authorization: Bearer ${API_TOKEN}" \
                     -H "IB-Context: ${IB_CONTEXT}"
 
             - sdk: python
@@ -2656,7 +2663,7 @@ paths:
               code: |
                   curl -X "PUT" "${API_ROOT}/v2/conversations/<CONVERSATION-ID>?name=<CONVERSATION-NAME>&description=<CONVERSATION-DESCRIPTION>" \
                     -H "Authorization: Bearer ${API_TOKEN}" \
-                    -H "IB-Context: ${IB_CONTEXT}"\
+                    -H "IB-Context: ${IB_CONTEXT}" \
                     -H "Content-Type: application/json"
 
             - sdk: python
@@ -2722,7 +2729,7 @@ paths:
               code: |
                   curl -X "DELETE" "${API_ROOT}/v2/conversations/<CONVERSATION-ID>" \
                     -H "Authorization: Bearer ${API_TOKEN}" \
-                    -H "IB-Context: ${IB_CONTEXT}"\
+                    -H "IB-Context: ${IB_CONTEXT}" \
                     -H "Content-Type: application/json"
 
             - sdk: python
@@ -2917,7 +2924,7 @@ paths:
               code: |
                   curl "${API_ROOT}/v2/conversations/<CONVERSATION-ID>/documents" \
                     -H "Authorization: Bearer ${API_TOKEN}" \
-                    -H "IB-Context: ${IB_CONTEXT}"\
+                    -H "IB-Context: ${IB_CONTEXT}" \
                     -F files="@/path/to/test.pdf" \
                     -F files="@/path/to/test2.pdf"
 
@@ -2985,6 +2992,8 @@ paths:
             type: array
             items:
               type: integer
+            minItems: 1
+            maxItems: 1
           description: List of document IDs to be deleted.
       responses:
         '204':
@@ -3001,7 +3010,7 @@ paths:
               code: |
                   curl -X "DELETE" "${API_ROOT}/v2/conversations/<CONVERSATION-ID>/documents" \
                     -H "Authorization: Bearer ${API_TOKEN}" \
-                    -H "IB-Context: ${IB_CONTEXT}"\
+                    -H "IB-Context: ${IB_CONTEXT}" \
                     -H "Content-Type: application/json" \
                     -d '{"ids": [<DOCUMENT-ID>]}'
 
@@ -3032,10 +3041,10 @@ paths:
                               "Content-Type": "application/json" }
                   
                   # create the request payload
-                  data = { "ids": ["12345"] }
+                  data = { "ids": [12345] }
                   
                   # make the DELETE request
-                  response = requests.delete(url, headers=headers, json=data)
+                  response = requests.delete(url, headers=headers, params=data)
                   
                   # handle the response
                   if response.status_code == 204:
@@ -3082,7 +3091,7 @@ paths:
             - sdk: curl
               code: |
                   curl "${API_ROOT}/v2/conversations/<CONVERSATION-ID>/documents/<DOCUMENT-ID>" \
-                    -H "Authorization: Bearer ${API_TOKEN}"\
+                    -H "Authorization: Bearer ${API_TOKEN}" \
                     -H "IB-Context: ${IB_CONTEXT}"
 
             - sdk: python
@@ -3212,7 +3221,7 @@ paths:
               code: |
                   curl "${API_ROOT}/v2/queries" \
                     -H "Authorization: Bearer ${API_TOKEN}" \
-                    -H "IB-Context: ${IB_CONTEXT}"\
+                    -H "IB-Context: ${IB_CONTEXT}" \
                     -H "Content-Type: application/json" \
                     -d '{
                           "query": "When was the mail sent out?",
@@ -3390,7 +3399,7 @@ paths:
             - sdk: curl
               code: |
                   curl "${API_ROOT}/v2/jobs/<JOB-ID>" \
-                    -H "Authorization: Bearer ${API_TOKEN}"\
+                    -H "Authorization: Bearer ${API_TOKEN}" \
                     -H "IB-Context: ${IB_CONTEXT}"
 
             - sdk: python
@@ -3564,7 +3573,7 @@ paths:
   
                   url = f"https://aihub.instabase.com/api/v2/files/{file_path}"
                   headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": 'john.doe_acme.com' }
+                              "IB-Context": "john.doe_acme.com" }
   
                   # create query parameters
                   params = { "expect-node-type": "file" }
@@ -3574,7 +3583,7 @@ paths:
   
                   # handle the response
                   if response.status_code == 200:
-                      print(f"Contents: {response.content.decode("utf-8")}")
+                      print(f"Contents: {response.content.decode('utf-8')}")
                   else:
                       print(f"Error: {response.status_code} - {response.text}")
 
@@ -3601,7 +3610,7 @@ paths:
                                                     expect_node_type="file",
                                                     range="bytes=10-20",
                                                     ib_retry_config=retry_config)
-                  print(f"Contents: {file_contents.decode("utf-8")}")
+                  print(f"Contents: {file_contents.decode('utf-8')}")
 
             - sdk: python
               name: Complex request without SDK
@@ -3635,7 +3644,7 @@ paths:
                   # 200 means whole content is returned
                   # 206 means partial content is returned, due to "Range" parameter
                   if response.status_code in [200, 206]:
-                      print(f"Contents: {response.content.decode("utf-8")}")
+                      print(f"Contents: {response.content.decode('utf-8')}")
                   else:
                       print(f"Error: {response.status_code} - {response.text}")
 
@@ -4364,7 +4373,7 @@ paths:
                   # create the request payload
                   data = { "alias": "password",
                            "value": "abc123",
-                           "allowed_workspaces_type": ""SOME",
+                           "allowed_workspaces_type": "SOME",
                            "allowed_workspaces": ["WorkspaceA", "WorkspaceB"] }
   
                   # make the PATCH request

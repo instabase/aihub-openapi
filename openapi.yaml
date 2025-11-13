@@ -249,7 +249,8 @@ paths:
               code: |
                 import requests
 
-                url = "https://aihub.instabase.com/api/v2/batches/<BATCH-ID>"
+                batch_id = 123456
+                url = f"https://aihub.instabase.com/api/v2/batches/{batch_id}"
                 headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
                                              "IB-Context": "john.doe_acme.com" }
 
@@ -407,7 +408,7 @@ paths:
   
                   response = client.batches.list_files(batch_id=123456,
                                                        page_size=2,
-                                                       start_token="1Cv...<snip>...TI=")
+                                                       start_token="abcd...<snip>...1234")
                   print(f"Has more files? {response.has_more}")
                   for node in response.nodes:
                       print(f"File name: {node.name}")
@@ -419,8 +420,7 @@ paths:
                   import requests
 
                   start_token="abcd...<snip>...1234"  # not URL-safe
-                  url_safe_start_token = base64.urlsafe_b64encode(
-                      base64.b64decode(start_token)).decode('ascii')
+                  url_safe_start_token = base64.urlsafe_b64encode(start_token.encode("utf-8")).decode('ascii')
 
                   url = f"https://aihub.instabase.com/api/v2/batches/123456/files?page_size=2&start_token={url_safe_start_token}"
                   headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
@@ -499,9 +499,10 @@ paths:
                                  ib_context="john.doe_acme.com")
 
                   # returns None
-                  client.batches.add_file(batch_id=123456,
-                                          file_name="MyFile1.pdf",  # for Instabase filesystem
-                                          file=open("file1.pdf", "rb"))  # from local filesystem
+                  with open("file1.pdf", "rb") as file:
+                      client.batches.add_file(batch_id=123456,
+                                              file_name="MyFile1.pdf",  # AI Hub filesystem
+                                              file=file)  # local filesystem
 
             - sdk: python
               name: without SDK
@@ -693,7 +694,7 @@ paths:
   
                   # get file size
                   local_filepath = "large-file.pdf"
-                  size = os.path.getsize(local_filepath)
+                  file_size = os.path.getsize(local_filepath)
                   
                   url = "https://aihub.instabase.com/api/v2/batches/multipart-upload"
                   headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
@@ -703,7 +704,7 @@ paths:
                   # create the request payload
                   data = { "batch_id": 123456,
                            "filename": filename,
-                           "file_size": size }
+                           "file_size": file_size }
                   
                   # make the POST request
                   response = requests.post(url, headers=headers, json=data)
@@ -782,7 +783,7 @@ paths:
                                  ib_context="john.doe_acme.com")
                   
                   # Assuming session_id and part_size from previous step
-                  session_id = "abc...<snip>...123"
+                  session_id = "abcd...<snip>...1234"
                   part_size = 5242880
                   
                   parts = []
@@ -811,7 +812,7 @@ paths:
                   import requests
                   
                   # assuming session_id and part_size from previous step
-                  session_id = "abc...<snip>...123"
+                  session_id = "abcd...<snip>...1234"
                   part_size = 5242880  # 5MB
                   session_endpoint = f"https://aihub.instabase.com/api/v2/batches/multipart-upload/sessions/{session_id}"
                   
@@ -926,7 +927,7 @@ paths:
                                  ib_context="john.doe_acme.com")
                   
                   # Assuming session_id and parts from previous steps
-                  session_id = "<SESSION-ID>"
+                  session_id = "abcd...<snip>...1234"
                   parts = [
                       {"part_num": 1, "part_id": "12345"},
                       {"part_num": 2, "part_id": "12346"},
@@ -945,10 +946,9 @@ paths:
               name: without SDK
               code: |
                   import requests
-                  import json
                   
                   # Assuming session_id and parts from previous steps
-                  session_id = "<SESSION-ID>"
+                  session_id = "abcd...<snip>...1234"
                   session_endpoint = f"https://aihub.instabase.com/api/v2/batches/multipart-upload/sessions/{session_id}"
                   parts = [
                       {"part_num": 1, "part_id": "12345"},
@@ -2234,7 +2234,7 @@ paths:
                   client = AIHub(api_root="https://aihub.instabase.com/api",
                                  api_key="abcdefghijklmnopqrst1234567890",
                                  ib_context="john.doe_acme.com")
-                  results = client.apps.runs.results(run_id="<RUN-ID>",
+                  results = client.apps.runs.results(run_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890",
                                                      include_confidence_score=True,
                                                      include_source_info=True)
                   print(f"Retrieved results from {len(results.files)} files")
@@ -2466,25 +2466,28 @@ paths:
                   url = "https://aihub.instabase.com/api/v2/conversations"
                   headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
                               "IB-Context": "john.doe_acme.com" }
+                
+                  with open("/local/path/to/test1.pdf", "rb") as file1, \
+                       open("/local/path/to/test2.pdf", "rb") as file2:
+        
+                      files = [
+                          ("files", ("test1.pdf", file1, "application/pdf")),
+                          ("files", ("test2.pdf", file2, "application/pdf"))
+                      ]
                   
-                  files = [
-                      ("files", ("test1.pdf", open("/local/path/to/test1.pdf", "rb"), "application/pdf")),
-                      ("files", ("test2.pdf", open("/local/path/to/test2.pdf", "rb"), "application/pdf"))
-                  ]
+                      data = { "name": "MyConversation",
+                               "description": "sample conversation",
+                               "org": "my-organization-id",
+                               "workspace": "MyWorkspace",
+                               "enable_object_detection": "false",
+                               "enable_entity_detection": "true",
+                               "write_converted_image": "true",
+                               "write_thumbnail": "true",
+                               "enable_multilanguage_support": "false",
+                               "enable_multilanguage_advanced_mode": "false" }
                   
-                  data = { "name": "MyConversation",
-                           "description": "sample conversation",
-                           "org": "my-organization-id",
-                           "workspace": "MyWorkspace",
-                           "enable_object_detection": "false",
-                           "enable_entity_detection": "true",
-                           "write_converted_image": "true",
-                           "write_thumbnail": "true",
-                           "enable_multilanguage_support": "false",
-                           "enable_multilanguage_advanced_mode": "false" }
-                  
-                  # make the POST request
-                  response = requests.post(url, headers=headers, files=files, data=data)
+                      # make the POST request
+                      response = requests.post(url, headers=headers, files=files, data=data)
                   
                   # handle the response
                   if response.status_code == 201:
@@ -2955,10 +2958,13 @@ paths:
                   headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
                               "IB-Context": "john.doe_acme.com" }
                   
-                  files = [
-                      ("files", ("test1.pdf", open("/local/path/to/test1.pdf", "rb"))),
-                      ("files", ("test2.txt", open("/local/path/to/test2.txt", "r")))
-                  ]
+                  with open("/local/path/to/test1.pdf", "rb") as file1, \
+                       open("/local/path/to/test2.txt", "r") as file2:
+                  
+                      files = [
+                          ("files", file1, "application/pdf"),
+                          ("files", file2, "text/plain")
+                      ]
                   
                   # make the POST request
                   response = requests.post(url, headers=headers, files=files)

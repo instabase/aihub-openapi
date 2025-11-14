@@ -199,7 +199,7 @@ paths:
                   if response.status_code == 200:
                       print(f"Retrieved {len(response.json()['batches'])} batches")
                   else:
-                      print(f"Error: { response.status_code } - { response.text }")
+                      print(f"Error: {response.status_code} - {response.text}")
 
   /v2/batches/{batch_id}:
     get:
@@ -508,11 +508,13 @@ paths:
                                  api_key="abcdefghijklmnopqrst1234567890",
                                  ib_context="john.doe_acme.com")
 
+                  local_filepath = "/local/path/to/file1.pdf"
+                
                   # returns None
-                  with open("file1.pdf", "rb") as file:
+                  with open(local_filepath, "rb") as local_file:
                       client.batches.add_file(batch_id=12345,
                                               file_name="MyFile1.pdf",  # AI Hub filesystem
-                                              file=file)  # local filesystem
+                                              file=local_file)          # local filesystem
 
             - sdk: python
               name: without SDK
@@ -520,14 +522,17 @@ paths:
                   import requests
                   
                   batch_id = 12345
-                  url = f"https://aihub.instabase.com/api/v2/batches/{batch_id}/files/test.pdf"
+                  ai_hub_filename = "MyFile1.pdf"
+                  url = f"https://aihub.instabase.com/api/v2/batches/{batch_id}/files/{ai_hub_filename}"
                   headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
                               "IB-Context": "john.doe_acme.com",
                               "Content-Type": "application/octet-stream" }
+                
+                  local_filepath = "/local/path/to/file1.pdf"
                   
                   # read the file contents
-                  with open("path/to/local/test.pdf", "rb") as file:
-                      file_content = file.read()
+                  with open(local_filepath, "rb") as local_file:
+                      file_content = local_file.read()
                   
                   # make the PUT request
                   response = requests.put(url, headers=headers, data=file_content)
@@ -587,7 +592,8 @@ paths:
                   import requests
                   
                   batch_id = 12345
-                  url = f"https://aihub.instabase.com/api/v2/{batch_id}/12345/files/test.pdf"
+                  ai_hub_filename = "MyFile.txt"
+                  url = f"https://aihub.instabase.com/api/v2/batches/{batch_id}/files/{ai_hub_filename}"
                   headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
                               "IB-Context": "john.doe_acme.com" }
                   
@@ -681,16 +687,16 @@ paths:
                                  api_key="abcdefghijklmnopqrst1234567890",
                                  ib_context="john.doe_acme.com")
   
-                  filename = "large-file.pdf"
+                  ai_hub_filename = "large-file.pdf"
                   
                   # get file size
-                  local_filepath = "large-file.pdf"
+                  local_filepath = "/local/path/to/large-file.pdf"
                   file_size = os.path.getsize(local_filepath)
                   
                   # create multipart upload session
                   response = client.batches.create_multipart_upload_session(
                       batch_id=12345,
-                      filename=filename,
+                      filename=ai_hub_filename,
                       file_size=file_size)
                   
                   print(f"Session ID: {response.session_id}")
@@ -702,10 +708,10 @@ paths:
                   import os
                   import requests
                   
-                  filename = "large-file.pdf"
+                  ai_hub_filename = "large-file.pdf"
   
                   # get file size
-                  local_filepath = "large-file.pdf"
+                  local_filepath = "/local/path/to/large-file.pdf"
                   file_size = os.path.getsize(local_filepath)
                   
                   url = "https://aihub.instabase.com/api/v2/batches/multipart-upload"
@@ -714,7 +720,7 @@ paths:
                   
                   # create the request payload
                   data = { "batch_id": 12345,
-                           "filename": filename,
+                           "filename": ai_hub_filename,
                            "file_size": file_size }
                   
                   # make the POST request
@@ -792,16 +798,17 @@ paths:
                   client = AIHub(api_root="https://aihub.instabase.com/api",
                                  api_key="abcdefghijklmnopqrst1234567890",
                                  ib_context="john.doe_acme.com")
-                  
-                  # Assuming session_id and part_size from previous step
-                  session_id = "abcd...<snip>...1234"
-                  part_size = 5242880
-                  
+                
                   parts = []
                   part_num = 1
-                  
-                  with open("large-file.pdf", "rb") as input_file:
-                      part_data = input_file.read(part_size)
+                
+                  # use `session_id` and `part_size` variables set by 
+                  # the "Start multipart upload session" API/SDK operation,
+                  # which must be run before running this operation
+                
+                  local_filepath = "/local/path/to/large-file.pdf"
+                  with open(local_filepath, "rb") as local_file:
+                      part_data = local_file.read(part_size)
                       while part_data:
                           # upload this part using SDK
                           response = client.batches.upload_multipart_part(
@@ -814,7 +821,7 @@ paths:
                           print(f"Uploaded part {part_num}")
                   
                           # read next part
-                          part_data = input_file.read(part_size)
+                          part_data = local_file.read(part_size)
                           part_num += 1
 
             - sdk: python
@@ -833,7 +840,8 @@ paths:
                   parts = []
                   part_num = 1
                   
-                  with open("large-file.pdf", "rb") as input_file:
+                  local_filepath = "/local/path/to/large-file.pdf"
+                  with open(local_filepath, "rb") as input_file:
                       part = input_file.read(part_size)
                       while part:
                           # upload this part
@@ -937,8 +945,8 @@ paths:
                                  api_key="abcdefghijklmnopqrst1234567890",
                                  ib_context="john.doe_acme.com")
                   
-                  # Assuming session_id and parts from previous steps
-                  session_id = "abcd...<snip>...1234"
+                  # This assumes the `session_id` and `parts` variables were set when the
+                  # "Start multipart upload session" API/SDK operation was called earlier.
                   parts = [
                       {"part_num": 1, "part_id": "12345"},
                       {"part_num": 2, "part_id": "12346"},
@@ -957,9 +965,9 @@ paths:
               name: without SDK
               code: |
                   import requests
-                  
-                  # Assuming session_id and parts from previous steps
-                  session_id = "abcd...<snip>...1234"
+                
+                  # This assumes the `session_id` and `parts` variables were set when the
+                  # "Start multipart upload session" API/SDK operation was called earlier.
                   session_endpoint = f"https://aihub.instabase.com/api/v2/batches/multipart-upload/sessions/{session_id}"
                   parts = [
                       {"part_num": 1, "part_id": "12345"},
@@ -991,15 +999,16 @@ paths:
                                  ib_context="john.doe_acme.com")
                   
                   batch_id = 12345
-                  filename = "large-file.pdf"
-                  local_file_path = "/path/to/large-file.pdf"
+                  local_filename = "large-file.pdf"
+                  local_file_path = f"/local/path/to/{local_filename}"
                   
                   file_size = os.path.getsize(local_file_path)
                   
                   # Step 1: Create session
+                  ai_hub_filename = "upload.pdf"
                   response = client.batches.create_multipart_upload_session(
                       batch_id=batch_id,
-                      filename="upload.pdf",
+                      filename=ai_hub_filename,
                       file_size=file_size)
                   
                   session_id = response.session_id
@@ -1009,9 +1018,9 @@ paths:
                   parts = []
                   part_num = 1
                   
-                  with open(local_file_path, "rb") as file:
+                  with open(local_file_path, "rb") as local_file:
                       while True:
-                          part_data = file.read(part_size)
+                          part_data = local_file.read(part_size)
                           if not part_data:
                               break
                   
@@ -1509,6 +1518,7 @@ paths:
                   
                   # handle the response
                   if response.status_code == 200:
+                      # next line assumes the call returned at least 3 runs
                       print(f"third run ID: {response.json()['runs'][2]['id']}")
                   else:
                       print(f"Error: {response.status_code} - {response.text}")
@@ -1691,7 +1701,7 @@ paths:
                   workspace = "MyWorkspace"
                   drive_name = "My Google Drive"
                   folder = "My Drive/input_files/documents/"
-                  input_dir = f"{organization_id}/{workspace}/fs/{drive_name}/{folder}/"
+                  input_dir = f"{organization_id}/{workspace}/fs/{drive_name}/{folder}"
   
                   run = client.apps.deployments.runs.create(
                             deployment_id="12345678-abcde-1234-abcd-123456789012",
@@ -1712,7 +1722,7 @@ paths:
                   workspace = "MyWorkspace"
                   drive_name = "My Google Drive"
                   folder = "My Drive/input_files/documents/"
-                  input_dir = f"{organization_id}/{workspace}/fs/{drive_name}/{folder}/"
+                  input_dir = f"{organization_id}/{workspace}/fs/{drive_name}/{folder}"
   
                   # create the request payload
                   data = { "input_dir": input_dir }
@@ -2309,7 +2319,7 @@ paths:
                       # increment the offset by the number of files received in the current response
                       current_offset += len(response.files)
                   
-                  print(f"Retrieved results from all {len(all_files_results)} files")
+                  print(f"Retrieved results from {len(all_files_results)} total files")
 
             - sdk: python
               name: Retrieving paginated results without SDK
@@ -2344,7 +2354,8 @@ paths:
                               break
                       else:
                           print(f"Error: {response.status_code} - {response.text}")
-                  print(f"Retrieved results from all {len(all_files_results)} files")
+                          break
+                  print(f"Retrieved results from {len(all_files_results)} total files")
   
 
   /v2/conversations:
@@ -2486,12 +2497,12 @@ paths:
                   headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
                               "IB-Context": "john.doe_acme.com" }
                 
-                  with open("/local/path/to/test1.pdf", "rb") as file1, \
-                       open("/local/path/to/test2.pdf", "rb") as file2:
+                  with open("/local/path/to/test1.pdf", "rb") as local_file1, \
+                       open("/local/path/to/test2.pdf", "rb") as local_file2:
         
                       files = [
-                          ("files", ("test1.pdf", file1, "application/pdf")),
-                          ("files", ("test2.pdf", file2, "application/pdf"))
+                          ("files", ("test1.pdf", local_file1, "application/pdf")),
+                          ("files", ("test2.pdf", local_file2, "application/pdf"))
                       ]
                   
                       data = { "name": "MyConversation",
@@ -2825,9 +2836,9 @@ paths:
                     The model to use to answer the question. Supports the standard (`default`) and advanced (`advanced`) models. See [Choosing a model](/overview/models/) for details about each model.
                     <Note>The multistep model and research mode are not supported. To use the multistep model or research mode in a query, use the [Run query](/api-sdk/api-reference/queries/run-query) endpoint.</Note>
                 fast_mode:
-                    type: boolean
-                    default: false
-                    description: This should match the value of the `fast_mode` parameter used when creating the conversation. Mismatched values may cause the API response to take longer than normal.
+                  type: boolean
+                  default: false
+                  description: This should match the value of the `fast_mode` parameter used when creating the conversation. Mismatched values may cause the API response to take longer than normal.
               required:
                 - question
                 - document_ids
@@ -2864,8 +2875,8 @@ paths:
                   from aihub import AIHub
 
                   client = AIHub(api_root="https://aihub.instabase.com/api",
-                               api_key="abcdefghijklmnopqrst1234567890",
-                               ib_context="john.doe_acme.com")
+                                 api_key="abcdefghijklmnopqrst1234567890",
+                                 ib_context="john.doe_acme.com")
 
                   response = client.conversations.converse(
                       conversation_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890",
@@ -2981,16 +2992,16 @@ paths:
                   headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
                               "IB-Context": "john.doe_acme.com" }
                   
-                  with open("/local/path/to/test1.pdf", "rb") as file1, \
-                       open("/local/path/to/test2.txt", "rb") as file2:
+                  with open("/local/path/to/test1.pdf", "rb") as local_file1, \
+                       open("/local/path/to/test2.txt", "rb") as local_file2:
                   
                       files = [
-                          ("files", ("test1.pdf", file1, "application/pdf")),
-                          ("files", ("test2.txt", file2, "text/plain"))
+                          ("files", ("test1.pdf", local_file1, "application/pdf")),
+                          ("files", ("test2.txt", local_file2, "text/plain"))
                       ]
                   
-                  # make the POST request
-                  response = requests.post(url, headers=headers, files=files)
+                      # make the POST request
+                      response = requests.post(url, headers=headers, files=files)
                   
                   # handle the response
                   if response.status_code == 201:
@@ -3635,7 +3646,7 @@ paths:
                   file_name = "hello.txt"
                   file_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{file_name}"
                   
-                  retry_config = '{ "retries": 3, "backoff-seconds": 5 }'
+                  retry_config = '{"retries": 3, "backoff-seconds": 5}'
                   
                   # returns a byte literal, such as `b"foo"`
                   file_contents = client.files.read(path=file_path,
@@ -3656,12 +3667,12 @@ paths:
                   file_name = "hello.txt"
                   file_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{file_name}"
 
-                  range = "bytes=10-20"
+                  byte_range = "bytes=10-20"
                   retry_config = '{"retries": 3, "backoff-seconds": 5}'
 
                   headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
                               "IB-Context": "john.doe_acme.com",
-                              "Range": range,
+                              "Range": byte_range,
                               "IB-Retry-Config": retry_config }
   
                   # create query parameters
@@ -3763,8 +3774,8 @@ paths:
                   workspace = "MyWorkspace"
                   drive = "MyDrive"
                   folder = "MyFolder"
-                  file = "hello.txt"
-                  file_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{file}"
+                  file_name = "hello.txt"
+                  file_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{file_name}"
                   file_contents = bytes("Hello world", "utf-8")
   
                   # returns None
@@ -3779,8 +3790,8 @@ paths:
                   workspace = "MyWorkspace"
                   drive = "MyDrive"
                   folder = "MyFolder"
-                  file = "hello.txt"
-                  file_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{file}"
+                  file_name = "hello.txt"
+                  file_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{file_name}"
                   file_contents = bytes("Hello world", "utf-8")
                   
                   url = f"https://aihub.instabase.com/api/v2/files/{file_path}"
@@ -3899,8 +3910,8 @@ paths:
                   workspace = "MyWorkspace"
                   drive = "Instabase Drive"
                   folder = "MyFolder"
-                  file = "hello.txt"
-                  node_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{file}"
+                  file_name = "hello.txt"
+                  node_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{file_name}"
                   
                   url = f"https://aihub.instabase.com/api/v2/files/{node_path}"
                   headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
@@ -3921,7 +3932,7 @@ paths:
                       else:
                           print("Node is a folder")
                   else:
-                    print(f"Error: {response.status_code} - {response.text}")
+                      print(f"Error: {response.status_code} - {response.text}")
 
     delete:
       operationId: deleteFileOrFolder
@@ -3991,8 +4002,8 @@ paths:
                   workspace = "MyWorkspace"
                   drive = "Instabase Drive"
                   folder = "my-folder"
-                  file = "hello.txt"
-                  file_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{file}"
+                  file_name = "hello.txt"
+                  file_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{file_name}"
                   
                   # returns None
                   client.files.delete(path=file_path)
@@ -4006,8 +4017,8 @@ paths:
                   workspace = "MyWorkspace"
                   drive = "Instabase Drive"
                   folder = "my-folder"
-                  file = "hello.txt"
-                  file_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{file}"
+                  file_name = "hello.txt"
+                  file_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{file_name}"
                   
                   url = f"https://aihub.instabase.com/api/v2/files/{file_path}"
                   headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",

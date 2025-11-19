@@ -76,31 +76,41 @@ paths:
               name: with SDK
               code: |
                   from aihub import AIHub
-                
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-
-                  response = client.batches.create(name="MyBatch",
-                                                   workspace="MyWorkspace")
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
+                  response = client.batches.create(
+                      name="MyBatch",
+                      workspace="MyWorkspace"
+                  )
+                  
                   print(f"batch_id: {response.id}")
 
             - sdk: python
               name: without SDK
               code: |
                   import requests
-  
+                  
                   url = "https://aihub.instabase.com/api/v2/batches"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
-  
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
+                  
                   # create the request payload
-                  data = { "name": "MyBatch",
-                           "workspace": "MyWorkspace" }
-
+                  data = {
+                      "name": "MyBatch",
+                      "workspace": "MyWorkspace"
+                  }
+                  
                   # make the POST request
                   response = requests.post(url, headers=headers, json=data)
-  
+                  
                   # handle the response
                   if response.status_code == 200:
                       print(f"Batch created with ID: {response.json()['id']}")
@@ -165,15 +175,20 @@ paths:
               name: with SDK
               code: |
                   from aihub import AIHub
-                
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-
-                  response = client.batches.list(workspace="MyWorkspace",
-                                                 username="john.doe_acme.com",
-                                                 limit=3,
-                                                 offset=6)
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
+                  response = client.batches.list(
+                      workspace="MyWorkspace",
+                      username="john.doe_acme.com",
+                      limit=3,
+                      offset=6
+                  )
+                  
                   for batch in response.batches:
                       print(f"id: {batch.id}")
                       print(f"name: {batch.name}")
@@ -182,19 +197,24 @@ paths:
               name: without SDK
               code: |
                   import requests
-  
+                  
                   url = "https://aihub.instabase.com/api/v2/batches"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
-  
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
+                  
                   # create query parameters
-                  params = { "workspace": "MyWorkspace",
-                             "limit": 3,
-                             "offset": 6 }
-
+                  params = {
+                      "workspace": "MyWorkspace",
+                      "limit": 3,
+                      "offset": 6
+                  }
+                  
                   # make the GET request
                   response = requests.get(url, headers=headers, params=params)
-  
+                  
                   # handle the response
                   if response.status_code == 200:
                       print(f"Retrieved {len(response.json()['batches'])} batches")
@@ -234,12 +254,15 @@ paths:
               name: with SDK
               code: |
                   from aihub import AIHub
-                
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
                   batch_info = client.batches.get(batch_id=12345)
+                  
                   print(f"id: {batch_info.id}")
                   print(f"name: {batch_info.name}")
 
@@ -247,15 +270,18 @@ paths:
               name: without SDK
               code: |
                   import requests
-  
+                  
                   batch_id = 12345
                   url = f"https://aihub.instabase.com/api/v2/batches/{batch_id}"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
-  
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
+                  
                   # make the GET request
                   response = requests.get(url, headers=headers)
-  
+                  
                   # handle the response
                   if response.status_code == 200:
                       print(f"id: {response.json()['id']}")
@@ -296,17 +322,20 @@ paths:
               code: |
                   import time
                   from aihub import AIHub
-                
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
                   delete_response = client.batches.delete(batch_id=12345)
-
+                  
                   # check delete job status until done
                   while True:
                       poll_response = client.batches.poll_job(
-                                          job_id=delete_response.job_id)
+                                          job_id=delete_response.job_id
+                                      )
                       if poll_response.state not in ["PENDING", "RUNNING"]:
                           break
                       time.sleep(3)  # pause before polling the status again
@@ -315,24 +344,26 @@ paths:
               name: without SDK
               code: |
                   import requests
-  
+                  
                   batch_id = 12345
                   url = f"https://aihub.instabase.com/api/v2/batches/{batch_id}"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
-  
+
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
+                  
                   # make the DELETE request
                   response = requests.delete(url, headers=headers)
-  
+                  
                   # handle the response
                   if response.status_code == 202:
                       print("Batch deletion job started with ID: "
                             f"{response.json()['job_id']}")
                   else:
                       print(f"Error: {response.status_code} - {response.text}")
-
+                  
                   # not included here: check status of deletion job until it's done
-
 
   /v2/batches/{batch_id}/files:
     get:
@@ -402,13 +433,18 @@ paths:
               code: |
                   from aihub import AIHub
                   
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-  
-                  response = client.batches.list_files(batch_id=12345,
-                                                       page_size=2,
-                                                       start_token="abcd...<snip>...1234")
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
+                  response = client.batches.list_files(
+                      batch_id=12345,
+                      page_size=2,
+                      start_token="abcd...<snip>...1234"
+                  )
+                  
                   print(f"Has more files? {response.has_more}")
                   for node in response.nodes:
                       print(f"File name: {node.name}")
@@ -420,16 +456,21 @@ paths:
                   
                   batch_id = 12345
                   url = f"https://aihub.instabase.com/api/v2/batches/{batch_id}/files"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   page_size = 2
                   start_token = None
                   
                   # make repeated calls to fetch more files until there are no more
                   while True:
-                      params = {"page_size": page_size,
-                                "start_token": start_token}
+                      params = {
+                          "page_size": page_size,
+                          "start_token": start_token
+                      }
                       # make the GET request
                       response = requests.get(url, headers=headers, params=params)
                   
@@ -445,7 +486,6 @@ paths:
                           break
                   
                       start_token = response.json().get("next_page_token")
-
 
   /v2/batches/{batch_id}/files/{filename}:
     put:
@@ -503,18 +543,22 @@ paths:
               name: with SDK
               code: |
                   from aihub import AIHub
-                
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
                   local_filepath = "/local/path/to/file1.pdf"
-                
+                  
                   # returns None
                   with open(local_filepath, "rb") as local_file:
-                      client.batches.add_file(batch_id=12345,
-                                              file_name="MyFile1.pdf",  # AI Hub filesystem
-                                              file=local_file)          # local filesystem
+                      client.batches.add_file(
+                          batch_id=12345,
+                          file_name="MyFile1.pdf",  # AI Hub filesystem
+                          file=local_file  # local filesystem
+                      )
 
             - sdk: python
               name: without SDK
@@ -524,10 +568,13 @@ paths:
                   batch_id = 12345
                   ai_hub_filename = "MyFile1.pdf"
                   url = f"https://aihub.instabase.com/api/v2/batches/{batch_id}/files/{ai_hub_filename}"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com",
-                              "Content-Type": "application/octet-stream" }
-                
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com",
+                      "Content-Type": "application/octet-stream"
+                  }
+                  
                   local_filepath = "/local/path/to/file1.pdf"
                   
                   # read the file contents
@@ -577,14 +624,18 @@ paths:
               name: with SDK
               code: |
                   from aihub import AIHub
-                
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
                   # returns None
-                  client.batches.delete_file(batch_id=12345,
-                                             file_name="MyFile.txt")
+                  client.batches.delete_file(
+                      batch_id=12345,
+                      file_name="MyFile.txt"
+                  )
 
             - sdk: python
               name: without SDK
@@ -594,12 +645,15 @@ paths:
                   batch_id = 12345
                   ai_hub_filename = "MyFile.txt"
                   url = f"https://aihub.instabase.com/api/v2/batches/{batch_id}/files/{ai_hub_filename}"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # make the DELETE request
                   response = requests.delete(url, headers=headers)
-  
+                  
                   # handle the response
                   if response.status_code == 202:
                       print("File deletion request accepted")
@@ -680,13 +734,15 @@ paths:
             - sdk: python
               name: with SDK
               code: |
-                  from aihub import AIHub
                   import os
+                  from aihub import AIHub
                   
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
                   ai_hub_filename = "large-file.pdf"
                   
                   # get file size
@@ -697,7 +753,8 @@ paths:
                   response = client.batches.create_multipart_upload_session(
                       batch_id=12345,
                       filename=ai_hub_filename,
-                      file_size=file_size)
+                      file_size=file_size
+                  )
                   
                   print(f"Session ID: {response.session_id}")
                   print(f"Part size: {response.part_size}")
@@ -709,19 +766,24 @@ paths:
                   import requests
                   
                   ai_hub_filename = "large-file.pdf"
-  
+                  
                   # get file size
                   local_filepath = "/local/path/to/large-file.pdf"
                   file_size = os.path.getsize(local_filepath)
                   
                   url = "https://aihub.instabase.com/api/v2/batches/multipart-upload"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # create the request payload
-                  data = { "batch_id": 12345,
-                           "filename": ai_hub_filename,
-                           "file_size": file_size }
+                  data = {
+                      "batch_id": 12345,
+                      "filename": ai_hub_filename,
+                      "file_size": file_size
+                  }
                   
                   # make the POST request
                   response = requests.post(url, headers=headers, json=data)
@@ -795,33 +857,41 @@ paths:
               code: |
                   from aihub import AIHub
                   
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-                
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
                   parts = []
                   part_num = 1
-                
+                  
                   # use `session_id` and `part_size` variables set by 
                   # the "Start multipart upload session" API/SDK operation,
                   # which must be run before running this operation
-                
+                  
                   local_filepath = "/local/path/to/large-file.pdf"
                   with open(local_filepath, "rb") as local_file:
-                      part_data = local_file.read(part_size)
-                      while part_data:
+                      while True:
+                          part_data = local_file.read(part_size)
+                          if not part_data:
+                              break
+                          
                           # upload this part using SDK
                           response = client.batches.upload_multipart_part(
                               session_id=session_id,
                               part_num=part_num,
-                              part_data=part_data)
+                              part_data=part_data
+                          )
                   
-                          parts.append({ "part_num": part_num,
-                                         "part_id": response.part_id })
+                          parts.append(
+                              {
+                                  "part_num": part_num,
+                                  "part_id": response.part_id
+                              }
+                          )
                           print(f"Uploaded part {part_num}")
-                  
-                          # read next part
-                          part_data = local_file.read(part_size)
+                          
                           part_num += 1
 
             - sdk: python
@@ -834,8 +904,10 @@ paths:
                   # which must be run before running this operation
                   session_endpoint = f"https://aihub.instabase.com/api/v2/batches/multipart-upload/sessions/{session_id}"
                   
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   parts = []
                   part_num = 1
@@ -849,10 +921,12 @@ paths:
                           part_response = requests.put(part_url, headers=headers, data=part)
                   
                           if part_response.status_code == 201:
-                              parts.append({
-                                  "part_num": part_num,
-                                  "part_id": part_response.json()["part_id"]
-                              })
+                              parts.append(
+                                  {
+                                      "part_num": part_num,
+                                      "part_id": part_response.json()["part_id"]
+                                  }
+                              )
                               print(f"Uploaded part {part_num}")
                           else:
                               print(f"Error uploading part {part_num}: {part_response.status_code}")
@@ -930,9 +1004,9 @@ paths:
                     -d '{
                           "action": "commit",
                           "parts": [
-                            {"part_num": 1, "part_id": "12345"},
-                            {"part_num": 2, "part_id": "12346"},
-                            {"part_num": 3, "part_id": "12347"}
+                               {"part_num": 1, "part_id": "12345"},
+                               {"part_num": 2, "part_id": "12346"},
+                               {"part_num": 3, "part_id": "12347"}
                           ]
                         }'
 
@@ -941,11 +1015,13 @@ paths:
               code: |
                   from aihub import AIHub
                   
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
                   
-                  # This assumes the `session_id` and `parts` variables were set when the
+                  # This assumes the `session_id` variable was set when the
                   # "Start multipart upload session" API/SDK operation was called earlier.
                   parts = [
                       {"part_num": 1, "part_id": "12345"},
@@ -965,7 +1041,7 @@ paths:
               name: without SDK
               code: |
                   import requests
-                
+                  
                   # This assumes the `session_id` and `parts` variables were set when the
                   # "Start multipart upload session" API/SDK operation was called earlier.
                   session_endpoint = f"https://aihub.instabase.com/api/v2/batches/multipart-upload/sessions/{session_id}"
@@ -975,11 +1051,16 @@ paths:
                       {"part_num": 3, "part_id": "12347"}
                   ]
                   
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # commit the session
-                  data = { "action": "commit", "parts": parts }
+                  data = {
+                      "action": "commit",
+                      "parts": parts
+                  }
                   
                   response = requests.post(session_endpoint, headers=headers, json=data)
                   
@@ -991,17 +1072,18 @@ paths:
             - sdk: python
               name: with SDK - Complete Workflow
               code: |
-                  from aihub import AIHub
                   import os
+                  from aihub import AIHub
                   
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
                   
                   batch_id = 12345
                   local_filename = "large-file.pdf"
                   local_file_path = f"/local/path/to/{local_filename}"
-                  
                   file_size = os.path.getsize(local_file_path)
                   
                   # Step 1: Create session
@@ -1009,7 +1091,8 @@ paths:
                   response = client.batches.create_multipart_upload_session(
                       batch_id=batch_id,
                       filename=ai_hub_filename,
-                      file_size=file_size)
+                      file_size=file_size
+                  )
                   
                   session_id = response.session_id
                   part_size = response.part_size
@@ -1083,15 +1166,17 @@ paths:
               code: |
                   import time
                   from aihub import AIHub
-
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
                   # poll the status of a job until it's done
                   while True:
                       response = client.batches.poll_job(
-                                     job_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890")
+                          job_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890")
                       if response.state not in ["PENDING", "RUNNING"]:
                           break
                       time.sleep(3)  # pause before polling the status again
@@ -1103,8 +1188,11 @@ paths:
                   
                   job_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
                   url = f"https://aihub.instabase.com/api/v2/batches/jobs/{job_id}"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # make the GET request
                   response = requests.get(url, headers=headers)
@@ -1260,13 +1348,18 @@ paths:
               name: Simple request with SDK
               code: |
                   from aihub import AIHub
-
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-
-                  run = client.apps.runs.create(app_name="MyApp",
-                                                batch_id=12345)
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
+                  run = client.apps.runs.create(
+                      app_name="MyApp",
+                      batch_id=12345
+                  )
+                  
                   print(f"Run ID: {run.id}")
 
             - sdk: python
@@ -1275,12 +1368,17 @@ paths:
                   import requests
                   
                   url = "https://aihub.instabase.com/api/v2/apps/runs"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # create the request payload
-                  data = { "batch_id": 12345,
-                           "app_name": "My App" }
+                  data = {
+                      "batch_id": 12345,
+                      "app_name": "My App"
+                  }
                   
                   # make the POST request
                   response = requests.post(url, headers=headers, json=data)
@@ -1320,11 +1418,13 @@ paths:
               name: Complex request with SDK
               code: |
                   from aihub import AIHub
-                
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
                   run = client.apps.runs.create(
                       app_name="MyApp",
                       batch_id=12345,
@@ -1348,11 +1448,14 @@ paths:
               name: Complex request without SDK
               code: |
                   import requests
-
+                  
                   url = "https://aihub.instabase.com/api/v2/apps/runs"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
-
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
+                  
                   # create the request payload
                   data = {
                       "batch_id": 12345,
@@ -1371,10 +1474,10 @@ paths:
                           }
                       }
                   }
-
+                  
                   # make the POST request
                   response = requests.post(url, headers=headers, json=data)
-
+                  
                   # handle the response
                   if response.status_code == 200:
                       print(f"Run started with ID: {response.json()['id']}")
@@ -1489,7 +1592,7 @@ paths:
             - sdk: curl
               code: |
                   curl "${API_ROOT}/v2/apps/runs" \
-                    -H "Authorization: Bearer ${API_TOKEN}"
+                    -H "Authorization: Bearer ${API_TOKEN}" \
                     -H "IB-Context: ${IB_CONTEXT}"
 
             - sdk: python
@@ -1497,11 +1600,14 @@ paths:
               code: |
                   from aihub import AIHub
                   
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
                   response = client.apps.runs.list()
+                  
                   print(f"third run ID: {response.runs[2].id}")  # 0-based indexing
 
             - sdk: python
@@ -1510,15 +1616,18 @@ paths:
                   import requests
                   
                   url = "https://aihub.instabase.com/api/v2/apps/runs"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # make the GET request
                   response = requests.get(url, headers=headers)
                   
                   # handle the response
                   if response.status_code == 200:
-                      # next line assumes the call returned at least 3 runs
+                      # the next line assumes the call returned at least 3 runs
                       print(f"third run ID: {response.json()['runs'][2]['id']}")
                   else:
                       print(f"Error: {response.status_code} - {response.text}")
@@ -1656,14 +1765,18 @@ paths:
               name: Use batch ID with SDK
               code: |
                   from aihub import AIHub
-  
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-  
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
                   run = client.apps.deployments.runs.create(
-                            deployment_id="12345678-abcde-1234-abcd-123456789012",
-                            batch_id=12345)
+                      deployment_id="12345678-abcde-1234-abcd-123456789012",
+                      batch_id=12345
+                  )
+                  
                   print(f"run ID: {run.id}")
 
             - sdk: python
@@ -1673,11 +1786,14 @@ paths:
                   
                   deployment_id = "12345678-abcde-1234-abcd-123456789012"
                   url = f"https://aihub.instabase.com/api/v2/apps/deployments/{deployment_id}/runs"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com"}
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # create the request payload
-                  data = { "batch_id": 12345 }
+                  data = {"batch_id": 12345}
                   
                   # make the POST request
                   response = requests.post(url, headers=headers, json=data)
@@ -1692,40 +1808,47 @@ paths:
               name: Use input dir with SDK
               code: |
                   from aihub import AIHub
-  
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-  
-                  organization_id = "acme"
-                  workspace = "MyWorkspace"
-                  drive_name = "My Google Drive"
-                  folder = "My Drive/input_files/documents/"
-                  input_dir = f"{organization_id}/{workspace}/fs/{drive_name}/{folder}"
-  
-                  run = client.apps.deployments.runs.create(
-                            deployment_id="12345678-abcde-1234-abcd-123456789012",
-                            input_dir=input_dir)
-                  print(f"run ID: {run.id}")
-
-            - sdk: python
-              name: Use input dir without SDK
-              code: |
-                  import requests
-                
-                  deployment_id = "12345678-abcde-1234-abcd-123456789012"
-                  url = f"https://aihub.instabase.com/api/v2/apps/deployments/{deployment_id}/runs"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
                   
                   organization_id = "acme"
                   workspace = "MyWorkspace"
                   drive_name = "My Google Drive"
                   folder = "My Drive/input_files/documents/"
                   input_dir = f"{organization_id}/{workspace}/fs/{drive_name}/{folder}"
-  
+                  
+                  run = client.apps.deployments.runs.create(
+                      deployment_id="12345678-abcde-1234-abcd-123456789012",
+                      input_dir=input_dir
+                  )
+                  
+                  print(f"run ID: {run.id}")
+
+            - sdk: python
+              name: Use input dir without SDK
+              code: |
+                  import requests
+                  
+                  deployment_id = "12345678-abcde-1234-abcd-123456789012"
+                  url = f"https://aihub.instabase.com/api/v2/apps/deployments/{deployment_id}/runs"
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
+                  
+                  organization_id = "acme"
+                  workspace = "MyWorkspace"
+                  drive_name = "My Google Drive"
+                  folder = "My Drive/input_files/documents/"
+                  input_dir = f"{organization_id}/{workspace}/fs/{drive_name}/{folder}"
+                  
                   # create the request payload
-                  data = { "input_dir": input_dir }
+                  data = {"input_dir": input_dir}
                   
                   # make the POST request
                   response = requests.post(url, headers=headers, json=data)
@@ -1773,25 +1896,32 @@ paths:
               name: with SDK
               code: |
                   from aihub import AIHub
-
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
                   response = client.apps.runs.status(
-                                 run_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890")
+                      run_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                  )
+                  
                   print(f"Run status: {response.status}")
 
             - sdk: python
               name: without SDK
               code: |
                   import requests
-  
+                  
                   run_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
                   url = f"https://aihub.instabase.com/api/v2/apps/runs/{run_id}"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
-  
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
+                  
                   # make the GET request
                   response = requests.get(url, headers=headers)
                   
@@ -1878,20 +2008,26 @@ paths:
               code: |
                   import time
                   from aihub import AIHub
-                
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
                   response = client.apps.runs.delete(
-                                 run_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890")
-                  job_ids = [response.delete_input_dir_job_id,
-                             response.delete_output_dir_job_id,
-                             response.delete_log_dir_job_id]
-
+                      run_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                  )
+                  
+                  job_ids = [
+                      response.delete_input_dir_job_id,
+                      response.delete_output_dir_job_id,
+                      response.delete_log_dir_job_id
+                  ]
+                  
                   # remove empty job IDs
                   job_ids = [job_id for job_id in job_ids if job_id]
-
+                  
                   # poll for job completion
                   while job_ids:
                       for job_id in job_ids[:]:
@@ -1907,8 +2043,11 @@ paths:
                   
                   run_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
                   url = f"https://aihub.instabase.com/api/v2/apps/runs/{run_id}"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # make the DELETE request
                   response = requests.delete(url, headers=headers)
@@ -2142,20 +2281,24 @@ paths:
               name: Simple request
               code: |
                   curl "${API_ROOT}/v2/apps/runs/<RUN-ID>/results" \
-                  -H "Authorization: Bearer ${API_TOKEN}"
+                  -H "Authorization: Bearer ${API_TOKEN}" \
                   -H "IB-Context: ${IB_CONTEXT}"
 
             - sdk: python
               name: Simple request with SDK
               code: |
                   from aihub import AIHub
-  
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-  
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
                   results = client.apps.runs.results(
-                                run_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890")
+                      run_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                  )
+                  
                   print(f"Retrieved results from {len(results.files)} files")
 
             - sdk: python
@@ -2165,8 +2308,11 @@ paths:
                   
                   run_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
                   url = f"https://aihub.instabase.com/api/v2/apps/runs/{run_id}/results"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # make the GET request
                   response = requests.get(url, headers=headers)
@@ -2255,13 +2401,19 @@ paths:
               name: Using query parameters with SDK
               code: |
                   from aihub import AIHub
-  
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-                  results = client.apps.runs.results(run_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-                                                     include_confidence_scores=True,
-                                                     include_source_info=True)
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
+                  results = client.apps.runs.results(
+                      run_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                      include_confidence_scores=True,
+                      include_source_info=True
+                  )
+                  
                   print(f"Retrieved results from {len(results.files)} files")
 
             - sdk: python
@@ -2270,13 +2422,17 @@ paths:
                   import requests
                   
                   run_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
-                  url = f"https://aihub.instabase.com/api/v2/apps/runs/{run_id}/results"
+                  url = f"https://aihub.instabase.com/api/v2/apps/runs/{run_id}/results" 
                   
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
-                  params = { "include_confidence_scores": True,
-                             "include_source_info": True }
+                  params = {
+                      "include_confidence_scores": True,
+                      "include_source_info": True
+                  }
                 
                   # make the GET request
                   response = requests.get(url, headers=headers, params=params)
@@ -2296,9 +2452,11 @@ paths:
                   # This example retrieves all results.
                   from aihub import AIHub
                   
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
                   
                   all_files_results = []
                   current_offset = 0
@@ -2306,8 +2464,10 @@ paths:
                   
                   while True:
                       # fetch results with the current offset
-                      response = client.apps.runs.results(run_id=run_id, 
-                                                          file_offset=current_offset)
+                      response = client.apps.runs.results(
+                          run_id=run_id, 
+                          file_offset=current_offset
+                      )
                   
                       # extend the list with the files from the current response
                       all_files_results.extend(response.files)
@@ -2330,17 +2490,20 @@ paths:
                   # This example retrieves all results.
                   import requests
                   
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
-  
-                  file_offset = 0
-                  all_files_results = []
                   run_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
                   url = f"https://aihub.instabase.com/api/v2/apps/runs/{run_id}/results"
- 
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
+                  
+                  file_offset = 0
+                  all_files_results = []
+                  
                   while True:
-                      params = { "file_offset": file_offset}
-      
+                      params = {"file_offset": file_offset}
+                      
                       # make the GET request
                       response = requests.get(url, headers=headers, params=params)
                   
@@ -2355,8 +2518,8 @@ paths:
                       else:
                           print(f"Error: {response.status_code} - {response.text}")
                           break
+                  
                   print(f"Retrieved results from {len(all_files_results)} total files")
-  
 
   /v2/conversations:
     post:
@@ -2455,13 +2618,13 @@ paths:
                     -H "IB-Context: ${IB_CONTEXT}" \
                     -F name="Sample Conversation Name" \
                     -F description="Sample Conversation Description" \
-                    -F org="<ORGANIZATION-ID>" \ # Optional for community accounts
-                    -F enable_object_detection='false' \ # Optional
-                    -F enable_entity_detection='true' \ # Optional
-                    -F write_converted_image='true' \ # Optional
-                    -F write_thumbnail='true' \ # Optional
-                    -F enable_multilanguage_support='false' \ # Optional
-                    -F enable_multilanguage_advanced_mode='false' \ # Optional
+                    -F org="<ORGANIZATION-ID>" \
+                    -F enable_object_detection='false' \
+                    -F enable_entity_detection='true' \
+                    -F write_converted_image='true' \
+                    -F write_thumbnail='true' \
+                    -F enable_multilanguage_support='false' \
+                    -F enable_multilanguage_advanced_mode='false' \
                     -F files="@/path/to/test.pdf" \
                     -F files="@/path/to/test2.pdf"
 
@@ -2469,22 +2632,25 @@ paths:
               name: with SDK
               code: |
                   from aihub import AIHub
-                
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-  
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
                   response = client.conversations.create(
                       name="MyConversation",
                       description="sample conversation",
                       org="my-organization-id",  # optional for community accounts
-                      enable_object_detection=False, # optional
-                      enable_entity_detection=True, # optional
-                      write_converted_image=True, # optional
-                      write_thumbnail=True, # optional
-                      enable_multilanguage_support=False, # optional
-                      enable_multilanguage_advanced_mode=False, # optional
-                      files=["/local/path/to/test1.pdf", "/local/path/to/test2.pdf"])
+                      enable_object_detection=False,  # optional
+                      enable_entity_detection=True,  # optional
+                      write_converted_image=True,  # optional
+                      write_thumbnail=True,  # optional
+                      enable_multilanguage_support=False,  # optional
+                      enable_multilanguage_advanced_mode=False,  # optional
+                      files=["/local/path/to/test1.pdf", "/local/path/to/test2.pdf"]
+                  )
                   
                   print(f"Conversation ID: {response.id}")
 
@@ -2494,26 +2660,33 @@ paths:
                   import requests
                   
                   url = "https://aihub.instabase.com/api/v2/conversations"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
-                
-                  with open("/local/path/to/test1.pdf", "rb") as local_file1, \
-                       open("/local/path/to/test2.pdf", "rb") as local_file2:
-        
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
+                  
+                  with (
+                      open("/local/path/to/test1.pdf", "rb") as local_file1,
+                      open("/local/path/to/test2.pdf", "rb") as local_file2
+                  ):
+                  
                       files = [
                           ("files", ("test1.pdf", local_file1, "application/pdf")),
                           ("files", ("test2.pdf", local_file2, "application/pdf"))
                       ]
                   
-                      data = { "name": "MyConversation",
-                               "description": "sample conversation",
-                               "org": "my-organization-id",
-                               "enable_object_detection": "false",
-                               "enable_entity_detection": "true",
-                               "write_converted_image": "true",
-                               "write_thumbnail": "true",
-                               "enable_multilanguage_support": "false",
-                               "enable_multilanguage_advanced_mode": "false" }
+                      data = {
+                          "name": "MyConversation",
+                          "description": "sample conversation",
+                          "org": "my-organization-id",
+                          "enable_object_detection": "false",
+                          "enable_entity_detection": "true",
+                          "write_converted_image": "true",
+                          "write_thumbnail": "true",
+                          "enable_multilanguage_support": "false",
+                          "enable_multilanguage_advanced_mode": "false"
+                      }
                   
                       # make the POST request
                       response = requests.post(url, headers=headers, files=files, data=data)
@@ -2567,12 +2740,15 @@ paths:
               name: with SDK
               code: |
                   from aihub import AIHub
-                
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
                   
                   response = client.conversations.list()
+                  
                   for conversation in response.conversations:
                       print(f"Conversation ID: {conversation.id}")
 
@@ -2582,8 +2758,11 @@ paths:
                   import requests
                   
                   url = "https://aihub.instabase.com/api/v2/conversations"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # make the GET request
                   response = requests.get(url, headers=headers)
@@ -2632,28 +2811,35 @@ paths:
               name: with SDK
               code: |
                   from aihub import AIHub
-  
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-  
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
                   response = client.conversations.status(
-                                 conversation_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890")
+                      conversation_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                  )
+                  
                   print(f"Conversation name: {response.name}")
 
             - sdk: python
               name: without SDK
               code: |
                   import requests
-
+                  
                   conversation_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
                   url = f"https://aihub.instabase.com/api/v2/conversations/{conversation_id}"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
-
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
+                  
                   # make the GET request
                   response = requests.get(url, headers=headers)
-
+                  
                   # handle the response
                   if response.status_code == 200:
                       print(f"Conversation name: {response.json()['name']}")
@@ -2703,30 +2889,38 @@ paths:
               name: with SDK
               code: |
                   from aihub import AIHub
-                
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
                   
                   # returns None
                   client.conversations.update(
                       conversation_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890",
                       name="new conversation name",
-                      description="new conversation description")
+                      description="new conversation description"
+                  )
 
             - sdk: python
               name: without SDK
               code: |
                   import requests
-                
+                  
                   conversation_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
                   url = f"https://aihub.instabase.com/api/v2/conversations/{conversation_id}"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # create query parameters
-                  params = { "name": "new conversation name",
-                             "description": "new conversation description" }
+                  params = {
+                      "name": "new conversation name",
+                      "description": "new conversation description"
+                  }
                   
                   # make the PUT request
                   response = requests.put(url, headers=headers, params=params)
@@ -2771,23 +2965,29 @@ paths:
               code: |
                   from aihub import AIHub
                   
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
                   
                   # returns None
                   client.conversations.delete(
-                      conversation_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890")
+                      conversation_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                  )
 
             - sdk: python
               name: without SDK
               code: |
                   import requests
-                
+                  
                   conversation_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
                   url = f"https://aihub.instabase.com/api/v2/conversations/{conversation_id}"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # make the DELETE request
                   response = requests.delete(url, headers=headers)
@@ -2797,7 +2997,6 @@ paths:
                       print("Conversation deleted successfully")
                   else:
                       print(f"Error: {response.status_code} - {response.text}")
-
 
   /v2/conversations/{conversation_id}/prompts:
     post:
@@ -2861,7 +3060,7 @@ paths:
               code: |
                   curl "${API_ROOT}/v2/conversations/<CONVERSATION-ID>/prompts" \
                     -H "Authorization: Bearer ${API_TOKEN}" \
-                    -H "IB-Context: ${IB_CONTEXT}"
+                    -H "IB-Context: ${IB_CONTEXT}" \
                     -H "Content-Type: application/json" \
                     -d '{
                           "question": "What is the main topic of the document?",
@@ -2873,30 +3072,39 @@ paths:
               name: with SDK
               code: |
                   from aihub import AIHub
-
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
                   response = client.conversations.converse(
                       conversation_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890",
                       question="What is the main topic of these documents?",
-                      document_ids=[12345])
+                      document_ids=[12345]
+                  )
+                  
                   print(f"Prompt response: {response.answer}")
 
             - sdk: python
               name: without SDK
               code: |
                   import requests
-                
+                  
                   conversation_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
                   url = f"https://aihub.instabase.com/api/v2/conversations/{conversation_id}/prompts"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # create the request payload
-                  data = { "question": "What is the main topic of the document?",
-                           "document_ids": [12345] }
+                  data = {
+                      "question": "What is the main topic of the document?",
+                      "document_ids": [12345]
+                  }
                   
                   # make the POST request
                   response = requests.post(url, headers=headers, json=data)
@@ -2968,15 +3176,18 @@ paths:
               name: with SDK
               code: |
                   from aihub import AIHub
-
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-                
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
                   response = client.conversations.add_documents(
-                                 conversation_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-                                 files=["/local/path/to/test1.pdf", "/local/path/to/test2.txt"])
-
+                      conversation_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                      files=["/local/path/to/test1.pdf", "/local/path/to/test2.txt"]
+                  )
+                  
                   for failed in response.upload_status.failure:
                       print(f"Failed upload: {failed.name}, {failed.reason}")
                   for successful in response.upload_status.success:
@@ -2986,14 +3197,19 @@ paths:
               name: without SDK
               code: |
                   import requests
-                
+                  
                   conversation_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
                   url = f"https://aihub.instabase.com/api/v2/conversations/{conversation_id}/documents"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
                   
-                  with open("/local/path/to/test1.pdf", "rb") as local_file1, \
-                       open("/local/path/to/test2.txt", "rb") as local_file2:
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
+                  
+                  with (
+                      open("/local/path/to/test1.pdf", "rb") as local_file1,
+                      open("/local/path/to/test2.txt", "rb") as local_file2
+                  ):
                   
                       files = [
                           ("files", ("test1.pdf", local_file1, "application/pdf")),
@@ -3058,30 +3274,36 @@ paths:
               name: with SDK
               code: |
                   from aihub import AIHub
-  
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-    
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
                   # returns None
                   # NOTE: can only delete 1 document per call, but the
-                  #       document's ID must be passed in as a 1-item list
+                  # document's ID must be passed in as a 1-item list
                   client.conversations.delete_documents(
                       conversation_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-                      ids=[12345])
+                      ids=[12345]
+                  )
 
             - sdk: python
               name: without SDK
               code: |
                   import requests
-
+                  
                   conversation_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
                   url = f"https://aihub.instabase.com/api/v2/conversations/{conversation_id}/documents"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # create the request payload
-                  data = { "ids": [12345] }
+                  data = {"ids": [12345]}
                   
                   # make the DELETE request
                   response = requests.delete(url, headers=headers, params=data)
@@ -3138,14 +3360,18 @@ paths:
               name: with SDK
               code: |
                   from aihub import AIHub
-                
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
                   
                   response = client.conversations.get_document_metadata(
-                                 conversation_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-                                 document_id=12345)
+                      conversation_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                      document_id=12345
+                  )
+                  
                   print(f"Document name: {response.name}")
 
             - sdk: python
@@ -3156,8 +3382,11 @@ paths:
                   conversation_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
                   document_id = 12345
                   url = f"https://aihub.instabase.com/api/v2/conversations/{conversation_id}/documents/{document_id}"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # make the GET request
                   response = requests.get(url, headers=headers)
@@ -3279,16 +3508,23 @@ paths:
               name: with SDK
               code: |
                   from aihub import AIHub
-                
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-
-                  source_app = { "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-                                 "type": "CHATBOT" }
-
-                  response = client.queries.run(query="When was the mail sent out?",
-                                                source_app=source_app)
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
+                  source_app = {
+                      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                      "type": "CHATBOT"
+                  }
+                  
+                  response = client.queries.run(
+                      query="When was the mail sent out?",
+                      source_app=source_app
+                  )
+                  
                   print(f"Query ID: {response.query_id}")
 
             - sdk: python
@@ -3297,13 +3533,20 @@ paths:
                   import requests
                   
                   url = "https://aihub.instabase.com/api/v2/queries"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # create the request payload
-                  data = { "query": "When was the mail sent out?",
-                           "source_app": { "type": "CHATBOT",
-                                           "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890" } }
+                  data = {
+                      "query": "When was the mail sent out?",
+                      "source_app": {
+                          "type": "CHATBOT",
+                          "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                      }
+                  }
                   
                   # make the POST request
                   response = requests.post(url, headers=headers, json=data)
@@ -3376,19 +3619,23 @@ paths:
               code: |
                   import time
                   from aihub import AIHub
-
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
                   # are the query's responses ready yet?
                   while True:
                       response = client.queries.status(
-                                     query_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890")
+                          query_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                      )
+                  
                       if response.status == "COMPLETE":
                           break
                       time.sleep(3)  # pause, then poll again
-
+                      
                   # print the responses
                   for query_result in response.results:
                       print(query_result.response)
@@ -3397,11 +3644,14 @@ paths:
               name: without SDK
               code: |
                   import requests
-  
+                  
                   query_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
                   url = f"https://aihub.instabase.com/api/v2/queries/{query_id}"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # make the GET request
                   response = requests.get(url, headers=headers)
@@ -3449,14 +3699,16 @@ paths:
               code: |
                   import time
                   from aihub import AIHub
-                
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
                   # start asynchronous job whose status we'll check
                   delete_response = client.batches.delete(batch_id=12345)
-
+                  
                   # poll job status until done
                   while True:
                       status_response = client.jobs.status(job_id=delete_response.job_id)
@@ -3468,13 +3720,16 @@ paths:
               name: without SDK
               code: |
                   import requests
-                
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
-
+                  
                   # start asynchronous job whose status we'll check
                   batch_id = 12345
                   url = f"https://aihub.instabase.com/api/v2/batches/{batch_id}"
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
+                  
                   delete_response = requests.delete(url, headers=headers)
                   
                   url = f"https://aihub.instabase.com/api/v2/jobs/{delete_response.json()['job_id']}"
@@ -3587,9 +3842,11 @@ paths:
               code: |
                   from aihub import AIHub
                   
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
                   
                   organization_id = "acme_org"
                   workspace = "MyWorkspace"
@@ -3606,24 +3863,27 @@ paths:
               name: Simple request without SDK
               code: |
                   import requests
-  
+                  
                   organization_id = "acme_org"
                   workspace = "MyWorkspace"
                   drive = "My Google Drive"
                   folder = "My Drive/AI Hub files"
                   file_name = "hello.txt"
                   file_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{file_name}"
-  
+                  
                   url = f"https://aihub.instabase.com/api/v2/files/{file_path}"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
-  
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
+                  
                   # create query parameters
-                  params = { "expect-node-type": "file" }
-  
+                  params = {"expect-node-type": "file"}
+                  
                   # make the GET request
                   response = requests.get(url, headers=headers, params=params)
-  
+                  
                   # handle the response
                   if response.status_code == 200:
                       print(f"Contents: {response.content.decode('utf-8')}")
@@ -3635,9 +3895,11 @@ paths:
               code: |
                   from aihub import AIHub
                   
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
                   
                   organization_id = "acme_org"
                   workspace = "MyWorkspace"
@@ -3649,40 +3911,44 @@ paths:
                   retry_config = '{"retries": 3, "backoff-seconds": 5}'
                   
                   # returns a byte literal, such as `b"foo"`
-                  file_contents = client.files.read(path=file_path,
-                                                    expect_node_type="file",
-                                                    range="bytes=10-20",
-                                                    ib_retry_config=retry_config)
+                  file_contents = client.files.read(
+                      path=file_path,
+                      expect_node_type="file",
+                      range="bytes=10-20",
+                      ib_retry_config=retry_config
+                  )
                   print(f"Contents: {file_contents.decode('utf-8')}")
 
             - sdk: python
               name: Complex request without SDK
               code: |
                   import requests
-  
+                  
                   organization_id = "acme_org"
                   workspace = "MyWorkspace"
                   drive = "My Google Drive"
                   folder = "My Drive/AI Hub files"
                   file_name = "hello.txt"
                   file_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{file_name}"
-
+                  
                   byte_range = "bytes=10-20"
                   retry_config = '{"retries": 3, "backoff-seconds": 5}'
-
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com",
-                              "Range": byte_range,
-                              "IB-Retry-Config": retry_config }
-  
+                  
                   # create query parameters
-                  params = { "expect-node-type": "file" }
-                
+                  params = {"expect-node-type": "file"}
+                  
                   url = f"https://aihub.instabase.com/api/v2/files/{file_path}"
-
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com",
+                      "Range": byte_range,
+                      "IB-Retry-Config": retry_config
+                  }
+                  
                   # make the GET request
                   response = requests.get(url, headers=headers, params=params)
-  
+                  
                   # handle the response
                   # 200 means whole content is returned
                   # 206 means partial content is returned, due to "Range" parameter
@@ -3765,11 +4031,13 @@ paths:
               name: with SDK
               code: |
                   from aihub import AIHub
-  
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-  
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
                   organization_id = "acme_org"
                   workspace = "MyWorkspace"
                   drive = "MyDrive"
@@ -3777,7 +4045,7 @@ paths:
                   file_name = "hello.txt"
                   file_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{file_name}"
                   file_contents = bytes("Hello world", "utf-8")
-  
+                  
                   # returns None
                   client.files.write(path=file_path, data=file_contents)
 
@@ -3795,9 +4063,12 @@ paths:
                   file_contents = bytes("Hello world", "utf-8")
                   
                   url = f"https://aihub.instabase.com/api/v2/files/{file_path}"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com",
-                              "Content-Type": "application/octet-stream" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com",
+                      "Content-Type": "application/octet-stream"
+                  }
                   
                   # make the PUT request
                   response = requests.put(url, headers=headers, data=file_contents)
@@ -3876,24 +4147,26 @@ paths:
               name: with SDK
               code: |
                   from aihub import AIHub
-  
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-  
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
                   organization_id = "acme_org"
                   workspace = "MyWorkspace"
                   drive = "Instabase Drive"
                   folder = "MyFolder"
                   node = "hello.txt"
                   node_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{node}"
-  
+                  
                   # returns an object with status code and headers
                   response = client.files.get_file_metadata(path=node_path)
                   
                   is_file = (response.headers["Content-Type"] == "application/octet-stream")
                   is_folder = (response.headers["Content-Type"] == "application/json")
-
+                  
                   if is_file:
                       file_length = response.headers["Content-Length"]
                       last_modified = response.headers["last-modified"]
@@ -3914,8 +4187,11 @@ paths:
                   node_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{file_name}"
                   
                   url = f"https://aihub.instabase.com/api/v2/files/{node_path}"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # make the HEAD request
                   response = requests.head(url, headers=headers)
@@ -3924,7 +4200,7 @@ paths:
                   if response.status_code == 200:
                       is_file = (response.headers["Content-Type"] == "application/octet-stream")
                       is_folder = (response.headers["Content-Type"] == "application/json")
-  
+                  
                       if is_file:
                           file_length = response.headers["Content-Length"]
                           last_modified = response.headers["last-modified"]
@@ -3993,10 +4269,12 @@ paths:
               name: Delete file with SDK
               code: |
                   from aihub import AIHub
-  
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
                   
                   organization_id = "acme_org"
                   workspace = "MyWorkspace"
@@ -4021,8 +4299,11 @@ paths:
                   file_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{file_name}"
                   
                   url = f"https://aihub.instabase.com/api/v2/files/{file_path}"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # make the DELETE request
                   response = requests.delete(url, headers=headers)
@@ -4037,10 +4318,12 @@ paths:
               name: Delete folder with SDK
               code: |
                   from aihub import AIHub
-  
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
                   
                   organization_id = "acme_org"
                   workspace = "MyWorkspace"
@@ -4063,8 +4346,11 @@ paths:
                   folder_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}"
                   
                   url = f"https://aihub.instabase.com/api/v2/files/{folder_path}"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # make the DELETE request
                   response = requests.delete(url, headers=headers)
@@ -4137,11 +4423,14 @@ paths:
             code: |
                 from aihub import AIHub
                 
-                client = AIHub(api_root="https://aihub.instabase.com/api",
-                               api_key="abcdefghijklmnopqrst1234567890",
-                               ib_context="john.doe_acme.com")
+                client = AIHub(
+                    api_root="https://aihub.instabase.com/api",
+                    api_key="abcdefghijklmnopqrst1234567890",
+                    ib_context="john.doe_acme.com"
+                )
                 
                 response = client.secrets.list(workspace="MyWorkspace")
+                
                 for secret in response.secrets:
                     print(f"Secret description: {secret.description}")
 
@@ -4151,11 +4440,14 @@ paths:
                 import requests
                 
                 url = "https://aihub.instabase.com/api/v2/aihub/secrets"
-                headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                            "IB-Context": "john.doe_acme.com" }
+                
+                headers = {
+                    "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                    "IB-Context": "john.doe_acme.com"
+                }
                 
                 # create query parameters
-                params = { "workspace": "MyWorkspace" }
+                params = {"workspace": "MyWorkspace"}
                 
                 # make the GET request
                 response = requests.get(url, headers=headers, params=params)
@@ -4242,10 +4534,12 @@ paths:
               name: with SDK
               code: |
                   from aihub import AIHub
-  
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
                 
                   # returns None
                   client.secrets.create(
@@ -4253,7 +4547,8 @@ paths:
                       description="Sample secret",
                       value="my password",
                       allowed_workspaces_type="SOME",
-                      allowed_workspaces=["workspace1", "workspace2"])
+                      allowed_workspaces=["workspace1", "workspace2"]
+                  )
 
             - sdk: python
               name: without SDK
@@ -4261,15 +4556,20 @@ paths:
                   import requests
                   
                   url = "https://aihub.instabase.com/api/v2/aihub/secrets"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # create the request payload
-                  data = { "alias": "my_secret",
-                           "description": "Sample secret",
-                           "value": "my password",
-                           "allowed_workspaces_type": "SOME",
-                           "allowed_workspaces": ["workspace1", "workspace2"] }
+                  data = {
+                      "alias": "my_secret",
+                      "description": "Sample secret",
+                      "value": "my password",
+                      "allowed_workspaces_type": "SOME",
+                      "allowed_workspaces": ["workspace1", "workspace2"]
+                  }
                   
                   # make the POST request
                   response = requests.post(url, headers=headers, json=data)
@@ -4352,11 +4652,13 @@ paths:
               name: Simple request with SDK
               code: |
                   from aihub import AIHub
-                
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
                   # returns None
                   client.secrets.update(alias="password", value="abc123")
 
@@ -4366,12 +4668,17 @@ paths:
                   import requests
                   
                   url = "https://aihub.instabase.com/api/v2/aihub/secrets"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # create the request payload
-                  data = { "alias": "password",
-                           "value": "abc123" }
+                  data = {
+                      "alias": "password",
+                      "value": "abc123"
+                  }
                   
                   # make the PATCH request
                   response = requests.patch(url, headers=headers, json=data)
@@ -4387,16 +4694,19 @@ paths:
               code: |
                   from aihub import AIHub
                   
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com")
                   
                   # returns None
-                  client.secrets.update(alias="password",
-                                        description="password",
-                                        value="abc123",
-                                        allowed_workspaces_type="SOME",
-                                        allowed_workspaces=["WorkspaceA", "WorkspaceB"])
+                  client.secrets.update(
+                      alias="password",
+                      description="password",
+                      value="abc123",
+                      allowed_workspaces_type="SOME",
+                      allowed_workspaces=["WorkspaceA", "WorkspaceB"]
+                  )
 
             - sdk: python
               name: Advanced request without SDK
@@ -4404,15 +4714,20 @@ paths:
                   import requests
                   
                   url = "https://aihub.instabase.com/api/v2/aihub/secrets"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # create the request payload
-                  data = { "alias": "password",
-                           "value": "abc123",
-                           "allowed_workspaces_type": "SOME",
-                           "allowed_workspaces": ["WorkspaceA", "WorkspaceB"] }
-  
+                  data = {
+                      "alias": "password",
+                      "value": "abc123",
+                      "allowed_workspaces_type": "SOME",
+                      "allowed_workspaces": ["WorkspaceA", "WorkspaceB"]
+                  }
+                  
                   # make the PATCH request
                   response = requests.patch(url, headers=headers, json=data)
                   
@@ -4474,11 +4789,13 @@ paths:
               name: with SDK
               code: |
                   from aihub import AIHub
-
-                  client = AIHub(api_root="https://aihub.instabase.com/api",
-                                 api_key="abcdefghijklmnopqrst1234567890",
-                                 ib_context="john.doe_acme.com")
-                
+                  
+                  client = AIHub(
+                      api_root="https://aihub.instabase.com/api",
+                      api_key="abcdefghijklmnopqrst1234567890",
+                      ib_context="john.doe_acme.com"
+                  )
+                  
                   # returns None
                   client.secrets.delete(alias="password")
 
@@ -4488,11 +4805,14 @@ paths:
                   import requests
                   
                   url = "https://aihub.instabase.com/api/v2/aihub/secrets"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # create the request payload
-                  data = { "alias": "password" }
+                  data = {"alias": "password"}
                   
                   # make the DELETE request
                   response = requests.delete(url, headers=headers, json=data)
@@ -4626,14 +4946,19 @@ paths:
                   import requests
                   
                   url = "https://aihub.instabase.com/api/v1/auditlogs"
-                  headers = { "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
-                              "IB-Context": "john.doe_acme.com" }
+                  
+                  headers = {
+                      "Authorization": "Bearer abcdefghijklmnopqrst1234567890",
+                      "IB-Context": "john.doe_acme.com"
+                  }
                   
                   # create the request payload
-                  data = { "log_type": "org_secret",
-                           "size": 50,
-                           "start_time": "1749139277810",
-                           "start": 200 }
+                  data = {
+                      "log_type": "org_secret",
+                      "size": 50,
+                      "start_time": "1749139277810",
+                      "start": 200
+                  }
                   
                   # make the POST request
                   response = requests.post(url, headers=headers, json=data)

@@ -4968,7 +4968,7 @@ components:
             $ref: '#/components/schemas/modificationObject'
         validations:
           type: object
-          description: Validation results for the case field. Returned when include_validation_results=true and field has case validation results.
+          description: Validation results for the case field. Returned when `include_validation_results` is `true` and field has case validation results.
           properties:
             valid:
               type: boolean

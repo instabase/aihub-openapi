@@ -4981,10 +4981,15 @@ components:
                 properties:
                   type:
                     type: string
-                    description: Type of validation failure (e.g., "lambda_code", "all_inputs_match").
+                    description: Type of validation failure (for example, "lambda_code", "all_inputs_match").
                   msg:
                     type: string
                     description: Message describing the validation failure.
+                required:
+                  - type
+                  - msg
+          required:
+            - valid
       required:
         - name
         - value

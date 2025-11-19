@@ -2032,6 +2032,11 @@ paths:
             - `validations/valid`
             - `validations/alerts`
 
+            The following values are returned at the case level (`case_info/fields/...`):
+
+            - `validations/valid`
+            - `validations/failures`
+
             See the response schema for details and descriptions.
         - in: query
           name: include_source_info
@@ -5375,6 +5380,30 @@ components:
           description: The history of edits to the case field. Returned when include_review_results=true.
           items:
             $ref: '#/components/schemas/modificationObject'
+        validations:
+          type: object
+          description: Validation results for the case field. Returned when `include_validation_results` is `true` and field has case validation results.
+          properties:
+            valid:
+              type: boolean
+              description: Indicates whether the case field has passed all validation rules.
+            failures:
+              type: array
+              description: Array of validation failures for the case field. Populated only if the `validations/valid` value is `false`.
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Type of validation failure (for example, "lambda_code", "all_inputs_match").
+                  msg:
+                    type: string
+                    description: Message describing the validation failure.
+                required:
+                  - type
+                  - msg
+          required:
+            - valid
       required:
         - name
         - value

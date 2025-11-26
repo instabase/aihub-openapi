@@ -2539,6 +2539,8 @@ paths:
         - Conversations
       summary: List conversations
       description: |
+        <Info>Conversations and chatbots are deprecated and will be removed on February 1, 2026. You can continue to create and use conversations and chatbots until then.</Info>
+
         List all conversations you have created.
 
         <Note>Organization admins can access a list of all conversations in the organization, not just conversations they created.</Note>
@@ -3037,6 +3039,8 @@ paths:
         - Conversations
       summary: Delete documents
       description: |
+        <Info>Conversations and chatbots are deprecated and will be removed on February 1, 2026. You can continue to create and use conversations and chatbots until then.</Info>
+
         Deletes documents from the conversation. Also suitable for database and filesystem cleanup.
 
         <Tip>You can get a list of document IDs in your conversation with a [Conversation information](/api-sdk/api-reference/conversations/get-conversation/) request.</Tip>

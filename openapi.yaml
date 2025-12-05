@@ -1987,7 +1987,7 @@ paths:
             - `edit_history/modifications`
             - `edit_history/modifications/message`
 
-            The following values are returned at the case level (`case_info/fields/...`):
+            The following values are returned at the packet level (also known as case level) (`case_info/fields/...`):
 
             - `edit_history`
             - `edit_history/timestamp`
@@ -2032,10 +2032,12 @@ paths:
             - `validations/valid`
             - `validations/alerts`
 
-            The following values are returned at the case level (`case_info/fields/...`):
+            The following values are returned at the packet level (also known as case level) (`case_info/fields/...`):
 
             - `validations/valid`
             - `validations/failures`
+
+            Cross-class validation ensures data quality and consistency across documents within a packet.
 
             See the response schema for details and descriptions.
         - in: query
@@ -5007,7 +5009,10 @@ components:
           description: Indicates whether additional results are available beyond those included in the current response. Use the `file_offset` query parameter to specify the starting point when fetching the next set of results.
         case_info:
           $ref: '#/components/schemas/caseInfo'
-          description: Case-level information captured for the run, including optional edit history per case field when include_review_results=true.
+          description: |
+            Packet-level information (also known as case-level information) captured for the run, including optional edit history per cross-class field when `include_review_results=true`.
+
+            Cross-class fields consolidate data extracted from standard fields within a packet. For more information about packets and cross-class fields, see [Extracting data from packets](/automate/packet-schema).
         review_completed:
           type: boolean
           description: Indicates whether the run or document has completed review.
@@ -5373,7 +5378,8 @@ components:
       properties:
         fields:
           type: array
-          description: A list of case-level fields captured for this run.
+          description: |
+            A list of cross-class fields captured for this run. Cross-class fields consolidate data extracted from standard fields within a packet.
           items:
             $ref: '#/components/schemas/caseInfoField'
 
@@ -5382,14 +5388,14 @@ components:
       properties:
         name:
           type: string
-          description: Name of the case field.
+          description: Name of the cross-class field.
         value:
           type: string
-          description: The value of the case field.
+          description: The value of the cross-class field.
         input_fields:
           type: array
           description: |
-            Only applicable for ranked case fields. Input options the user can choose from
+            Only applicable for ranked cross-class fields. Input options the user can choose from
             when determining the value of this ranked field.
           items:
             $ref: '#/components/schemas/caseInputField'
@@ -5397,26 +5403,29 @@ components:
           $ref: '#/components/schemas/caseInputField'
           nullable: true
           description: |
-            Only applicable for ranked case fields. The input option from `input_fields` that was
+            Only applicable for ranked cross-class fields. The input option from `input_fields` that was
             selected for the ranked field's value.
         error_msg:
           type: string
-          description: Error message for the case field, if any.
+          description: Error message for the cross-class field, if any.
         edit_history:
           type: array
-          description: The history of edits to the case field. Returned when include_review_results=true.
+          description: The history of edits to the cross-class field. Returned when `include_review_results=true`.
           items:
             $ref: '#/components/schemas/modificationObject'
         validations:
           type: object
-          description: Validation results for the case field. Returned when `include_validation_results` is `true` and field has case validation results.
+          description: |
+            Validation results for the cross-class field. Returned when `include_validation_results` is `true` and field has cross-class validation results.
+
+            Cross-class validation ensures data quality and consistency across documents within a packet.
           properties:
             valid:
               type: boolean
-              description: Indicates whether the case field has passed all validation rules.
+              description: Indicates whether the cross-class field has passed all validation rules.
             failures:
               type: array
-              description: Array of validation failures for the case field. Populated only if the `validations/valid` value is `false`.
+              description: Array of validation failures for the cross-class field. Populated only if the `validations/valid` value is `false`.
               items:
                 type: object
                 properties:
@@ -5437,7 +5446,7 @@ components:
 
     caseInputField:
       type: object
-      description: Input option for ranked case fields.
+      description: Input option for ranked cross-class fields.
       properties:
         record_index:
           type: integer

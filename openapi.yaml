@@ -2057,6 +2057,8 @@ paths:
                A `post_processed_pdf_path` is populated when `settings/runtime_config/generate_post_process_pdf=true`. Paths to PDFs are generated from each document, with separate PDF paths for documents split during classification.
                </Note>
 
+            - `page_layouts`
+
             The following values are returned at the field level (`files/documents/fields/...`):
 
             - `source_coordinates/top_x`
@@ -2099,6 +2101,7 @@ paths:
           response:
             body:
               batch_id: '1235'
+              run_id: "1234-1235"
               has_more: false
               files:
                 - original_file_name: "test.png"
@@ -2190,10 +2193,15 @@ paths:
             body:
               has_more: false
               batch_id: "9706"
+              run_id: "1234-1235"
               files:
                 - original_file_name: "test.png"
                   documents:
                     - class_name: "Wage And Tax Statement"
+                      page_layouts:
+                        - page_number: 0
+                          width: 1012.0
+                          height: 639.0
                       fields:
                         - value: "123 STREET RD ANYWHERE, USA,12345"
                           type: "TEXT"
@@ -2217,6 +2225,10 @@ paths:
                 - original_file_name: "test2.png"
                   documents:
                     - class_name: "Driver License"
+                      page_layouts:
+                        - page_number: 0
+                          width: 1012.0
+                          height: 639.0
                       fields:
                         - value: "Male"
                           type: "TEXT"
@@ -4994,6 +5006,9 @@ components:
         batch_id:
           type: string
           description: The batch ID used as input for this run, if run using a batch.
+        run_id:
+          type: string
+          description: The run ID of the automation app run.
         files:
           type: array
           items:
@@ -5050,6 +5065,11 @@ components:
           description: An array of the document's page numbers.
           items:
             type: integer
+        page_layouts:
+          type: array
+          description: An array with one entry per page, containing page layout information including page number, width, and height.
+          items:
+            $ref: '#/components/schemas/pageLayout'
         post_processed_paths:
           type: array
           description: An array of strings, each representing a path to post-processed documents.
@@ -5167,6 +5187,27 @@ components:
           type: integer
           nullable: false
           description: Zero-indexed page number of the bounding box.
+    pageLayout:
+      type: object
+      properties:
+        page_number:
+          type: integer
+          nullable: false
+          description: Zero-indexed page number.
+        width:
+          type: number
+          format: float
+          nullable: false
+          description: Width of the page.
+        height:
+          type: number
+          format: float
+          nullable: false
+          description: Height of the page.
+      required:
+        - page_number
+        - width
+        - height
     modificationObject:
       type: object
       properties:

@@ -453,7 +453,7 @@ paths:
               name: without SDK
               code: |
                   import requests
-                  
+
                   batch_id = 12345
                   url = f"https://aihub.instabase.com/api/v2/batches/{batch_id}/files"
                   
@@ -464,7 +464,7 @@ paths:
                   
                   page_size = 2
                   start_token = None
-                  
+
                   # make repeated calls to fetch more files until there are no more
                   while True:
                       params = {
@@ -473,18 +473,18 @@ paths:
                       }
                       # make the GET request
                       response = requests.get(url, headers=headers, params=params)
-                  
+
                       # handle the response
                       if response.status_code != 200:
                           print(f"Error: {response.status_code} - {response.text}")
                           break
-                  
+
                       for node in response.json()['nodes']:
                           print(f"File name: {node['name']}")
-                  
+
                       if not response.json().get("has_more"):
                           break
-                  
+
                       start_token = response.json().get("next_page_token")
 
   /v2/batches/{batch_id}/files/{filename}:
@@ -499,7 +499,7 @@ paths:
         Upload a file to a batch or update the contents of a previously uploaded file in a batch.
 
         <Info>Files can be uploaded one at a time and the suggested max size for each file is 10 MB. For larger files, see [Multipart file upload](/api-sdk/api-reference/batches/create-multipart-upload-session).</Info>
-        
+
         <Note>If you upload a password-protected PDF, provide the password when you process the PDF with an AI Hub app. See instructions for configuring the `settings.runtime_config.instabase.pdf.passwords` property for the [Run deployment](/api-sdk/api-reference/runs/run-deployment#request.body.settings.runtime_config.instabase.pdf.passwords) or [Run app](/api-sdk/api-reference/runs/run-app#request.body.settings.runtime_config.instabase.pdf.passwords) operations.</Note>
       parameters:
         - $ref: '#/components/parameters/batch_id'
@@ -564,7 +564,7 @@ paths:
               name: without SDK
               code: |
                   import requests
-                  
+
                   batch_id = 12345
                   ai_hub_filename = "MyFile1.pdf"
                   url = f"https://aihub.instabase.com/api/v2/batches/{batch_id}/files/{ai_hub_filename}"
@@ -576,14 +576,14 @@ paths:
                   }
                   
                   local_filepath = "/local/path/to/file1.pdf"
-                  
+
                   # read the file contents
                   with open(local_filepath, "rb") as local_file:
                       file_content = local_file.read()
-                  
+
                   # make the PUT request
                   response = requests.put(url, headers=headers, data=file_content)
-                  
+
                   # handle the response
                   if response.status_code == 204:
                       print("File uploaded successfully")
@@ -641,7 +641,7 @@ paths:
               name: without SDK
               code: |
                   import requests
-                  
+
                   batch_id = 12345
                   ai_hub_filename = "MyFile.txt"
                   url = f"https://aihub.instabase.com/api/v2/batches/{batch_id}/files/{ai_hub_filename}"
@@ -670,7 +670,7 @@ paths:
       summary: Start multipart upload session
       description: |
         Start a multipart upload session. Use this endpoint when you need to upload a file larger than 10 MB to a batch.
-        
+
         The multipart upload process consists of three steps:
         1. Create a multipart upload session (this endpoint)
         2. [Upload file parts](/api-sdk/api-reference/batches/upload-multipart-part) to the session
@@ -744,11 +744,11 @@ paths:
                   )
                   
                   ai_hub_filename = "large-file.pdf"
-                  
+
                   # get file size
                   local_filepath = "/local/path/to/large-file.pdf"
                   file_size = os.path.getsize(local_filepath)
-                  
+
                   # create multipart upload session
                   response = client.batches.create_multipart_upload_session(
                       batch_id=12345,
@@ -764,13 +764,13 @@ paths:
               code: |
                   import os
                   import requests
-                  
+
                   ai_hub_filename = "large-file.pdf"
                   
                   # get file size
                   local_filepath = "/local/path/to/large-file.pdf"
                   file_size = os.path.getsize(local_filepath)
-                  
+
                   url = "https://aihub.instabase.com/api/v2/batches/multipart-upload"
                   
                   headers = {
@@ -787,7 +787,7 @@ paths:
                   
                   # make the POST request
                   response = requests.post(url, headers=headers, json=data)
-                  
+
                   # handle the response
                   if response.status_code == 201:
                       print(f"Session ID: {response.json()['session_id']}")
@@ -805,7 +805,7 @@ paths:
       summary: Upload part to multipart session
       description: |
         Upload part of a file to the multipart upload session. The size of each part must match the `part_size` returned by the [Start multipart upload session](/api-sdk/api-reference/batches/create-multipart-upload-session) call, except for the final part, which can be smaller.
-        
+
         Parts must be uploaded with consecutive part numbers starting at 1.
       parameters:
         - name: session_id
@@ -898,8 +898,8 @@ paths:
               name: without SDK
               code: |
                   import requests
-                  
-                  # use `session_id` and `part_size` variables set by 
+
+                  # use `session_id` and `part_size` variables set by
                   # the "Start multipart upload session" API/SDK operation,
                   # which must be run before running this operation
                   session_endpoint = f"https://aihub.instabase.com/api/v2/batches/multipart-upload/sessions/{session_id}"
@@ -911,7 +911,7 @@ paths:
                   
                   parts = []
                   part_num = 1
-                  
+
                   local_filepath = "/local/path/to/large-file.pdf"
                   with open(local_filepath, "rb") as input_file:
                       part = input_file.read(part_size)
@@ -919,7 +919,7 @@ paths:
                           # upload this part
                           part_url = f"{session_endpoint}/parts/{part_num}"
                           part_response = requests.put(part_url, headers=headers, data=part)
-                  
+
                           if part_response.status_code == 201:
                               parts.append(
                                   {
@@ -931,7 +931,7 @@ paths:
                           else:
                               print(f"Error uploading part {part_num}: {part_response.status_code}")
                               break
-                  
+
                           # read next part
                           part = input_file.read(part_size)
                           part_num += 1
@@ -946,7 +946,7 @@ paths:
       summary: Commit or abort multipart session
       description: |
         After uploading all parts to a multipart upload session, use this endpoint to commit and close the session, or abort the session.
-        
+
         When committing, provide all the uploaded parts in the correct order. When aborting, the session and all uploaded parts are discarded.
       parameters:
         - name: session_id
@@ -1028,7 +1028,7 @@ paths:
                       {"part_num": 2, "part_id": "12346"},
                       {"part_num": 3, "part_id": "12347"}
                   ]
-                  
+
                   # commit the session
                   client.batches.commit_multipart_upload_session(
                       session_id=session_id,
@@ -1063,7 +1063,7 @@ paths:
                   }
                   
                   response = requests.post(session_endpoint, headers=headers, json=data)
-                  
+
                   if response.status_code == 201:
                       print("Multipart upload completed successfully")
                   else:
@@ -1085,7 +1085,7 @@ paths:
                   local_filename = "large-file.pdf"
                   local_file_path = f"/local/path/to/{local_filename}"
                   file_size = os.path.getsize(local_file_path)
-                  
+
                   # Step 1: Create session
                   ai_hub_filename = "upload.pdf"
                   response = client.batches.create_multipart_upload_session(
@@ -1096,28 +1096,28 @@ paths:
                   
                   session_id = response.session_id
                   part_size = response.part_size
-                  
+
                   # Step 2: Upload parts
                   parts = []
                   part_num = 1
-                  
+
                   with open(local_file_path, "rb") as local_file:
                       while True:
                           part_data = local_file.read(part_size)
                           if not part_data:
                               break
-                  
+
                           response = client.batches.upload_multipart_part(
                               session_id=session_id,
                               part_num=part_num,
                               part_data=part_data)
-                  
+
                           parts.append({
                               "part_num": part_num,
                               "part_id": response.part_id
                           })
                           part_num += 1
-                  
+
                   # Step 3: Commit session
                   client.batches.commit_multipart_upload_session(
                       session_id=session_id,
@@ -1185,7 +1185,7 @@ paths:
               name: without SDK
               code: |
                   import requests
-                  
+
                   job_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
                   url = f"https://aihub.instabase.com/api/v2/batches/jobs/{job_id}"
                   
@@ -1196,7 +1196,7 @@ paths:
                   
                   # make the GET request
                   response = requests.get(url, headers=headers)
-                  
+
                   # handle the response
                   if response.status_code == 200:
                       print(f"Job status: {response.json()['state']}")
@@ -1366,7 +1366,7 @@ paths:
               name: Simple request without SDK
               code: |
                   import requests
-                  
+
                   url = "https://aihub.instabase.com/api/v2/apps/runs"
                   
                   headers = {
@@ -1382,7 +1382,7 @@ paths:
                   
                   # make the POST request
                   response = requests.post(url, headers=headers, json=data)
-                  
+
                   # handle the response
                   if response.status_code == 200:
                       print(f"Run started with ID: {response.json()['id']}")
@@ -1614,7 +1614,7 @@ paths:
               name: without SDK
               code: |
                   import requests
-                  
+
                   url = "https://aihub.instabase.com/api/v2/apps/runs"
                   
                   headers = {
@@ -1624,7 +1624,7 @@ paths:
                   
                   # make the GET request
                   response = requests.get(url, headers=headers)
-                  
+
                   # handle the response
                   if response.status_code == 200:
                       # the next line assumes the call returned at least 3 runs
@@ -1783,7 +1783,7 @@ paths:
               name: Use batch ID without SDK
               code: |
                   import requests
-                  
+
                   deployment_id = "12345678-abcde-1234-abcd-123456789012"
                   url = f"https://aihub.instabase.com/api/v2/apps/deployments/{deployment_id}/runs"
                   
@@ -1797,7 +1797,7 @@ paths:
                   
                   # make the POST request
                   response = requests.post(url, headers=headers, json=data)
-                  
+
                   # handle the response
                   if response.status_code == 202:
                       print(f"Deployment run started with ID: {response.json()['id']}")
@@ -1852,7 +1852,7 @@ paths:
                   
                   # make the POST request
                   response = requests.post(url, headers=headers, json=data)
-                  
+
                   # handle the response
                   if response.status_code == 202:
                       print(f"Deployment run started with ID: {response.json()['id']}")
@@ -1924,7 +1924,7 @@ paths:
                   
                   # make the GET request
                   response = requests.get(url, headers=headers)
-                  
+
                   # handle the response
                   if response.status_code == 200:
                       print(f"Run status: {response.json()['status']}")
@@ -2040,7 +2040,7 @@ paths:
               name: without SDK
               code: |
                   import requests
-                  
+
                   run_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
                   url = f"https://aihub.instabase.com/api/v2/apps/runs/{run_id}"
                   
@@ -2051,7 +2051,7 @@ paths:
                   
                   # make the DELETE request
                   response = requests.delete(url, headers=headers)
-                  
+
                   # handle the response
                   if response.status_code == 202:
                       print("Run deletion request accepted")
@@ -2126,7 +2126,7 @@ paths:
             - `edit_history/modifications`
             - `edit_history/modifications/message`
 
-            The following values are returned at the case level (`case_info/fields/...`):
+            The following values are returned at the packet level (also known as case level) (`case_info/fields/...`):
 
             - `edit_history`
             - `edit_history/timestamp`
@@ -2171,6 +2171,13 @@ paths:
             - `validations/valid`
             - `validations/alerts`
 
+            The following values are returned at the packet level (also known as case level) (`case_info/fields/...`):
+
+            - `validations/valid`
+            - `validations/failures`
+
+            Cross-class validation ensures data quality and consistency across documents within a packet.
+
             See the response schema for details and descriptions.
         - in: query
           name: include_source_info
@@ -2209,11 +2216,11 @@ paths:
         '200':
           description: |
             Run results retrieved successfully.
-            
+
             <Note>
 
             If errors occur at the class, field, or document levels, the response status code is `200` and the response body includes error details.
-            
+
             </Note>
           content:
             application/json:
@@ -2305,7 +2312,7 @@ paths:
               name: Simple request without SDK
               code: |
                   import requests
-                  
+
                   run_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
                   url = f"https://aihub.instabase.com/api/v2/apps/runs/{run_id}/results"
                   
@@ -2316,7 +2323,7 @@ paths:
                   
                   # make the GET request
                   response = requests.get(url, headers=headers)
-                  
+
                   # handle the response
                   if response.status_code == 200:
                       print(f"Retrieved results from {len(response.json()['files'])} files")
@@ -2420,7 +2427,7 @@ paths:
               name: Using query parameters without SDK
               code: |
                   import requests
-                  
+
                   run_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
                   url = f"https://aihub.instabase.com/api/v2/apps/runs/{run_id}/results" 
                   
@@ -2436,7 +2443,7 @@ paths:
                 
                   # make the GET request
                   response = requests.get(url, headers=headers, params=params)
-                  
+
                   # handle the response
                   if response.status_code == 200:
                       print(f"Retrieved results for {len(response.json()['files'])} files")
@@ -2461,7 +2468,7 @@ paths:
                   all_files_results = []
                   current_offset = 0
                   run_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
-                  
+
                   while True:
                       # fetch results with the current offset
                       response = client.apps.runs.results(
@@ -2471,14 +2478,14 @@ paths:
                   
                       # extend the list with the files from the current response
                       all_files_results.extend(response.files)
-                  
+
                       # check if there are more results to fetch
                       if not response.has_more:
                           break
-                  
+
                       # increment the offset by the number of files received in the current response
                       current_offset += len(response.files)
-                  
+
                   print(f"Retrieved results from {len(all_files_results)} total files")
 
             - sdk: python
@@ -2506,7 +2513,7 @@ paths:
                       
                       # make the GET request
                       response = requests.get(url, headers=headers, params=params)
-                  
+
                       # handle the response
                       if response.status_code == 200:
                           print(f"Retrieved results for {len(response.json()['files'])} files")
@@ -2530,6 +2537,8 @@ paths:
         - Conversations
       summary: Create conversation and upload files
       description: |
+         <Info>Conversations and chatbots are deprecated and will be removed on February 1, 2026. You can continue to create and use conversations and chatbots until then.</Info>
+
          Create a new conversation and upload files to it.
 
          <Note>For an overview of file upload limitations and supported file types, see [File limitations and processing](/overview/limitations/).</Note>
@@ -2658,7 +2667,7 @@ paths:
               name: without SDK
               code: |
                   import requests
-                  
+
                   url = "https://aihub.instabase.com/api/v2/conversations"
                   
                   headers = {
@@ -2690,7 +2699,7 @@ paths:
                   
                       # make the POST request
                       response = requests.post(url, headers=headers, files=files, data=data)
-                  
+
                   # handle the response
                   if response.status_code == 201:
                       print(f"Conversation created with ID: {response.json()['id']}")
@@ -2705,6 +2714,8 @@ paths:
         - Conversations
       summary: List conversations
       description: |
+        <Info>Conversations and chatbots are deprecated and will be removed on February 1, 2026. You can continue to create and use conversations and chatbots until then.</Info>
+
         List all conversations you have created.
 
         <Note>Organization admins can access a list of all conversations in the organization, not just conversations they created.</Note>
@@ -2756,7 +2767,7 @@ paths:
               name: without SDK
               code: |
                   import requests
-                  
+
                   url = "https://aihub.instabase.com/api/v2/conversations"
                   
                   headers = {
@@ -2766,7 +2777,7 @@ paths:
                   
                   # make the GET request
                   response = requests.get(url, headers=headers)
-                  
+
                   # handle the response
                   if response.status_code == 200:
                       for conversation in response.json()['conversations']:
@@ -2779,7 +2790,10 @@ paths:
       operationId: getConversation
       x-fern-audiences:
         - public
-      description: Retrieve information about a conversation, such as its state and a list of documents in the conversation.
+      description: |
+           <Info>Conversations and chatbots are deprecated and will be removed on February 1, 2026. You can continue to create and use conversations and chatbots until then.</Info>
+
+           Retrieve information about a conversation, such as its state and a list of documents in the conversation.
       tags:
         - Conversations
       summary: Get conversation information
@@ -2853,7 +2867,10 @@ paths:
       tags:
         - Conversations
       summary: Update conversation information
-      description: Update an existing conversation's name and description.
+      description:  |
+           <Info>Conversations and chatbots are deprecated and will be removed on February 1, 2026. You can continue to create and use conversations and chatbots until then.</Info>
+
+           Update an existing conversation's name and description.
       parameters:
         - $ref: '#/components/parameters/conversation_id'
         - in: query
@@ -2924,7 +2941,7 @@ paths:
                   
                   # make the PUT request
                   response = requests.put(url, headers=headers, params=params)
-                  
+
                   # handle the response
                   if response.status_code == 204:
                       print("Conversation updated successfully")
@@ -2938,7 +2955,10 @@ paths:
       tags:
         - Conversations
       summary: Delete conversation
-      description: Delete a conversation.
+      description:  |
+           <Info>Conversations and chatbots are deprecated and will be removed on February 1, 2026. You can continue to create and use conversations and chatbots until then.</Info>
+
+           Delete a conversation.
       parameters:
         - $ref: '#/components/parameters/conversation_id'
         - $ref: '#/components/parameters/ib_context'
@@ -2991,7 +3011,7 @@ paths:
                   
                   # make the DELETE request
                   response = requests.delete(url, headers=headers)
-                  
+
                   # handle the response
                   if response.status_code == 204:
                       print("Conversation deleted successfully")
@@ -3007,6 +3027,8 @@ paths:
         - Conversations
       summary: Converse with a document
       description:  |
+        <Info>Conversations and chatbots are deprecated and will be removed on February 1, 2026. You can continue to create and use conversations and chatbots until then.</Info>
+
         Converse with a document in a conversation.
 
         <Tip>This endpoint supports querying a single document at a time and supports the standard and advanced models. To converse with multiple documents, or to use the multistep model or research mode, use the [Run query](/api-sdk/api-reference/queries/run-query) endpoint.</Tip>
@@ -3108,7 +3130,7 @@ paths:
                   
                   # make the POST request
                   response = requests.post(url, headers=headers, json=data)
-                  
+
                   # handle the response
                   if response.status_code == 200:
                       print(f"Prompt response: {response.json()['answer']}")
@@ -3124,6 +3146,8 @@ paths:
         - Conversations
       summary: Add documents to a conversation
       description: |
+        <Info>Conversations and chatbots are deprecated and will be removed on February 1, 2026. You can continue to create and use conversations and chatbots until then.</Info>
+
         Upload documents to a specified conversation.
 
         <Note>For an overview of file upload limitations and supported file types, see [File limitations and processing](/overview/limitations/).</Note>
@@ -3215,10 +3239,10 @@ paths:
                           ("files", ("test1.pdf", local_file1, "application/pdf")),
                           ("files", ("test2.txt", local_file2, "text/plain"))
                       ]
-                  
+
                       # make the POST request
                       response = requests.post(url, headers=headers, files=files)
-                  
+
                   # handle the response
                   if response.status_code == 201:
                       print("Documents uploaded successfully")
@@ -3233,6 +3257,8 @@ paths:
         - Conversations
       summary: Delete documents
       description: |
+        <Info>Conversations and chatbots are deprecated and will be removed on February 1, 2026. You can continue to create and use conversations and chatbots until then.</Info>
+
         Deletes documents from the conversation. Also suitable for database and filesystem cleanup.
 
         <Tip>You can get a list of document IDs in your conversation with a [Conversation information](/api-sdk/api-reference/conversations/get-conversation/) request.</Tip>
@@ -3307,7 +3333,7 @@ paths:
                   
                   # make the DELETE request
                   response = requests.delete(url, headers=headers, params=data)
-                  
+
                   # handle the response
                   if response.status_code == 204:
                       print("Documents deleted successfully")
@@ -3322,7 +3348,10 @@ paths:
       tags:
         - Conversations
       summary: Get document metadata
-      description: Retrieve metadata for a specified document within a conversation.
+      description: |
+          <Info>Conversations and chatbots are deprecated and will be removed on February 1, 2026. You can continue to create and use conversations and chatbots until then.</Info>
+
+          Retrieve metadata for a specified document within a conversation.
       parameters:
         - $ref: '#/components/parameters/conversation_id'
         - name: document_id
@@ -3378,7 +3407,7 @@ paths:
               name: without SDK
               code: |
                   import requests
-                  
+
                   conversation_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
                   document_id = 12345
                   url = f"https://aihub.instabase.com/api/v2/conversations/{conversation_id}/documents/{document_id}"
@@ -3390,7 +3419,7 @@ paths:
                   
                   # make the GET request
                   response = requests.get(url, headers=headers)
-                  
+
                   # handle the response
                   if response.status_code == 200:
                       print(f"Document name: {response.json()['name']}")
@@ -3406,6 +3435,8 @@ paths:
         - Queries
       summary: Run query
       description: |
+        <Info>Conversations and chatbots are deprecated and will be removed on February 1, 2026. You can continue to create and use conversations and chatbots until then.</Info>
+
         Send an asynchronous query to the source app. Use this operation to query chatbots or query multiple documents in a conversation. Each request returns a `query_id` used to [check the query status and get the response](/api-sdk/api-reference/queries/get-query-status/).
         <Tip>To query a single document in a conversation or to use the standard or advanced model in your query, use the [Converse with a document](/api-sdk/api-reference/conversations/converse) operation.</Tip>
       parameters:
@@ -3531,7 +3562,7 @@ paths:
               name: without SDK
               code: |
                   import requests
-                  
+
                   url = "https://aihub.instabase.com/api/v2/queries"
                   
                   headers = {
@@ -3550,7 +3581,7 @@ paths:
                   
                   # make the POST request
                   response = requests.post(url, headers=headers, json=data)
-                  
+
                   # handle the response
                   if response.status_code == 202:
                       print(f"Query started with ID: {response.json()['query_id']}")
@@ -3565,7 +3596,10 @@ paths:
       tags:
         - Queries
       summary: Get query status
-      description: Get the status of an asynchronous query. If the status is `COMPLETE`, this request also returns the query response.
+      description: |
+          <Info>Conversations and chatbots are deprecated and will be removed on February 1, 2026. You can continue to create and use conversations and chatbots until then.</Info>
+
+          Get the status of an asynchronous query. If the status is `COMPLETE`, this request also returns the query response.
       parameters:
         - $ref: '#/components/parameters/query_id'
         - $ref: '#/components/parameters/ib_context'
@@ -3655,7 +3689,7 @@ paths:
                   
                   # make the GET request
                   response = requests.get(url, headers=headers)
-                  
+
                   # handle the response
                   if response.status_code == 200:
                       print(f"Query status: {response.json()['status']}")
@@ -3731,12 +3765,12 @@ paths:
                   }
                   
                   delete_response = requests.delete(url, headers=headers)
-                  
+
                   url = f"https://aihub.instabase.com/api/v2/jobs/{delete_response.json()['job_id']}"
-                  
+
                   # make the GET request
                   status_response = requests.get(url, headers=headers)
-                  
+
                   # handle the response
                   if status_response.status_code == 200:
                       print(f"Job status: {status_response.json()['state']}")
@@ -3854,7 +3888,7 @@ paths:
                   folder = "My Drive/AI Hub files"
                   file_name = "hello.txt"
                   file_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{file_name}"
-                  
+
                   # returns a byte literal, such as `b"foo"`
                   file_contents = client.files.read(path=file_path, expect_node_type="file")
                   print(f"Contents: {file_contents.decode('utf-8')}")
@@ -3907,9 +3941,9 @@ paths:
                   folder = "My Drive/AI Hub files"
                   file_name = "hello.txt"
                   file_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{file_name}"
-                  
+
                   retry_config = '{"retries": 3, "backoff-seconds": 5}'
-                  
+
                   # returns a byte literal, such as `b"foo"`
                   file_contents = client.files.read(
                       path=file_path,
@@ -3974,7 +4008,7 @@ paths:
         <Note>Ensure the path is accessible within the context defined by the `IB-Context` header.</Note>
 
         Not all filesystem types support this operation.
-        
+
         | Filesystem           | Supported |
         |----------------------|-----------|
         | Instabase            | ✓         |
@@ -4053,7 +4087,7 @@ paths:
               name: without SDK
               code: |
                   import requests
-                  
+
                   organization_id = "acme_org"
                   workspace = "MyWorkspace"
                   drive = "MyDrive"
@@ -4061,7 +4095,7 @@ paths:
                   file_name = "hello.txt"
                   file_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{file_name}"
                   file_contents = bytes("Hello world", "utf-8")
-                  
+
                   url = f"https://aihub.instabase.com/api/v2/files/{file_path}"
                   
                   headers = {
@@ -4072,7 +4106,7 @@ paths:
                   
                   # make the PUT request
                   response = requests.put(url, headers=headers, data=file_contents)
-                  
+
                   # handle the response
                   if response.status_code in [201, 204]:
                       print("File written successfully")
@@ -4090,9 +4124,9 @@ paths:
         Read metadata of a file or folder at the target path.
 
         This API operation reports whether the object at the target path is a file or folder. If a file, it also reports the file size and last modification time.
-        
+
         <Info>This acts on files and folders in the AI Hub filesystem, not your local filesystem.</Info>
-        
+
         <Note>Ensure the path is accessible within the context defined by the `IB-Context` header.</Note>
       parameters:
         - in: path
@@ -4163,7 +4197,7 @@ paths:
                   
                   # returns an object with status code and headers
                   response = client.files.get_file_metadata(path=node_path)
-                  
+
                   is_file = (response.headers["Content-Type"] == "application/octet-stream")
                   is_folder = (response.headers["Content-Type"] == "application/json")
                   
@@ -4178,14 +4212,14 @@ paths:
               name: without SDK
               code: |
                   import requests
-                  
+
                   organization_id = "acme_org"
                   workspace = "MyWorkspace"
                   drive = "Instabase Drive"
                   folder = "MyFolder"
                   file_name = "hello.txt"
                   node_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{file_name}"
-                  
+
                   url = f"https://aihub.instabase.com/api/v2/files/{node_path}"
                   
                   headers = {
@@ -4195,7 +4229,7 @@ paths:
                   
                   # make the HEAD request
                   response = requests.head(url, headers=headers)
-                  
+
                   # handle the response
                   if response.status_code == 200:
                       is_file = (response.headers["Content-Type"] == "application/octet-stream")
@@ -4219,15 +4253,15 @@ paths:
       summary: Delete file or folder
       description: |
         Delete a single file or folder.
-        
+
         This operation is also available via the SDK method `client.files.delete()`.
-        
+
         <Info>This acts on files in the AI Hub filesystem, not your local filesystem.</Info>
-        
+
         <Note>Ensure the path is accessible within the context defined by the `IB-Context` header.</Note>
-        
+
         Not all filesystem types support this operation.
-        
+
         | Filesystem           | Supported |
         |----------------------|-----------|
         | Instabase            | ✓         |
@@ -4282,7 +4316,7 @@ paths:
                   folder = "my-folder"
                   file_name = "hello.txt"
                   file_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{file_name}"
-                  
+
                   # returns None
                   client.files.delete(path=file_path)
 
@@ -4290,14 +4324,14 @@ paths:
               name: Delete file without SDK
               code: |
                   import requests
-                  
+
                   organization_id = "acme_org"
                   workspace = "MyWorkspace"
                   drive = "Instabase Drive"
                   folder = "my-folder"
                   file_name = "hello.txt"
                   file_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}/{file_name}"
-                  
+
                   url = f"https://aihub.instabase.com/api/v2/files/{file_path}"
                   
                   headers = {
@@ -4307,7 +4341,7 @@ paths:
                   
                   # make the DELETE request
                   response = requests.delete(url, headers=headers)
-                  
+
                   # handle the response
                   if response.status_code == 202:
                       print("File deletion request accepted")
@@ -4330,7 +4364,7 @@ paths:
                   drive = "Instabase Drive"
                   folder = "MyFolder"
                   folder_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}"
-                  
+
                   # returns None
                   client.files.delete(path=folder_path)
 
@@ -4338,13 +4372,13 @@ paths:
               name: Delete folder without SDK
               code: |
                   import requests
-                  
+
                   organization_id = "acme_org"
                   workspace = "MyWorkspace"
                   drive = "Instabase Drive"
                   folder = "MyFolder"
                   folder_path = f"{organization_id}/{workspace}/fs/{drive}/{folder}"
-                  
+
                   url = f"https://aihub.instabase.com/api/v2/files/{folder_path}"
                   
                   headers = {
@@ -4354,7 +4388,7 @@ paths:
                   
                   # make the DELETE request
                   response = requests.delete(url, headers=headers)
-                  
+
                   # handle the response
                   if response.status_code == 202:
                       print("Folder deletion request accepted")
@@ -4438,7 +4472,7 @@ paths:
             name: without SDK
             code: |
                 import requests
-                
+
                 url = "https://aihub.instabase.com/api/v2/aihub/secrets"
                 
                 headers = {
@@ -4451,7 +4485,7 @@ paths:
                 
                 # make the GET request
                 response = requests.get(url, headers=headers, params=params)
-                
+
                 # handle the response
                 if response.status_code == 200:
                     for secret in response.json()['secrets']:
@@ -4554,7 +4588,7 @@ paths:
               name: without SDK
               code: |
                   import requests
-                  
+
                   url = "https://aihub.instabase.com/api/v2/aihub/secrets"
                   
                   headers = {
@@ -4573,7 +4607,7 @@ paths:
                   
                   # make the POST request
                   response = requests.post(url, headers=headers, json=data)
-                  
+
                   # handle the response
                   if response.status_code == 200:
                       print("Secret created successfully")
@@ -4666,7 +4700,7 @@ paths:
               name: Simple request without SDK
               code: |
                   import requests
-                  
+
                   url = "https://aihub.instabase.com/api/v2/aihub/secrets"
                   
                   headers = {
@@ -4682,7 +4716,7 @@ paths:
                   
                   # make the PATCH request
                   response = requests.patch(url, headers=headers, json=data)
-                  
+
                   # handle the response
                   if response.status_code == 200:
                       print("Secret updated successfully")
@@ -4712,7 +4746,7 @@ paths:
               name: Advanced request without SDK
               code: |
                   import requests
-                  
+
                   url = "https://aihub.instabase.com/api/v2/aihub/secrets"
                   
                   headers = {
@@ -4730,7 +4764,7 @@ paths:
                   
                   # make the PATCH request
                   response = requests.patch(url, headers=headers, json=data)
-                  
+
                   # handle the response
                   if response.status_code == 200:
                       print("Secret updated successfully")
@@ -4803,7 +4837,7 @@ paths:
               name: without SDK
               code: |
                   import requests
-                  
+
                   url = "https://aihub.instabase.com/api/v2/aihub/secrets"
                   
                   headers = {
@@ -4816,7 +4850,7 @@ paths:
                   
                   # make the DELETE request
                   response = requests.delete(url, headers=headers, json=data)
-                  
+
                   # handle the response
                   if response.status_code == 200:
                       print("Secret deleted successfully")
@@ -4835,7 +4869,7 @@ paths:
         Retrieve audit logs based on specified filters. Returns a paginated list of audit log entries.
 
         <Note>This API operation is available for Enterprise-tier organizations with single-tenant environments. To use it you must have audit log access permissions. Contact Instabase Support to request access to audit logs for your organization.</Note>
-        
+
         <Note>This API operation is not supported by the SDK but you can access it from Python by making direct REST calls, as shown in the sample code.</Note>
       requestBody:
         required: true
@@ -4944,7 +4978,7 @@ paths:
                   # SDK does not support this operation, so you
                   # must make REST calls using "requests" module
                   import requests
-                  
+
                   url = "https://aihub.instabase.com/api/v1/auditlogs"
                   
                   headers = {
@@ -4962,7 +4996,7 @@ paths:
                   
                   # make the POST request
                   response = requests.post(url, headers=headers, json=data)
-                  
+
                   # handle the response
                   if response.status_code == 200:
                       audit_logs = response.json()
@@ -5300,7 +5334,10 @@ components:
           description: Indicates whether additional results are available beyond those included in the current response. Use the `file_offset` query parameter to specify the starting point when fetching the next set of results.
         case_info:
           $ref: '#/components/schemas/caseInfo'
-          description: Case-level information captured for the run, including optional edit history per case field when include_review_results=true.
+          description: |
+            Packet-level information (also known as case-level information) captured for the run, including optional edit history per cross-class field when `include_review_results=true`.
+
+            Cross-class fields consolidate data extracted from standard fields within a packet. For more information about packets and cross-class fields, see [Extracting data from packets](/automate/packet-schema).
         review_completed:
           type: boolean
           description: Indicates whether the run or document has completed review.
@@ -5666,7 +5703,8 @@ components:
       properties:
         fields:
           type: array
-          description: A list of case-level fields captured for this run.
+          description: |
+            A list of cross-class fields captured for this run. Cross-class fields consolidate data extracted from standard fields within a packet.
           items:
             $ref: '#/components/schemas/caseInfoField'
 
@@ -5675,14 +5713,14 @@ components:
       properties:
         name:
           type: string
-          description: Name of the case field.
+          description: Name of the cross-class field.
         value:
           type: string
-          description: The value of the case field.
+          description: The value of the cross-class field.
         input_fields:
           type: array
           description: |
-            Only applicable for ranked case fields. Input options the user can choose from
+            Only applicable for ranked cross-class fields. Input options the user can choose from
             when determining the value of this ranked field.
           items:
             $ref: '#/components/schemas/caseInputField'
@@ -5690,23 +5728,50 @@ components:
           $ref: '#/components/schemas/caseInputField'
           nullable: true
           description: |
-            Only applicable for ranked case fields. The input option from `input_fields` that was
+            Only applicable for ranked cross-class fields. The input option from `input_fields` that was
             selected for the ranked field's value.
         error_msg:
           type: string
-          description: Error message for the case field, if any.
+          description: Error message for the cross-class field, if any.
         edit_history:
           type: array
-          description: The history of edits to the case field. Returned when include_review_results=true.
+          description: The history of edits to the cross-class field. Returned when `include_review_results=true`.
           items:
             $ref: '#/components/schemas/modificationObject'
+        validations:
+          type: object
+          description: |
+            Validation results for the cross-class field. Returned when `include_validation_results` is `true` and field has cross-class validation results.
+
+            Cross-class validation ensures data quality and consistency across documents within a packet.
+          properties:
+            valid:
+              type: boolean
+              description: Indicates whether the cross-class field has passed all validation rules.
+            failures:
+              type: array
+              description: Array of validation failures for the cross-class field. Populated only if the `validations/valid` value is `false`.
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Type of validation failure (for example, "lambda_code", "all_inputs_match").
+                  msg:
+                    type: string
+                    description: Message describing the validation failure.
+                required:
+                  - type
+                  - msg
+          required:
+            - valid
       required:
         - name
         - value
 
     caseInputField:
       type: object
-      description: Input option for ranked case fields.
+      description: Input option for ranked cross-class fields.
       properties:
         record_index:
           type: integer

@@ -2236,15 +2236,18 @@ paths:
           description: Error response.
       x-fern-examples:
         - path-parameters:
-            run_id: 1234-1235
+            run_id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
           response:
             body:
+              id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+              status: "COMPLETE"
+              msg: "Completed single_flow"
+              start_timestamp: 1765912514238248673
+              finish_timestamp: 1765912529614833939
               batch_id: '1235'
-              run_id: "1234-1235"
-              has_more: false
               files:
                 - original_file_name: "test.png"
-                  input_file_path: "instabase-sandbox-org/test-org/fs/Instabase Drive/app-runs/1234-1235/input/test.png"
+                  input_file_path: "instabase-sandbox-org/test-org/fs/Instabase Drive/app-runs/a1b2c3d4-e5f6-7890-abcd-ef1234567890/input/test.png"
                   documents:
                     - class_name: "Wage And Tax Statement"
                       page_numbers: [1, 2]
@@ -2253,7 +2256,7 @@ paths:
                           type: "TEXT"
                           field_name: "employers_address_and_ZIP_code"
                 - original_file_name: "test2.png"
-                  input_file_path: "instabase-sandbox-org/test-org/fs/Instabase Drive/app-runs/1234-1235/input/test2.png"
+                  input_file_path: "instabase-sandbox-org/test-org/fs/Instabase Drive/app-runs/a1b2c3d4-e5f6-7890-abcd-ef1234567890/input/test2.png"
                   documents:
                     - class_name: "Driver License"
                       page_numbers: [1]
@@ -2286,6 +2289,8 @@ paths:
                     chosen_field:
                       record_index: 0
                       refined_phrase_name: "sex"
+              review_completed: false
+              has_more: false
           code-samples:
             - sdk: curl
               name: Simple request
@@ -2334,12 +2339,15 @@ paths:
                       print(f"Error: {response.status_code} - {response.text}")
 
         - path-parameters:
-            run_id: 1234-1235
+            run_id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
           response:
             body:
-              has_more: false
+              id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+              status: "COMPLETE"
+              msg: "Completed single_flow"
+              start_timestamp: 1765912514238248673
+              finish_timestamp: 1765912529614833939
               batch_id: "9706"
-              run_id: "1234-1235"
               files:
                 - original_file_name: "test.png"
                   documents:
@@ -2408,7 +2416,8 @@ paths:
                     chosen_field:
                       record_index: 0
                       refined_phrase_name: "sex"
-
+              review_completed: false
+              has_more: false
           code-samples:
             - sdk: curl
               name: Using query parameters with SDK
@@ -5328,12 +5337,42 @@ components:
     resultsResponse:
       type: object
       properties:
+        id:
+          type: string
+          description: Run ID of the run.
+        status:
+          type: string
+          description: |
+            Status of the run. Possible values and meanings:
+            - `CANCELLED` -- A user cancelled the run
+            - `COMPLETE` -- The run successfully completed. A human review completed if it was required. Results are retrievable, but some fields may have failed and have the value `ERROR`.
+            - `FAILED` -- The run failed to complete
+            - `PAUSED` -- This status is reserved for future use
+            - `RUNNING` -- The run is in progress and is not paused
+            - `STOPPED_AT_CHECKPOINT` -- A validation error has paused the run for human review
+          enum:
+            - CANCELLED
+            - COMPLETE
+            - FAILED
+            - PAUSED
+            - RUNNING
+            - STOPPED_AT_CHECKPOINT
+        msg:
+          type: string
+          description: Message about the run.
+          nullable: true
+        start_timestamp:
+          type: integer
+          format: int64
+          description: When the run started, in Unix time nanoseconds.
+        finish_timestamp:
+          type: integer
+          format: int64
+          description: When the run finished, in Unix time nanoseconds. `null` if run is still in progress.
+          nullable: true
         batch_id:
           type: string
           description: The batch ID used as input for this run, if run using a batch.
-        run_id:
-          type: string
-          description: The run ID of the automation app run.
         files:
           type: array
           items:
@@ -5344,9 +5383,6 @@ components:
             custom:
               type: object
               description: Key/value pairs representing non-secret custom keys set for the run.
-        has_more:
-          type: boolean
-          description: Indicates whether additional results are available beyond those included in the current response. Use the `file_offset` query parameter to specify the starting point when fetching the next set of results.
         case_info:
           $ref: '#/components/schemas/caseInfo'
           description: |
@@ -5356,6 +5392,9 @@ components:
         review_completed:
           type: boolean
           description: Indicates whether the run or document has completed review.
+        has_more:
+          type: boolean
+          description: Indicates whether additional results are available beyond those included in the current response. Use the `file_offset` query parameter to specify the starting point when fetching the next set of results.
     fileWithDocuments:
       type: object
       properties:
@@ -5517,17 +5556,14 @@ components:
       properties:
         page_number:
           type: integer
-          nullable: false
           description: Zero-indexed page number.
         width:
           type: number
           format: float
-          nullable: false
           description: Width of the page.
         height:
           type: number
           format: float
-          nullable: false
           description: Height of the page.
       required:
         - page_number

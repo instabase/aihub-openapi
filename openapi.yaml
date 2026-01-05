@@ -2289,7 +2289,6 @@ paths:
                     chosen_field:
                       record_index: 0
                       refined_phrase_name: "sex"
-              review_completed: false
               has_more: false
           code-samples:
             - sdk: curl

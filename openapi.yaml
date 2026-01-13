@@ -2241,7 +2241,7 @@ paths:
             body:
               id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
               status: "COMPLETE"
-              msg: "Completed single_flow"
+              message: "Completed single_flow"
               start_timestamp: 1765912514238248673
               finish_timestamp: 1765912529614833939
               batch_id: '1235'
@@ -2343,7 +2343,7 @@ paths:
             body:
               id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
               status: "COMPLETE"
-              msg: "Completed single_flow"
+              message: "Completed single_flow"
               start_timestamp: 1765912514238248673
               finish_timestamp: 1765912529614833939
               batch_id: "9706"
@@ -5356,7 +5356,7 @@ components:
             - PAUSED
             - RUNNING
             - STOPPED_AT_CHECKPOINT
-        msg:
+        message:
           type: string
           description: Message about the run.
           nullable: true

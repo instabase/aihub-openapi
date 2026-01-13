@@ -5522,7 +5522,9 @@ components:
                     type: string
                     description: Type of validation alert.
                   locations:
-                    type: object
+                    type: array
+                    items:
+                      type: object
     fieldSourceCoordinates:
       type: object
       properties:

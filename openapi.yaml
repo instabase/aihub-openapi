@@ -1300,7 +1300,7 @@ paths:
                          generate_post_process_pdf:
                             type: boolean
                             description: |
-                               Set to `true` to generate a retrievable PDF for each document the app processes, including separate PDFs for each document created by split classification.
+                               Set to `true` to generate a retrievable PDF for each document the app processes, including separate PDFs for each document created by split classification. PDF generation is supported only for documents less than 100 pages in length.
 
                                <Note>When getting run results, use the [`include_source_info` query parameter](/api-sdk/api-reference/runs/get-run-results#request.query.include_source_info.include_source_info) to return the file path for any generated PDFs in your results. File paths are returned under `files/documents/post_processed_pdf_path`.</Note>
                          instabase:

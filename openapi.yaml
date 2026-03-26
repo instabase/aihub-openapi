@@ -1316,6 +1316,12 @@ paths:
                                         description: A dictionary with titles of encrypted PDF documents as keys and passwords for those documents as values.
                                         additionalProperties:
                                           type: string
+                    tags:
+                      type: array
+                      items:
+                        type: string
+                      description: |
+                        List of string tags to attach to this run. Combined length of all tags must not exceed 500 characters.
 
       responses:
         '200':
@@ -1735,6 +1741,12 @@ paths:
                                    description: A dictionary with titles of encrypted PDF documents as keys and passwords for those documents as values.
                                    additionalProperties:
                                      type: string
+                    tags:
+                      type: array
+                      items:
+                        type: string
+                      description: |
+                        List of string tags to attach to this run. Combined length of all tags must not exceed 500 characters.
 
       responses:
         '202':
@@ -4034,6 +4046,28 @@ components:
         msg:
           type: string
           description: Message about the run.
+          nullable: true
+        batch_id:
+          type: integer
+          description: The batch ID used as input for this run.
+          nullable: true
+        input_dir:
+          type: string
+          description: The path of the input folder used for this run.
+          nullable: true
+        app_id:
+          type: string
+          description: The app ID of the app that was run.
+          nullable: true
+        deployment_id:
+          type: string
+          description: The deployment ID used for this run.
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
+          description: List of string tags attached to this run.
           nullable: true
     error:
       type: object

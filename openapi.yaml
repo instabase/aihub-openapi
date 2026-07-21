@@ -1216,8 +1216,6 @@ paths:
 
         <Tip>
 
-        <span class="badge">Commercial & Enterprise</span>
-
         Running an automation app via a deployment is generally preferred over running an app directly.
 
         Deployments offer additional features including upstream and downstream integrations, deployment metrics, human review workflows, and secret and configuration management.
@@ -1226,7 +1224,7 @@ paths:
 
         </Tip>
 
-        <Note>Any specified input or output is validated against the context set by the `IB-Context` header. For example, if the context is set to your community account, but the batch ID used as input for the run is stored in your organization, the call fails.</Note>
+        <Note>Any specified input or output is validated against the context set by the `IB-Context` header.</Note>
       parameters:
         - $ref: '#/components/parameters/ib_context'
       requestBody:
@@ -1647,13 +1645,11 @@ paths:
         - Runs
       summary: Run deployment
       description: |
-        <span class="badge">Commercial & Enterprise</span>
-
         Run an AI Hub deployment by its deployment ID. The input for the run is specified using a batch ID or file path.
 
         <Info>Use the UI to optionally [configure email notifications or webhooks](/automate/deployments#configuring-notifications) for certain events within the deployed app's lifecycle.</Info>
 
-        <Note>Any specified input or output is validated against the context set by the `IB-Context` header. For example, if the context is set to your community account, but the batch ID used as input for the run is stored in your organization, the call fails.</Note>
+        <Note>Any specified input or output is validated against the context set by the `IB-Context` header.</Note>
       parameters:
         - $ref: '#/components/parameters/ib_context'
         - in: path
@@ -1725,7 +1721,7 @@ paths:
                          generate_post_process_pdf:
                             type: boolean
                             description: |
-                               Set to `true` to generate a retrievable PDF for each document the app processes, including separate PDFs for each document created by split classification.
+                               Set to `true` to generate a retrievable PDF for each document the app processes, including separate PDFs for each document created by split classification. PDF generation is supported only for documents less than 100 pages in length.
 
                                <Note>When getting run results, use the [`include_source_info` query parameter](/api-sdk/api-reference/runs/get-run-results#request.query.include_source_info.include_source_info) to return the file path for any generated PDFs in your results. File paths are returned under `files/documents/post_processed_pdf_path`.</Note>
                          instabase:
@@ -3268,8 +3264,6 @@ paths:
       summary: List secrets
 
       description: |
-        <span class="badge">Commercial & Enterprise</span>
-
         List secrets available to the organization, available to a given workspace, or with a given alias.
 
         <Note>Only organization admins can list all secrets in the organization. Non-admins must specify a workspace.</Note>
@@ -3364,8 +3358,6 @@ paths:
         - Secrets
       summary: Create secret
       description: |
-        <span class="badge">Commercial & Enterprise</span>
-
         Create a new secret in this organization.
 
         <Note>Only organization admins can create secrets.</Note>
@@ -3485,8 +3477,6 @@ paths:
         - Secrets
       summary: Update secret
       description: |
-        <span class="badge">Commercial & Enterprise</span>
-
         Update the description, value, or allowed workspaces for a secret. If a value for a parameter is not specified, it will remain the same.
 
         <Note>Only organization admins can update secrets.</Note>
@@ -3642,8 +3632,6 @@ paths:
         - Secrets
       summary: Delete secret
       description: |
-        <span class="badge">Commercial & Enterprise</span>
-
         Delete a secret from the organization.
 
         <Note>Only organization admins can delete secrets.</Note>
@@ -3881,8 +3869,7 @@ components:
       schema:
         type: string
       required: false
-      description: Specify whether to use your community account or organization account to complete the request. To use your community account, define as your user ID. To use your organization account, define as your organization ID.
-                   If unspecified, defaults to community account context. See [Authorization and context identification](/api-sdk/authorization#ib-context-header) for details.
+      description: Typically your organization ID. See [Authorization and context identification](/api-sdk/authorization#ib-context-header) for details.
     batch_id:
       in: path
       name: batch_id

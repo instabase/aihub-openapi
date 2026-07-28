@@ -296,13 +296,13 @@ paths:
       tags:
         - Batches
       summary: Delete batch
-      description: Delete a batch and all its files. This is an asynchronous operation that must be [checked for completion](/api-sdk/api-reference/batches/poll-batches-job).
+      description: Delete a batch and all its files. This is an asynchronous operation that must be [checked for completion](/api-sdk/api-reference/jobs/job-status).
       parameters:
         - $ref: '#/components/parameters/batch_id'
         - $ref: '#/components/parameters/ib_context'
       responses:
         '202':
-          description: Batch deletion request accepted. [Poll the job ID](/api-sdk/api-reference/batches/poll-batches-job) to check completion status.
+          description: Batch deletion request accepted. [Poll the job ID](/api-sdk/api-reference/jobs/job-status) to check completion status.
           content:
             application/json:
               schema:
@@ -331,14 +331,17 @@ paths:
                   
                   delete_response = client.batches.delete(batch_id=12345)
                   
-                  # check delete job status until done
+                  # poll the job until it reaches a terminal state
                   while True:
-                      poll_response = client.batches.poll_job(
-                                          job_id=delete_response.job_id
-                                      )
-                      if poll_response.state not in ["PENDING", "RUNNING"]:
+                      status_response = client.jobs.status(
+                          job_id=delete_response.job_id
+                      )
+                      if status_response.state not in ["PENDING", "RUNNING"]:
                           break
                       time.sleep(3)  # pause before polling the status again
+                  
+                  if status_response.state != "COMPLETE":
+                      print(f"Deletion ended in state {status_response.state}")
 
             - sdk: python
               name: without SDK
@@ -1137,13 +1140,14 @@ paths:
       description: |
         Poll the asynchronous job created when deleting a batch.
 
-        <Info>This API operation and SDK method are maintained for backward compatibility, but the functionally identical API operation [poll file operation job status](/api-sdk/api-reference/jobs/job-status) and its corresponding SDK method [client.jobs.status()](/api-sdk/api-reference/jobs/job-status) are preferred.</Info>
+        <Info>This endpoint and the SDK method `client.batches.poll_job()` are maintained for backward compatibility, but they are an outdated way to check job status. Prefer the functionally identical [poll file operation job status](/api-sdk/api-reference/jobs/job-status) endpoint and its SDK method `client.jobs.status()`.</Info>
       parameters:
         - name: job_id
           in: path
           required: true
           schema:
             type: string
+          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
           description: The job ID returned by a [Delete batch](/api-sdk/api-reference/batches/delete-batch) request.
         - $ref: '#/components/parameters/ib_context'
       responses:
@@ -1979,7 +1983,7 @@ paths:
           description: Delete the run's logs.
       responses:
         '202':
-          description: Run deleted successfully.
+          description: Run deletion request accepted. The response contains a job ID for each file deletion that started, so a key is absent if you set its corresponding option to `false`. [Poll each job ID](/api-sdk/api-reference/jobs/job-status) to check completion status.
           content:
             application/json:
               schema:
@@ -1987,16 +1991,13 @@ paths:
                 properties:
                   delete_input_dir_job_id:
                     type: string
-                    description: Job ID for deleting the input directory.
-                    nullable: true
+                    description: Job ID for deleting the input directory. Returned only when `delete_input` is `true` and the deletion job started.
                   delete_output_dir_job_id:
                     type: string
-                    description: Job ID for deleting the output directory.
-                    nullable: true
+                    description: Job ID for deleting the output directory. Returned only when `delete_output` is `true` and the deletion job started.
                   delete_log_dir_job_id:
                     type: string
-                    description: Job ID for deleting the log directory.
-                    nullable: true
+                    description: Job ID for deleting the log directory. Returned only when `delete_logs` is `true` and the deletion job started.
         default:
           description: Error response.
           content:
@@ -2027,22 +2028,25 @@ paths:
                       run_id="a1b2c3d4-e5f6-7890-abcd-ef1234567890"
                   )
                   
+                  # a job ID is returned only for the files that are deleted
                   job_ids = [
-                      response.delete_input_dir_job_id,
-                      response.delete_output_dir_job_id,
-                      response.delete_log_dir_job_id
+                      job_id for job_id in [
+                          response.delete_input_dir_job_id,
+                          response.delete_output_dir_job_id,
+                          response.delete_log_dir_job_id
+                      ] if job_id
                   ]
                   
-                  # remove empty job IDs
-                  job_ids = [job_id for job_id in job_ids if job_id]
-                  
-                  # poll for job completion
+                  # poll each job until it reaches a terminal state
                   while job_ids:
                       for job_id in job_ids[:]:
-                          job_status = client.jobs.status(job_id)
-                          if job_status.state == "COMPLETE":
+                          state = client.jobs.status(job_id).state
+                          if state in ["COMPLETE", "FAILED", "CANCELLED"]:
                               job_ids.remove(job_id)
-                      time.sleep(5)
+                              if state != "COMPLETE":
+                                  print(f"Job {job_id} ended in state {state}")
+                      if job_ids:
+                          time.sleep(5)  # pause before polling again
 
             - sdk: python
               name: without SDK
@@ -2063,11 +2067,17 @@ paths:
                   # handle the response
                   if response.status_code == 202:
                       print("Run deletion request accepted")
-                      print(f"Delete input dir job ID: {response.json()['delete_input_dir_job_id']}")
-                      print(f"Delete output dir job ID: {response.json()['delete_output_dir_job_id']}")
-                      print(f"Delete log dir job ID: {response.json()['delete_log_dir_job_id']}")
+                      # a job ID is returned only for the files that are deleted
+                      job_ids = response.json()
+                      for key in ["delete_input_dir_job_id",
+                                  "delete_output_dir_job_id",
+                                  "delete_log_dir_job_id"]:
+                          if key in job_ids:
+                              print(f"{key}: {job_ids[key]}")
                   else:
                       print(f"Error: {response.status_code} - {response.text}")
+                  
+                  # not included here: poll each job ID until it's done
 
   /v2/apps/runs/{run_id}/results:
     get:
@@ -2570,6 +2580,7 @@ paths:
           required: true
           schema:
             type: string
+          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
           description: The job ID returned by a request.
         - $ref: '#/components/parameters/ib_context'
       responses:
@@ -3876,6 +3887,7 @@ components:
       required: true
       schema:
         type: integer
+      example: 12345
       description: The batch ID.
     run_id:
       in: path
@@ -3883,6 +3895,7 @@ components:
       required: true
       schema:
         type: string
+      example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
       description: The run ID.
   schemas:
     batch:
@@ -3980,7 +3993,7 @@ components:
       properties:
         job_id:
           type: string
-          description: The job ID of the operation. Use the job ID with the [Poll batches job endpoint](/api-sdk/api-reference/batches/poll-batches-job) to check batch deletion status.
+          description: The job ID of the operation. Use the job ID with the [poll file operation job status](/api-sdk/api-reference/jobs/job-status) endpoint to check batch deletion status.
       required:
         - job_id
     jobStatusResponse:

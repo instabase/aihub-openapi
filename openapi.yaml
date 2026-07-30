@@ -2154,12 +2154,19 @@ paths:
 
             The following values are returned at the document level (`files/documents/...`):
 
-            - `classification_confidence`
+            - `classification_confidence/model`
 
             The following values are returned at the field level (`files/documents/fields/...`):
 
             - `confidence/model`
             - `confidence/ocr`
+
+            All of these keys are returned when `include_confidence_scores=true`, but a value is `null` when the run didn't produce that score.
+
+            What the scores mean depends on whether the app runs in [agent mode or legacy mode](/automate/creating#agent-mode-and-legacy-mode):
+
+            - Agent mode apps classify and extract with a multimodal model and don't run a separate OCR step. Model confidence is the score to use for quality checks, and OCR confidence is always returned as `1.0`.
+            - Legacy mode apps digitize documents with an OCR processor before extraction, so both scores are measured values.
 
             See the response schema for details and descriptions.
         - in: query
@@ -2368,7 +2375,7 @@ paths:
                           type: "TEXT"
                           confidence:
                             model: 0.5900550516
-                            ocr: 0.6900550516
+                            ocr: 1.0
                           source_coordinates:
                             - top_x: 36.0
                               top_y: 181.0
@@ -2395,7 +2402,7 @@ paths:
                           type: "TEXT"
                           confidence:
                             model: 0.6915
-                            ocr: 0.7915
+                            ocr: 1.0
                           source_coordinates: []
                           field_name: "sex"
                       post_processed_paths:
@@ -4182,12 +4189,15 @@ components:
               description: Indicates whether the document has passed all validation rules.
         classification_confidence:
           type: object
+          description: |
+            Classification confidence for the document. Returned when `include_confidence_scores=true`.
           properties:
             model:
               type: number
               format: float
               nullable: true
-              description: Classification confidence. Indicates the model's certainty in predicting the class of a document.
+              description: |
+                Classification confidence. Indicates the model's certainty in predicting the class of a document. The value is `null` when the run didn't produce a classification score, such as an app that doesn't classify documents.
     documentField:
       type: object
       properties:
@@ -4214,17 +4224,25 @@ components:
             $ref: '#/components/schemas/modificationObject'
         confidence:
           type: object
+          description: |
+            Confidence scores for the field. Returned when `include_confidence_scores=true`. Both keys are always returned, but a value is `null` when the run didn't produce that score.
           properties:
             model:
               type: number
               format: float
               nullable: true
-              description: Field confidence. Indicates the model's certainty in predicting results for a given field.
+              description: |
+                Field confidence. Indicates the model's certainty in predicting results for a given field. In [agent mode](/automate/creating#agent-mode-and-legacy-mode), this is the certainty of the multimodal model that classifies and extracts the document. In legacy mode, it's the certainty of the extraction model. The value is `null` when the value doesn't come from a model, such as a constant or a value computed from other fields.
             ocr:
               type: number
               format: float
               nullable: true
-              description: OCR confidence. Indicates the OCR processor's certainty in digitization accuracy.
+              description: |
+                OCR confidence. Indicates the OCR processor's certainty in digitization accuracy, averaged over the words the field value came from.
+
+                Apps in [agent mode](/automate/creating#agent-mode-and-legacy-mode) don't run a separate OCR step, so OCR confidence isn't measured for those runs and the value is always returned as `1.0`. Use `model` for quality checks instead. Only apps in legacy mode return a measured OCR confidence.
+
+                The value is `null` when a legacy mode field value has no OCR provenance, such as a value produced by a prompt or computed from other fields.
         validations:
           type: object
           properties:

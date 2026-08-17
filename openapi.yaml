@@ -4315,9 +4315,8 @@ components:
             properties:
               message:
                 type: string
+                nullable: true
                 description: Message associated with the edit history modification.
-            required:
-              - message
       required:
         - timestamp
         - user_id

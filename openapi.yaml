@@ -1324,6 +1324,21 @@ paths:
                         type: string
                       description: |
                         List of string tags to attach to this run. Combined length of all tags must not exceed 500 characters.
+                    step_timeout:
+                      type: integer
+                      format: int32
+                      minimum: -1
+                      maximum: 2147483647
+                      description: |
+                        Per-step timeout for this run, in seconds. Each step in the app has its own default timeout, and this setting changes it for this run only.
+
+                        - `0`, or omitted: each step uses its default timeout.
+                        - `-1`: no step timeout.
+                        - A positive number of seconds: each step's timeout is raised to at least this value. A value lower than a step's default has no effect on that step. Steps with no default timeout stay unlimited.
+
+                        Any other value returns a 400 error.
+
+                        <Note>`-1` removes step timeouts only. By default, each processing stage of a run still stops after 11 hours, and individual operations such as OCR keep their own timeouts.</Note>
 
       responses:
         '200':
@@ -1747,6 +1762,21 @@ paths:
                         type: string
                       description: |
                         List of string tags to attach to this run. Combined length of all tags must not exceed 500 characters.
+                    step_timeout:
+                      type: integer
+                      format: int32
+                      minimum: -1
+                      maximum: 2147483647
+                      description: |
+                        Per-step timeout for this run, in seconds. Each step in the deployed app has its own default timeout, and this setting changes it for this run only.
+
+                        - `0`, or omitted: each step uses its default timeout.
+                        - `-1`: no step timeout.
+                        - A positive number of seconds: each step's timeout is raised to at least this value. A value lower than a step's default has no effect on that step. Steps with no default timeout stay unlimited.
+
+                        Any other value returns a 400 error.
+
+                        <Note>`-1` removes step timeouts only. By default, each processing stage of a run still stops after 11 hours, and individual operations such as OCR keep their own timeouts.</Note>
 
       responses:
         '202':

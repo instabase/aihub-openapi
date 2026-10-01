@@ -1770,7 +1770,7 @@ paths:
                       description: |
                         Per-step timeout for this run, in seconds. Each step in the deployed app has its own default timeout, and this setting changes it for this run only.
 
-                        - `0`, or omitted: each step uses its default timeout.
+                        - `0`, or omitted: the run uses the step timeout set in the deployment's configuration. If the deployment has none, each step uses its default timeout.
                         - `-1`: no step timeout.
                         - A positive number of seconds: each step's timeout is raised to at least this value. A value lower than a step's default has no effect on that step. Steps with no default timeout stay unlimited.
 
